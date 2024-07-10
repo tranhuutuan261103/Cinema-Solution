@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Tune Cinema</title>
+    <link rel="stylesheet" href="~/fonts/stylesheet.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/reset.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/common.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <section class="sidebar" id="sidebar">
+        <a href="#!" class="brand">Admin Site</a>
+        <ul class="navbar-nav">
+            <li class="nav-item nav-item__active">
+                <a href="#!" class="nav-link">
+                    <i class="fa-solid fa-house nav-icon"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <!-- Movie -->
+            <li class="nav-item collapsible">
+                <a class="nav-link dropdown-btn" href="#">
+                    <i class="fa-solid fa-film nav-icon"></i>
+                    Manage movie
+                </a>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link load-target" href="./pages/movie.html" cref="./assets/css/pages/movie.css">Movies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link load-target" href="./pages/category.html" cref="./assets/css/pages/category.css">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#!">Auditoriums</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Showtime -->
+            <li class="nav-item collapsible">
+                <a class="nav-link dropdown-btn" asp-controller="" asp-action="">
+                    <i class="fa-solid fa-receipt nav-icon"></i>
+                    Manage showtime
+                </a>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#!">Showtimes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#!">Schedule</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Statistic -->
+            <li class="nav-item collapsible">
+                <a class="nav-link dropdown-btn" href="#!">
+                    <i class="fa-solid fa-chart-bar nav-icon"></i>
+                    Statistic
+                </a>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#!">Tickets</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#!">Products</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Product -->
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fa-solid fa-glass-water nav-icon"></i>
+                    Product
+                </a>
+            </li>
+
+
+            <!-- User -->
+            <li class="nav-item collapsible">
+                <a class="nav-link dropdown-btn" href="#">
+                    <i class="fa-solid fa-users nav-icon"></i>
+                    User
+                </a>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link " href="#!">Custommer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="#!">Admin</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section class="page-content" id="page-content">
+        <section class="header sticky">
+            <div class="header-left">
+                <button type="button" class="header-nav-toggle" id="header-nav-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <form action="" class="header-form-search">
+                    <input type="text" placeholder="Search" class="header-form-search-input">
+                    <button type="submit" class="header-form-search-btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="header-right">
+                <div class="header-avatar" id="user-dropdown">
+                    <img src="./assets/images/avatar.jpg" class="header-avatar-img" alt="">
+                </div>
+            </div>
+
+            <div class="user-menu" id="user-menu-content">
+                <a href="#!" class="user-infor">
+                    <span class="user-name">Tran Tuan</span>
+                    <span class="user-role">Admin</span>
+                </a>
+
+                <div class="dropdown-divider"></div>
+
+                <ul class="user-nav">
+                    <li class="user-nav-item">
+                        <a href="#!" class="user-nav-link">
+                            <i class="fa-solid fa-user user-nav-icon"></i>
+                            Profile
+                        </a>
+                    </li>
+                    <li class="user-nav-item">
+                        <a href="#!" class="user-nav-link">
+                            <i class="fa-solid fa-cog user-nav-icon"></i>
+                            Edit profile
+                        </a>
+                    </li>
+                    <li class="user-nav-item">
+                        <a href="#!" class="user-nav-link">
+                            <i class="fa-solid fa-sign-out user-nav-icon"></i>
+                            Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <main class="main" id="main-content">
+            @RenderBody()
+        </main>
+    </section>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
