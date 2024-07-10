@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CinemaSolution.Data\CinemaSolution.Data.csproj" />
+    <ProjectReference Include="..\CinemaSolution.ViewModels\CinemaSolution.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>
