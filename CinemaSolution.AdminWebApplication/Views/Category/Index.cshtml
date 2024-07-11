@@ -1,0 +1,83 @@
+﻿@using CinemaSolution.ViewModels.Category;
+@model List<CategoryViewModel>
+@{
+    ViewData["Title"] = "Categories";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/category/index.css" asp-append-version="true" />
+}
+
+<nav class="breadcrumb">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+            <a asp-controller="Home">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            Categories
+        </li>
+    </ol>
+</nav>
+
+<div class="filter-block filter-block-category">
+    <form action="" class="form-search form-search-category">
+        <input type="text" placeholder="Search" class="form-search-input">
+        <button type="submit" class="form-search-btn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </form>
+</div>
+
+<div class="table-block">
+    <div class="table-header">
+        <h3 class="table-title">All categories</h3>
+        <a class="btn success-btn load-target" asp-action="Create">Create new</a>
+    </div>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach(var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td class="table-actions-flex">
+                            <a class="btn-edit table-btn load-target" asp-action="Update">
+                                <i class="fa-solid fa-pen-to-square table-btn-icon"></i>
+                            </a>
+                            <button class="btn-delete table-btn">
+                                <i class="fa-solid fa-trash table-btn-icon"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+        </tbody>
+    </table>
+
+    <div class="table-footer">
+        <ul class="pagination">
+            <li class="page-item">
+                <a href="#!" class="page-link">Previous</a>
+            </li>
+            <li class="page-item">
+                <a href="#!" class="page-link">1</a>
+            </li>
+            <li class="page-item">
+                <a href="#!" class="page-link">2</a>
+            </li>
+            <li class="page-item">
+                <a href="#!" class="page-link">3</a>
+            </li>
+            <li class="page-item">
+                <a href="#!" class="page-link">Next</a>
+            </li>
+        </ul>
+    </div>
+</div>

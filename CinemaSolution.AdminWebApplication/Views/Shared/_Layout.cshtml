@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="~/fonts/stylesheet.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/reset.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/common.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
@@ -18,6 +19,14 @@
                 <a href="#!" class="nav-link">
                     <i class="fa-solid fa-house nav-icon"></i>
                     Dashboard
+                </a>
+            </li>
+
+            <!-- Category -->
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Category" asp-action="Index">
+                    <i class="fa-solid fa-glass-water nav-icon"></i>
+                    Categories
                 </a>
             </li>
 
@@ -158,6 +167,7 @@
         </main>
     </section>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/common.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

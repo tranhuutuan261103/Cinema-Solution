@@ -1,7 +1,16 @@
+using CinemaSolution.Application.Category;
+using CinemaSolution.Data.EF;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+var connectionString = builder.Configuration.GetConnectionString("CinemaSolutionDB");
+builder.Services.AddDbContext<CinemaDBContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddTransient<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 
