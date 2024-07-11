@@ -1,0 +1,5 @@
+﻿.filter-block-category
+ {
+    display: flex;
+    justify-content: flex-end;
+}
