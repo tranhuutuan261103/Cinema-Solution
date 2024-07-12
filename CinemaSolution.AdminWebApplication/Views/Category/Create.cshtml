@@ -1,0 +1,35 @@
+﻿@model CinemaSolution.ViewModels.Category.CategoryCreateRequest;
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<nav class="breadcrumb">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+            <a asp-controller="Home" asp-action="/">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a class="load-target" asp-controller="Category" asp-action="/">Categories</a>
+        </li>
+        <li class="breadcrumb-item">
+            Create
+        </li>
+    </ol>
+</nav>
+
+<div class="content-body">
+    <form asp-action="Create" method="post">
+        <div class="form-group">
+            <label for="category-name" class="form-label">Name of category</label>
+            <input type="text" class="form-control" id="category-name" asp-for="Name" placeholder="Enter name">
+        </div>
+
+        <div class="row form-group-btn">
+            <button type="submit" class="btn success-btn">Save</button>
+            <button type="reset" class="btn reset-btn">Reset</button>
+            <a class="btn delete-btn load-target" asp-action="/">Cancel</a>
+        </div>
+    </form>
+</div>

@@ -10,5 +10,7 @@ namespace CinemaSolution.Application.Category
     public interface ICategoryService
     {
         Task<List<CategoryViewModel>> GetAllCategories();
+        Task<CategoryViewModel> GetCategoryById(int id);
+        Task<CategoryViewModel> Create(CategoryCreateRequest request);
     }
 }
