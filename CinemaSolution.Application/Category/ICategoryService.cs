@@ -12,5 +12,6 @@ namespace CinemaSolution.Application.Category
         Task<List<CategoryViewModel>> GetAllCategories();
         Task<CategoryViewModel> GetCategoryById(int id);
         Task<CategoryViewModel> Create(CategoryCreateRequest request);
+        Task<CategoryViewModel> Update(CategoryUpdateRequest request);
     }
 }

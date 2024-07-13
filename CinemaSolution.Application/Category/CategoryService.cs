@@ -59,5 +59,21 @@ namespace CinemaSolution.Application.Category
                 Name = category.Name,
             };
         }
+
+        public async Task<CategoryViewModel> Update(CategoryUpdateRequest request)
+        {
+            var category = await cinemaDBContext.Categories.FindAsync(request.Id);
+            if (category == null)
+            {
+                throw new Exception("Category not found");
+            }
+            category.Name = request.Name;
+            await cinemaDBContext.SaveChangesAsync();
+            return new CategoryViewModel()
+            {
+                Id = category.Id,
+                Name = category.Name,
+            };
+        }
     }
 }
