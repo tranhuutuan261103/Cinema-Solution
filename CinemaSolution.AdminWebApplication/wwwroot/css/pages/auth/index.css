@@ -1,0 +1,148 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bc-btn-bg: #624bff;
+    --bc-blue-white: rgba(241, 245, 249, 1);
+}
+
+html {
+    font-family: 'Inter', sans-serif;
+    font-size: 62.5%;
+}
+
+body {
+    display: flex;
+    background-color: var(--bc-blue-white);
+    height: 100vh;
+}
+
+/* Common */
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* End common */
+
+.form__block {
+    margin: auto;
+    padding: 32px;
+    min-width: 450px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 1px 2px rgba(21,30,40,.07),0 2px 4px rgba(21,30,40,.07),0 4px 8px rgba(21,30,40,.07),0 8px 16px rgba(21,30,40,.07),0 16px 32px rgba(21,30,40,.07),0 32px 64px rgba(21,30,40,.07) !important;
+}
+
+.form__sign-in {
+    margin-bottom: 20px;
+}
+
+.form__title {
+    font-size: 2.5rem;
+    line-height: 1.5;
+    font-weight: 600;
+    color: var(--bc-btn-bg);
+}
+
+.form__desc {
+    margin-top: 8px;
+    margin-bottom: 28px;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    font-weight: 400;
+    line-height: 22.5px;
+    color: rgb(99, 115, 129);
+}
+
+.form__group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.form__label {
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    font-weight: 400;
+    color: rgb(33, 43, 54);
+}
+
+.form__input {
+    padding: 8px 16px;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    border: 0.2px solid #ccc;
+    border-radius: 5px;
+    color: black;
+}
+
+    .form__input::placeholder {
+        color: #ccc;
+    }
+
+    .form__input:focus {
+        border: 0.2px solid rgb(177, 165, 255);
+        outline: 0.2px solid rgb(177, 165, 255);
+        box-shadow: 0 0 0 5px rgba(98,75,255,.25);
+    }
+
+.form__label--checkbox {
+    display: flex;
+    align-items: center;
+}
+
+.form__input--checkbox {
+    margin-right: 8px;
+    width: 15px;
+    height: 15px;
+    outline: none;
+    border: 0.2px solid #ccc;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+    .form__input--checkbox:checked {
+        background-color: #624bff;
+        border-color: #624bff;
+    }
+
+.form__button {
+    padding: 8px 16px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1.8rem;
+    background-color: var(--bc-btn-bg);
+    border: none;
+    cursor: pointer;
+}
+
+    .form__button:hover {
+        background-color: #4d2bff;
+    }
+
+.form__row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-row__forget-password {
+    justify-content: flex-start;
+    gap: 2px;
+}
+
+.form__link {
+    font-size: 1.5rem;
+    line-height: 1.5;
+    font-weight: 400;
+    color: #161c24;
+}
+
+.form-link__create-acc, .form-link__login-acc {
+    color: var(--bc-btn-bg);
+}
