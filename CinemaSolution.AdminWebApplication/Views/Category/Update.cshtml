@@ -1,8 +1,7 @@
-﻿@model CinemaSolution.ViewModels.Category.CategoryCreateRequest;
+﻿@model CinemaSolution.ViewModels.Category.CategoryUpdateRequest;
 
 @{
-    ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Update Category";
 }
 
 <nav class="breadcrumb">
@@ -14,13 +13,13 @@
             <a class="load-target" asp-controller="Category" asp-action="Index">Categories</a>
         </li>
         <li class="breadcrumb-item">
-            Create
+            @Model.Id
         </li>
     </ol>
 </nav>
 
 <div class="content-body">
-    <form asp-action="Create" method="post">
+    <form asp-action="Update" method="post">
         <div class="form-group">
             <label for="category-name" class="form-label">Name of category</label>
             <input type="text" class="form-control" id="category-name" asp-for="Name" placeholder="Enter name">

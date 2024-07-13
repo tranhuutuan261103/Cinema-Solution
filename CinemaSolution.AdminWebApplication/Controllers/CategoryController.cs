@@ -37,5 +37,19 @@ namespace CinemaSolution.AdminWebApplication.Controllers
             await _categoryService.Create(request);
             return RedirectToAction("Index");
         }
+
+        [HttpGet("{id}/update")]
+        public async Task<IActionResult> Update(int id)
+        {
+            var category = await _categoryService.GetCategoryById(id);
+            return View(new CategoryUpdateRequest { Id = id, Name = category.Name});
+        }
+
+        [HttpPost("{id}/update")]
+        public async Task<IActionResult> Update(CategoryUpdateRequest request)
+        {
+            await _categoryService.Update(request);
+            return RedirectToAction("Index");
+        }
     }
 }

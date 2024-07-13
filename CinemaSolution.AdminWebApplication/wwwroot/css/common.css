@@ -274,7 +274,7 @@ a {
         font-weight: 400;
     }
 
-.table-td-action {
+.table-actions-flex {
     display: flex;
     align-items: center;
     justify-content: flex-start;
