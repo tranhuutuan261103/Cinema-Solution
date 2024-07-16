@@ -1,10 +1,12 @@
 ﻿using CinemaSolution.Application.Category;
 using CinemaSolution.ViewModels.Category;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CinemaSolution.AdminWebApplication.Controllers
 {
     [Route("categories")]
+    [Authorize(Roles = "Administrator")]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
@@ -12,6 +14,8 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         { 
             _categoryService = categoryService;
         }
+
+        [HttpGet("")]
         public async Task<IActionResult> Index()
         {
             var categories = await _categoryService.GetAllCategories();

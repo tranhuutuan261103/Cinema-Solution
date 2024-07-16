@@ -14,6 +14,14 @@ builder.Services.AddDbContext<CinemaDBContext>(options => options.UseSqlServer(c
 builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 
+builder.Services.AddAuthentication("CookieAuthentication")
+    .AddCookie("CookieAuthentication", config =>
+    {
+        config.Cookie.Name = "CinemaSolution.Cookie";
+        config.LoginPath = "/Account/Login";
+        config.AccessDeniedPath = "/Account/AccessDenied";
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
