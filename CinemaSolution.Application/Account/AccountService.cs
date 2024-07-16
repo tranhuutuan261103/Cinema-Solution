@@ -17,19 +17,41 @@ namespace CinemaSolution.Application.Account
         {
             _context = context;
         }
-        public async Task<int> Login(LoginRequest request)
+
+        public async Task<AccountViewModel> Login(LoginRequest request)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == request.Username);
             if (user == null)
             {
-                return -1;
+                throw new Exception("User not found.");
             }
             GeneratePassword generate = new GeneratePassword(request.Password);
-            if (generate.VerifyPassword(user.PasswordSalt, generate.GetPasswordHash()))
+            if (generate.VerifyPassword(user.PasswordSalt, user.PasswordHash))
             {
-                return -1;
+                var roles = await _context.UsersInRoles
+                    .Join(_context.Roles, u => u.RoleId, r => r.Id, (u, r) => new { u, r })
+                    .Where(x => x.u.UserId == user.Id)
+                    .Select(x => new { x.r })
+                    .ToListAsync();
+
+                foreach(var role in roles)
+                {
+                    if (role.r.Name == request.RoleRequest)
+                    {
+                        return new AccountViewModel
+                        {
+                            Id = user.Id,
+                            Username = user.Username,
+                            Role = role.r.Name
+                        };
+                    }
+                }
+                throw new Exception("User has no role.");
             }
-            return user.Id;
+            else
+            {
+                throw new Exception("Password is incorrect.");
+            }
         }
     }
 }

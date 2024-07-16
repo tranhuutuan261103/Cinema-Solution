@@ -1,6 +1,9 @@
-﻿using CinemaSolution.Application.Account;
+﻿using Azure.Core;
+using CinemaSolution.Application.Account;
 using CinemaSolution.ViewModels.Account;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CinemaSolution.AdminWebApplication.Controllers
 {
@@ -26,13 +29,28 @@ namespace CinemaSolution.AdminWebApplication.Controllers
             {
                 return View(request);
             }
-            var result = await _accountService.Login(request);
-            if (result == -1)
+            try
             {
-                ModelState.AddModelError("", "Username or password is incorrect.");
+                request.RoleRequest = "Administrator";
+                var result = await _accountService.Login(request);
+
+                // Set claims
+                var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, result.Id.ToString()),
+                        new Claim(ClaimTypes.Name, request.Username),
+                        new Claim(ClaimTypes.Role, result.Role)
+                    };
+                var claimsIdentity = new ClaimsIdentity(claims, "CookieAuthentication");
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                await HttpContext.SignInAsync("CookieAuthentication", claimsPrincipal);
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
                 return View(request);
             }
-            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet("register")]
@@ -43,6 +61,12 @@ namespace CinemaSolution.AdminWebApplication.Controllers
 
         [HttpGet("forgot-password")]
         public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpGet("access-denied")]
+        public IActionResult AccessDenied()
         {
             return View();
         }

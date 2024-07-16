@@ -16,6 +16,13 @@ namespace CinemaSolution.Common
             _passwordHash = HashPassword();
         }
 
+        public GeneratePassword(string password, string salt)
+        {
+            _password = password;
+            _salt = salt;
+            _passwordHash = HashPassword();
+        }
+
         private string GenerateSalt()
         {
             byte[] salt = RandomNumberGenerator.GetBytes(128 / 8); // divide by 8 to convert bits to bytes

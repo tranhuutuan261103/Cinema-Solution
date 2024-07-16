@@ -9,6 +9,6 @@ namespace CinemaSolution.Application.Account
 {
     public interface IAccountService
     {
-        Task<int> Login(LoginRequest request);
+        Task<AccountViewModel> Login(LoginRequest request);
     }
 }
