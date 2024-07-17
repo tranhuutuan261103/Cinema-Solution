@@ -265,6 +265,13 @@ a {
     margin-right: 6px;
 }
 
+.user-nav-btn {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
 .user-nav-link {
     display: flex;
     padding: 6px 0px;

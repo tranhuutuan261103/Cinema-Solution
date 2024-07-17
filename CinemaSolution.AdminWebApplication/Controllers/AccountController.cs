@@ -38,8 +38,9 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                 var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, result.Id.ToString()),
-                        new Claim(ClaimTypes.Name, request.Username),
-                        new Claim(ClaimTypes.Role, result.Role)
+                        new Claim(ClaimTypes.Name, $"{result.FirstName} {result.LastName}"),
+                        new Claim(ClaimTypes.Role, result.Role),
+                        new Claim(ClaimTypes.Email, result.Email),
                     };
                 var claimsIdentity = new ClaimsIdentity(claims, "CookieAuthentication");
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
@@ -57,6 +58,13 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         public IActionResult Register()
         {
             return View();
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync("CookieAuthentication");
+            return RedirectToAction("Login");
         }
 
         [HttpGet("forgot-password")]

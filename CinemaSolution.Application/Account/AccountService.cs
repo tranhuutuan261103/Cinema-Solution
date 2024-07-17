@@ -42,7 +42,9 @@ namespace CinemaSolution.Application.Account
                         {
                             Id = user.Id,
                             Username = user.Username,
-                            Role = role.r.Name
+                            Role = role.r.Name,
+                            FirstName = user.FirstName,
+                            LastName = user.LastName,
                         };
                     }
                 }
