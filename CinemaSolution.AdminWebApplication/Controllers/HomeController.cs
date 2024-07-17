@@ -1,4 +1,5 @@
 ﻿using CinemaSolution.AdminWebApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -13,6 +14,7 @@ namespace CinemaSolution.AdminWebApplication.Controllers
             _logger = logger;
         }
 
+        [Authorize(Roles = "Administrator")]
         public IActionResult Index()
         {
             return View();
