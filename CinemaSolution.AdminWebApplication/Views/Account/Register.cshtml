@@ -1,4 +1,6 @@
-﻿@{
+﻿@model CinemaSolution.ViewModels.Account.RegisterRequest;
+
+@{
     Layout = null;
 }
 
@@ -30,7 +32,7 @@
     <link rel="stylesheet" href="~/fonts/stylesheet.css">
 
     <link rel="stylesheet" href="~/css/reset.css">
-    <link rel="stylesheet" href="~/css/pages/auth/index.css">
+    <link rel="stylesheet" href="~/css/pages/auth/index.css" asp-append-version="true">
     <title>Registration - Tune Cinema</title>
 </head>
 <body>
@@ -38,26 +40,36 @@
         <h1 class="form__title">Tune Cinema</h1>
         <p class="form__desc">Please enter your user information.</p>
 
-        <form class="form__sign-in" action="http://localhost:8090/api/users/register" method="post">
+        <form class="form__sign-in" asp-action="Register" method="post">
             <div class="form__group">
                 <label for="username" class="form__label">Username</label>
-                <input type="text" id="username" name="username" class="form__input" required placeholder="Enter username">
+                <input type="text" id="username" asp-for="Username" class="form__input" required placeholder="Enter username">
+            </div>
+            <div class="form__group-row">
+                <div class="form__group">
+                    <label for="first-name" class="form__label">First name</label>
+                    <input type="text" id="first-name" asp-for="FirstName" class="form__input" required placeholder="Your first name">
+                </div>
+                <div class="form__group">
+                    <label for="last-name" class="form__label">Last name</label>
+                    <input type="text" id="last-name" asp-for="LastName" class="form__input" required placeholder="Your last name">
+                </div>
             </div>
             <div class="form__group">
                 <label for="email" class="form__label">Email</label>
-                <input type="email" id="email" name="email" class="form__input" required placeholder="Enter your email">
+                <input type="email" id="email" asp-for="Email" class="form__input" required placeholder="Enter your email">
             </div>
             <div class="form__group">
                 <label for="password" class="form__label">Password</label>
-                <input type="password" id="password" name="password" class="form__input" required placeholder="********">
+                <input type="password" id="password" asp-for="Password" class="form__input" required placeholder="********">
             </div>
             <div class="form__group">
                 <label for="confirmPassword" class="form__label">Comfirm password</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" class="form__input" required placeholder="********">
+                <input type="password" id="confirmPassword" asp-for="ConfirmPassword" class="form__input" required placeholder="********">
             </div>
             <div class="form__group">
                 <label for="accept_rules" class="form__label form__label--checkbox">
-                    <input type="checkbox" id="accept_rules" name="accept_rules" class="form__input--checkbox">
+                    <input type="checkbox" id="accept_rules" asp-for="IsAcceptRule" class="form__input--checkbox">
                     I agree to the Terms of Service and Privacy Policy.
                 </label>
             </div>
