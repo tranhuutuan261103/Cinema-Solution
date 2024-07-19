@@ -59,6 +59,11 @@ a {
     color: rgb(99, 115, 129);
 }
 
+.form__group-row {
+    display: flex;
+    gap: 20px;
+}
+
 .form__group {
     display: flex;
     flex-direction: column;
