@@ -1,4 +1,5 @@
-﻿using CinemaSolution.Application.Category;
+﻿using CinemaSolution.AdminWebApplication.Filters;
+using CinemaSolution.Application.Category;
 using CinemaSolution.ViewModels.Category;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ namespace CinemaSolution.AdminWebApplication.Controllers
 {
     [Route("categories")]
     [Authorize(Roles = "Administrator")]
+    [SetBarActive("category")]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
@@ -57,10 +59,22 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         }
 
         [HttpPost("{id}/delete")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            Console.WriteLine("Delete category with id: " + id);
-            return RedirectToAction("Index");
+            try
+            {
+                int effected = await _categoryService.Delete(id);
+                if (effected == 0)
+                {
+                    return BadRequest("Delete failed");
+                }
+                return RedirectToAction("Index");
+            } 
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return RedirectToAction("Index");
+            }
         }
     }
 }

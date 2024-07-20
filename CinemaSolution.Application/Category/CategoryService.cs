@@ -75,5 +75,23 @@ namespace CinemaSolution.Application.Category
                 Name = category.Name,
             };
         }
+
+        public async Task<int> Delete(int id)
+        {
+            try
+            {
+                var category = await cinemaDBContext.Categories.FindAsync(id);
+                if (category == null)
+                {
+                    throw new Exception("Category not found");
+                }
+                category.IsDeleted = true;
+                return await cinemaDBContext.SaveChangesAsync();
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new Exception("Delete category failed");
+            }
+        }
     }
 }

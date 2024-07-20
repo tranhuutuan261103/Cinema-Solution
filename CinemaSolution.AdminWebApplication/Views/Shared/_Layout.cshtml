@@ -34,7 +34,7 @@
     <section class="sidebar" id="sidebar">
         <a class="brand" asp-controller="Home" asp-action="Index">Admin Site</a>
         <ul class="navbar-nav">
-            <li class="nav-item nav-item__active">
+            <li class="nav-item @(Convert.ToString(ViewData["BarActive"]) == "home" ? "nav-item__active" : "")">
                 <a class="nav-link" asp-controller="Home" asp-action="Index">
                     <i class="fa-solid fa-house nav-icon"></i>
                     Dashboard
@@ -42,7 +42,7 @@
             </li>
 
             <!-- Category -->
-            <li class="nav-item">
+            <li class="nav-item @(Convert.ToString(ViewData["BarActive"]) == "category" ? "nav-item__active" : "")">
                 <a class="nav-link" asp-controller="Category" asp-action="Index">
                     <i class="fa-solid fa-glass-water nav-icon"></i>
                     Categories
