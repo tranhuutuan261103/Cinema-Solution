@@ -55,5 +55,12 @@ namespace CinemaSolution.AdminWebApplication.Controllers
             await _categoryService.Update(request);
             return RedirectToAction("Index");
         }
+
+        [HttpPost("{id}/delete")]
+        public IActionResult Delete(int id)
+        {
+            Console.WriteLine("Delete category with id: " + id);
+            return RedirectToAction("Index");
+        }
     }
 }

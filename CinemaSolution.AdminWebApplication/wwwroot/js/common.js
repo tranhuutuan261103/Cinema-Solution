@@ -33,3 +33,22 @@ $(document).ready(function () {
         $(".selected").attr("data-value", selectedValue);
     });
 });
+
+// Dialog event
+var dialog = document.getElementsByClassName("modal-dialog");
+
+var dialogCancelBtn = document.querySelectorAll(".cancel-btn");
+
+if (dialogCancelBtn) {
+    dialogCancelBtn.forEach(function (item) {
+        try {
+            item.addEventListener('click', function () {
+                var dialog = item.closest('.modal-dialog');
+                dialog.classList.remove('modal-dialog--active');
+            }
+            );
+        } catch (error) {
+            console.log(error);
+        }
+    });
+}

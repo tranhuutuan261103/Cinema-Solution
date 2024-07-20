@@ -52,7 +52,7 @@
                             <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
                                 <i class="fa-solid fa-pen-to-square table-btn-icon"></i>
                             </a>
-                            <button class="btn-delete table-btn">
+                            <button class="btn-delete table-btn" onclick="showModelCategoryDelete(@item.Id)">
                                 <i class="fa-solid fa-trash table-btn-icon"></i>
                             </button>
                         </td>
@@ -81,3 +81,25 @@
         </ul>
     </div>
 </div>
+
+<div id="modal-dialog-category--delete" class="modal-dialog">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <form id="modal-dialog-category--href" action="#!" method="post">
+            <div class="modal-header">
+                <h2 class="modal-title">Comfirm delete</h2>
+            </div>
+            <div id="modal-dialog-category--id" class="modal-body">
+                <p>Comfirm delete this movie</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn cancel-btn">Cancel</button>
+                <button type="submit" class="btn update-btn">Oke</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/pages/category/index.js" asp-append-version="true"></script>
+}

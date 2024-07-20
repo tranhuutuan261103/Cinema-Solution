@@ -188,8 +188,8 @@
         </main>
     </section>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/js/common.js"></script>
-    <script src="~/js/site.js"></script>
+    <script src="~/js/common.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
