@@ -116,6 +116,13 @@ a {
     transition: all 0.5s;
 }
 
+.dropdown-btn {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
 /* Content */
 
 /* ==================== Header ===================== */
