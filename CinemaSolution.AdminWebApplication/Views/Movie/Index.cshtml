@@ -1,0 +1,111 @@
+﻿@using CinemaSolution.ViewModels.Common.Paging;
+@using CinemaSolution.ViewModels.Movie;
+
+@model PagedResult<MovieViewModel>;
+
+@{
+    ViewData["Title"] = "Movies";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<nav class="breadcrumb">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+            <a asp-controller="Home">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            Movies
+        </li>
+    </ol>
+</nav>
+
+<div class="filter-block filter-block-category">
+    <form action="" class="form-search form-search-category">
+        <input type="text" placeholder="Search" class="form-search-input">
+        <button type="submit" class="form-search-btn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </form>
+</div>
+
+<div class="table-block">
+    <div class="table-header">
+        <h3 class="table-title">All movies</h3>
+        <a class="btn success-btn load-target" asp-action="Create">Create new</a>
+    </div>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Release Date</th>
+                <th>End Date</th>
+                <th>Duration</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Title</td>
+                    <td>@item.ReleaseDate.ToLocalTime()</td>
+                    <td>@item.EndDate.ToLocalTime()</td>
+                    <td>@item.Duration</td>
+                    <td class="table-actions-flex">
+                        <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
+                            <i class="fa-solid fa-pen-to-square table-btn-icon"></i>
+                        </a>
+                        <button class="btn-delete table-btn" onclick="showModelCategoryDelete(@item.Id)">
+                            <i class="fa-solid fa-trash table-btn-icon"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="table-footer">
+        <ul class="pagination">
+            <li class="page-item">
+                <a href="#!" class="page-link">Previous</a>
+            </li>
+            <li class="page-item">
+                <a href="#!" class="page-link">1</a>
+            </li>
+            <li class="page-item">
+                <a href="#!" class="page-link">2</a>
+            </li>
+            <li class="page-item">
+                <a href="#!" class="page-link">3</a>
+            </li>
+            <li class="page-item">
+                <a href="#!" class="page-link">Next</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div id="modal-dialog-category--delete" class="modal-dialog">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <form id="modal-dialog-category--form-action" action="#!" method="post">
+            <div class="modal-header">
+                <h2 class="modal-title">Comfirm delete</h2>
+            </div>
+            <div id="modal-dialog-category--id" class="modal-body">
+                <p>Comfirm delete this movie</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn cancel-btn">Cancel</button>
+                <button type="submit" class="btn update-btn">Oke</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/pages/category/index.js" asp-append-version="true"></script>
+}

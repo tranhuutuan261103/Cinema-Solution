@@ -1,5 +1,6 @@
 using CinemaSolution.Application.Account;
 using CinemaSolution.Application.Category;
+using CinemaSolution.Application.Movie;
 using CinemaSolution.Data.EF;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<CinemaDBContext>(options => options.UseSqlServer(c
 
 builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IMovieService, MovieService>();
 
 builder.Services.AddAuthentication("CookieAuthentication")
     .AddCookie("CookieAuthentication", config =>
