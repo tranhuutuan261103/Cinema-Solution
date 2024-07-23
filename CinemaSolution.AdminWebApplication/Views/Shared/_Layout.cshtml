@@ -55,9 +55,9 @@
                     <i class="fa-solid fa-film nav-icon"></i>
                     Manage movie
                 </button>
-                <ul class="nav">
-                    <li class="nav-item">
-                        <a class="nav-link load-target" href="./pages/movie.html" cref="./assets/css/pages/movie.css">Movies</a>
+                <ul class="nav @(Convert.ToString(ViewData["BarActive"]) == "movie" ? "nav-show" : "")">
+                    <li class="nav-item @(Convert.ToString(ViewData["BarActive"]) == "movie" ? "nav-item__active" : "")">
+                        <a class="nav-link load-target" asp-controller="Movie" asp-action="Index">Movies</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link load-target" href="./pages/category.html" cref="./assets/css/pages/category.css">Categories</a>
