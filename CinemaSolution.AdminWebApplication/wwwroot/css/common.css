@@ -26,6 +26,11 @@ a {
     color: #fff;
 }
 
+.link-detail {
+    color: var(--info-color, blue);
+    text-decoration: underline;
+}
+
 .sticky {
     top: 0;
     position: sticky;
@@ -87,6 +92,13 @@ a {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+}
+
+/* filter-block */
+.filter-block {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 /* Breadcrumb */
