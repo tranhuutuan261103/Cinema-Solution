@@ -28,6 +28,14 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                 PageSize = PageSize
             };
             var result = await _movieService.GetPagedResult(request);
+            if (!string.IsNullOrEmpty(Category))
+            {
+                ViewBag.Category = Category;
+            }
+            if (!string.IsNullOrEmpty(Keyword))
+            {
+                ViewBag.Keyword = Keyword;
+            }
             return View(result);
         }
     }

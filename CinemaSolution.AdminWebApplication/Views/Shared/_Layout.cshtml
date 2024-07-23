@@ -41,26 +41,20 @@
                 </a>
             </li>
 
-            <!-- Category -->
-            <li class="nav-item @(Convert.ToString(ViewData["BarActive"]) == "category" ? "nav-item__active" : "")">
-                <a class="nav-link" asp-controller="Category" asp-action="Index">
-                    <i class="fa-solid fa-glass-water nav-icon"></i>
-                    Categories
-                </a>
-            </li>
-
             <!-- Movie -->
             <li class="nav-item collapsible">
                 <button class="nav-link dropdown-btn">
                     <i class="fa-solid fa-film nav-icon"></i>
                     Manage movie
                 </button>
-                <ul class="nav @(Convert.ToString(ViewData["BarActive"]) == "movie" ? "nav-show" : "")">
+                <ul class="nav @(Convert.ToString(ViewData["BarActive"]) == "movie" ||
+                    Convert.ToString(ViewData["BarActive"]) == "category"
+                ? "nav-show" : "")">
                     <li class="nav-item @(Convert.ToString(ViewData["BarActive"]) == "movie" ? "nav-item__active" : "")">
-                        <a class="nav-link load-target" asp-controller="Movie" asp-action="Index">Movies</a>
+                        <a class="nav-link" asp-controller="Movie" asp-action="Index">Movies</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link load-target" href="./pages/category.html" cref="./assets/css/pages/category.css">Categories</a>
+                    <li class="nav-item @(Convert.ToString(ViewData["BarActive"]) == "category" ? "nav-item__active" : "")">
+                        <a class="nav-link" asp-controller="Category" asp-action="Index">Categories</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#!">Auditoriums</a>

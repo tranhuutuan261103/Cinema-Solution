@@ -19,9 +19,23 @@
     </ol>
 </nav>
 
-<div class="filter-block filter-block-category">
-    <form action="" class="form-search form-search-category">
-        <input type="text" placeholder="Search" class="form-search-input">
+<div class="filter-block">
+    <div class="dropdown">
+        <div class="select">
+            <span class="selected" data-value="-1">Select option</span>
+            <i class="fa fa-chevron-left select-icon"></i>
+        </div>
+        <ul class="dropdown-content dropdown-content-show">
+            <li class="dropdown-item" data-value="0">All movie</li>
+            <li class="dropdown-item" data-value="1">Valid now</li>
+            <li class="dropdown-item" data-value="2">Going</li>
+            <li class="dropdown-item" data-value="3">Not Going</li>
+        </ul>
+    </div>
+
+    <form asp-action="Index" class="form-search" method="get">
+        <input type="text" name="category" value="@ViewBag.Category" hidden>
+        <input type="text" name="keyword" value="@ViewBag.Keyword" placeholder="Search" class="form-search-input">
         <button type="submit" class="form-search-btn">
             <i class="fa-solid fa-magnifying-glass"></i>
         </button>
@@ -38,6 +52,7 @@
             <tr>
                 <th>Id</th>
                 <th>Title</th>
+                <th>Categories</th>
                 <th>Release Date</th>
                 <th>End Date</th>
                 <th>Duration</th>
@@ -51,6 +66,13 @@
                 <tr>
                     <td>@item.Id</td>
                     <td>@item.Title</td>
+                    <td>
+                        @for (int i = 0 ; i<item.Categories.Count - 1; i++)
+                        {
+                            <span class="category-item">@item.Categories[i].Name, </span>
+                        }
+                        <span class="category-item">@item.Categories.Last().Name</span>
+                    </td>
                     <td>@item.ReleaseDate.ToLocalTime()</td>
                     <td>@item.EndDate.ToLocalTime()</td>
                     <td>@item.Duration</td>

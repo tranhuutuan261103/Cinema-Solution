@@ -1,4 +1,5 @@
 ﻿using CinemaSolution.Data.EF;
+using CinemaSolution.ViewModels.Category;
 using CinemaSolution.ViewModels.Common.Paging;
 using CinemaSolution.ViewModels.Movie;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,8 @@ namespace CinemaSolution.Application.Movie
             var query = from m in cinemaDBContext.Movies
                         join mc in cinemaDBContext.MovieInCategories on m.Id equals mc.MovieId
                         join c in cinemaDBContext.Categories on mc.CategoryId equals c.Id
-                        select new { m, mc, c };
+                        select new { m, c };
+
             if (!string.IsNullOrEmpty(request.Category))
             {
                 query = query.Where(x => x.c.Name.Contains(request.Category));
@@ -32,35 +34,47 @@ namespace CinemaSolution.Application.Movie
             {
                 query = query.Where(x => x.m.Title.Contains(request.Keyword));
             }
-            List<MovieViewModel> movies = new List<MovieViewModel>();
-            foreach (var item in query)
-            {
-                MovieViewModel movie = new MovieViewModel()
+
+            // Total records count
+            int totalRow = await query.Select(x => x.m.Id).Distinct().CountAsync();
+
+            // Paginate the query
+            var groupedQuery = query
+                .GroupBy(x => x.m)
+                .Select(g => new MovieViewModel
                 {
-                    Id = item.m.Id,
-                    Title = item.m.Title,
-                    Description = item.m.Description,
-                    Duration = item.m.Duration,
-                    Language = item.m.Language,
-                    ReleaseDate = item.m.ReleaseDate,
-                    EndDate = item.m.EndDate,
-                    Director = item.m.Director,
-                    Rating = item.m.Rating,
-                    Actors = item.m.Actors,
-                    IsDeleted = item.m.IsDeleted,
-                    TrailerUrl = item.m.TrailerUrl
-                };
-                movies.Add(movie);
-            }
-            int totalRow = await query.CountAsync();
-            var data = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync();
+                    Id = g.Key.Id,
+                    Title = g.Key.Title,
+                    Description = g.Key.Description,
+                    Duration = g.Key.Duration,
+                    Language = g.Key.Language,
+                    ReleaseDate = g.Key.ReleaseDate,
+                    EndDate = g.Key.EndDate,
+                    Director = g.Key.Director,
+                    Rating = g.Key.Rating,
+                    Actors = g.Key.Actors,
+                    IsDeleted = g.Key.IsDeleted,
+                    TrailerUrl = g.Key.TrailerUrl,
+                    Categories = g.Select(x => new CategoryViewModel()
+                    {
+                        Id = x.c.Id,
+                        Name = x.c.Name
+                    }).ToList()
+                });
+
+            var data = await groupedQuery
+                .Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .ToListAsync();
+
             var pagedResult = new PagedResult<MovieViewModel>()
             {
-                Items = movies,
+                Items = data,
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize,
                 TotalRecords = totalRow
             };
+
             return pagedResult;
         }
     }
