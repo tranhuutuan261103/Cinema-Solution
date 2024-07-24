@@ -88,26 +88,7 @@
             }
         </tbody>
     </table>
-
-    <div class="table-footer">
-        <ul class="pagination">
-            <li class="page-item">
-                <a href="#!" class="page-link">Previous</a>
-            </li>
-            <li class="page-item">
-                <a href="#!" class="page-link">1</a>
-            </li>
-            <li class="page-item">
-                <a href="#!" class="page-link">2</a>
-            </li>
-            <li class="page-item">
-                <a href="#!" class="page-link">3</a>
-            </li>
-            <li class="page-item">
-                <a href="#!" class="page-link">Next</a>
-            </li>
-        </ul>
-    </div>
+    @await Component.InvokeAsync("Pager", Model)
 </div>
 
 <div id="modal-dialog-category--delete" class="modal-dialog">
