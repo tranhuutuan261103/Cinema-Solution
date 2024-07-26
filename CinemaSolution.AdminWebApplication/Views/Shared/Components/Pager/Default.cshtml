@@ -1,22 +1,72 @@
-﻿@{
+﻿@model CinemaSolution.ViewModels.Common.Paging.PagedResultBase
+
+@{
+    // Handle url
+    var urlTemplate = Url.Action() + "?pageIndex={0}";
+    var request = ViewContext.HttpContext.Request;
+
+    foreach(string key in request.Query.Keys)
+    {
+        if(key == "pageIndex")
+        {
+            continue;
+        }
+        if (request.Query[key].Count > 1)
+        {
+            foreach(var item in (string[])request.Query[key])
+            {
+                urlTemplate += "&" + key + "=" + item;
+            }
+        } else
+        {
+            urlTemplate += "&" + key + "=" + request.Query[key];
+        }
+    }
+
+    // Handle the case where the page count is less than 5
+    int startPage = Model.PageIndex - 2;
+    int endPage = Model.PageIndex + 2;
+    if (startPage < 1)
+    {
+        endPage -= (startPage - 1);
+        startPage = 1;
+    }
+    if (endPage > Model.PageCount)
+    {
+        endPage = Model.PageCount;
+        if (endPage > 5)
+        {
+            startPage = endPage - 4;
+        }
+    }
 }
 
 <div class="table-footer">
     <ul class="pagination">
-        <li class="page-item">
-            <a href="#!" class="page-link">Previous</a>
-        </li>
-        <li class="page-item">
-            <a href="#!" class="page-link">1</a>
-        </li>
-        <li class="page-item">
-            <a href="#!" class="page-link">2</a>
-        </li>
-        <li class="page-item">
-            <a href="#!" class="page-link">3</a>
-        </li>
-        <li class="page-item">
-            <a href="#!" class="page-link">Next</a>
-        </li>
+        @if (Model.PageIndex != 1)
+        {
+            <li class="page-item">
+                <a 
+                    class="page-link"
+                    href="@urlTemplate.Replace("{0}", (Model.PageIndex - 1).ToString())">Previous</a>
+            </li>
+        }
+        @for (int i = startPage; i <= endPage; i++)
+        {
+            <li class="page-item @(i == Model.PageIndex ? "page-item--active" : "")">
+                <a
+                    class="page-link"
+                    href="@urlTemplate.Replace("{0}", i.ToString())">@i</a>
+            </li>
+        }
+        @if (Model.PageIndex != Model.PageCount)
+        {
+            <li class="page-item">
+                <a
+                    class="page-link"
+                    href="@urlTemplate.Replace("{0}", (Model.PageIndex + 1).ToString())"
+                >Next</a>
+            </li>
+        }
     </ul>
 </div>
