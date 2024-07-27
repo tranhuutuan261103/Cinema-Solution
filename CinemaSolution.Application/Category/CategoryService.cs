@@ -1,6 +1,7 @@
 ﻿using CinemaSolution.Data.EF;
 using CinemaSolution.Data.Entities;
 using CinemaSolution.ViewModels.Category;
+using CinemaSolution.ViewModels.Common.Paging;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,16 +18,30 @@ namespace CinemaSolution.Application.Category
         {
             this.cinemaDBContext = cinemaDBContext;
         }
-        public async Task<List<CategoryViewModel>> GetAllCategories()
+        public async Task<PagedResult<CategoryViewModel>> GetAllCategories(GetCategoryPagingRequest request)
         {
             var query = from c in cinemaDBContext.Categories
                         where c.IsDeleted == false
                         select c;
-            return await query.Select(c => new CategoryViewModel()
+
+            // Total records count
+            int totalRow = await query.Select(c => c.Id).Distinct().CountAsync();
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(c => new CategoryViewModel()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                }).ToListAsync();
+
+            var pagedResult = new PagedResult<CategoryViewModel>()
             {
-                Id = c.Id,
-                Name = c.Name,
-            }).ToListAsync();
+                Items = data,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                TotalRecords = totalRow,
+            };
+            return pagedResult;
         }
         public async Task<CategoryViewModel> GetCategoryById(int id)
         {

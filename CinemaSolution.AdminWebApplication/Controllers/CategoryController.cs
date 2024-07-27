@@ -18,10 +18,15 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageIndex = 1, int pageSize = 5)
         {
-            var categories = await _categoryService.GetAllCategories();
-            return View(categories);
+            var request = new GetCategoryPagingRequest
+            {
+                PageIndex = pageIndex,
+                PageSize = pageSize
+            };
+            var categoryPagedResult = await _categoryService.GetAllCategories(request);
+            return View(categoryPagedResult);
         }
 
         [HttpGet("{id}")]
