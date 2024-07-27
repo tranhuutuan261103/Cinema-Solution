@@ -1,5 +1,6 @@
-﻿@using CinemaSolution.ViewModels.Category;
-@model List<CategoryViewModel>
+﻿@using CinemaSolution.ViewModels.Common.Paging;
+@using CinemaSolution.ViewModels.Category;
+@model PagedResult<CategoryViewModel>
 @{
     ViewData["Title"] = "Categories";
 }
@@ -43,7 +44,7 @@
         </thead>
 
         <tbody>
-            @foreach(var item in Model)
+            @foreach(var item in Model.Items)
                 {
                     <tr>
                         <td>@item.Id</td>
@@ -69,25 +70,7 @@
         </tbody>
     </table>
 
-    <div class="table-footer">
-        <ul class="pagination">
-            <li class="page-item">
-                <a href="#!" class="page-link">Previous</a>
-            </li>
-            <li class="page-item">
-                <a href="#!" class="page-link">1</a>
-            </li>
-            <li class="page-item">
-                <a href="#!" class="page-link">2</a>
-            </li>
-            <li class="page-item">
-                <a href="#!" class="page-link">3</a>
-            </li>
-            <li class="page-item">
-                <a href="#!" class="page-link">Next</a>
-            </li>
-        </ul>
-    </div>
+    @await Component.InvokeAsync("Pager", Model)
 </div>
 
 <div id="modal-dialog-category--delete" class="modal-dialog">
