@@ -28,6 +28,8 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                 PageSize = PageSize
             };
             var result = await _movieService.GetPagedResult(request);
+            ViewBag.PageIndex = PageIndex;
+            ViewBag.PageSize = PageSize;
             if (!string.IsNullOrEmpty(Category))
             {
                 ViewBag.Category = Category;
@@ -37,6 +39,12 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                 ViewBag.Keyword = Keyword;
             }
             return View(result);
+        }
+
+        [HttpGet("create")]
+        public IActionResult Create()
+        {
+            return View();
         }
     }
 }

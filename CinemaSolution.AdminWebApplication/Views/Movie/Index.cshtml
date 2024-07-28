@@ -34,6 +34,8 @@
     </div>
 
     <form asp-action="Index" class="form-search" method="get">
+        <input type="text" name="pageindex" value="@ViewBag.PageIndex" hidden>
+        <input type="text" name="pagesize" value="@ViewBag.PageSize" hidden>
         <input type="text" name="category" value="@ViewBag.Category" hidden>
         <input type="text" name="keyword" value="@ViewBag.Keyword" placeholder="Search" class="form-search-input">
         <button type="submit" class="form-search-btn">
