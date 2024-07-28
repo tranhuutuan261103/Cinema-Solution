@@ -1,0 +1,149 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Create";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/movie/create.css" />
+}
+
+<nav class="breadcrumb">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a class="load-target" asp-action="Index">Movies</a>
+        </li>
+        <li class="breadcrumb-item">
+            Create
+        </li>
+    </ol>
+</nav>
+
+<div class="content-body">
+    <form action="">
+        <div class="row">
+            <div class="fileCustom" id="f-img-1">
+                <span class="file-title">
+                    <i class="fas fa-upload"></i>
+                    Upload Image 3x2
+                </span>
+                <img class="uploadPreview" src="#" id="preview-image" />
+                <input type="file" accept="image/*" class="file-image" name="file" id="file-input">
+            </div>
+
+            <div class="fileCustom" id="f-img-2">
+                <span class="file-title">
+                    <i class="fas fa-upload"></i>
+                    Upload Image 2x3
+                </span>
+                <img class="uploadPreview" src="#" id="preview-image-detail-feat-img" />
+                <input type="file" accept="image/*" class="file-image" name="file" id="file-input-detail-feat-img">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="movie-title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="movie-title" placeholder="Enter title">
+        </div>
+
+        <div class="form-group">
+            <label for="movie-duration" class="form-label">Duration</label>
+            <input type="number" class="form-control" id="movie-duration" value="120">
+        </div>
+
+        <div class="form-group">
+            <label for="movie-description" class="form-label">Description</label>
+            <textarea name="movie-description" class="form-control" style="max-width: none;" id="movie-description" cols="30" rows="10" placeholder="Enter description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="movie-trailerUrl" class="form-label">Trailer</label>
+            <input type="text" class="form-control" id="movie-trailerUrl" placeholder="Enter trailer URL">
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="movie-release" class="form-label">Release date</label>
+                <input type="date" class="form-control" id="movie-release" placeholder="Enter release date">
+            </div>
+    
+            <div class="form-group">
+                <label for="movie-end" class="form-label">End date</label>
+                <input type="date" class="form-control" id="movie-end" placeholder="Enter end date">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="movie-language" class="form-label">Language</label>
+            <input type="text" class="form-control" id="movie-language" placeholder="Enter language">
+        </div>
+
+        <div class="form-group">
+            <label for="movie-director" class="form-label">Director</label>
+            <input type="text" class="form-control" id="movie-director" placeholder="Enter director">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Category</label>
+            <div class="form-checkbox" id="movie-category">
+                <label class="form-control-checkbox-text">
+                    <input type="checkbox">
+                    Hành động
+                </label>
+
+                <label class="form-control-checkbox-text">
+                    <input type="checkbox">
+                    Trinh thám
+                </label>
+
+                <label class="form-control-checkbox-text">
+                    <input type="checkbox">
+                    Hoạt hình
+                </label>
+
+                <label class="form-control-checkbox-text">
+                    <input type="checkbox">
+                    Kinh dị
+                </label>
+            </div>
+            
+        </div>
+
+        <div class="row form-group-btn">
+            <button type="submit" class="btn success-btn">Save</button>
+            <button type="reset" class="btn reset-btn">Reset</button>
+            <a class="btn delete-btn load-target" asp-controller="Movie" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+
+        var f1 = document.getElementById('f-img-1');
+        uploadPreviewImage(f1);
+        var f2 = document.getElementById('f-img-2');
+        uploadPreviewImage(f2);
+
+        function uploadPreviewImage(f) {
+            var fileInput = f.querySelector('.file-image');
+
+            var previewImage = f.querySelector('.uploadPreview');
+
+            fileInput.addEventListener('change', event => {
+                if (event.target.files.length > 0) {
+                    previewImage.src = URL.createObjectURL(
+                        event.target.files[0],
+                    );
+
+                    // previewImage.style.display = 'block';
+                }
+
+                // 👇️ reset file input once you're done
+                //fileInput.value = null;
+            });
+        }
+    </script>
+} 
