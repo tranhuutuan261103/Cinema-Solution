@@ -1,6 +1,9 @@
 ﻿using CinemaSolution.AdminWebApplication.Filters;
+using CinemaSolution.Application.Category;
 using CinemaSolution.Application.Movie;
 using CinemaSolution.Application.Storage;
+using CinemaSolution.ViewModels.Category;
+using CinemaSolution.ViewModels.Common.ItemSelection;
 using CinemaSolution.ViewModels.Movie;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +16,12 @@ namespace CinemaSolution.AdminWebApplication.Controllers
     public class MovieController : Controller
     {
         private readonly IMovieService _movieService;
+        private readonly ICategoryService _categoryService;
         private readonly IStorageService _storageService;
-        public MovieController(IMovieService movieService, IStorageService storageService)
+        public MovieController(IMovieService movieService, ICategoryService categoryService, IStorageService storageService)
         {
             _movieService = movieService;
+            _categoryService = categoryService;
             _storageService = storageService;
         }
 
@@ -45,21 +50,27 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         }
 
         [HttpGet("create")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var categories = await _categoryService.GetAllCategories();
+            MovieCreateRequest request = new MovieCreateRequest()
+            {
+                Categories = categories.Select(x => new ItemSelection<CategoryViewModel>()
+                {
+                    Item = x,
+                    IsSelected = false
+                }).ToList()
+            };
+            return View(request);
         }
 
         [HttpPost("create")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm] MovieCreateRequest request)
         {
-            if (request.ThumbnailImage != null)
-            {
-                string result = await _storageService.SaveFileAsync(request.ThumbnailImage.OpenReadStream(), "D:\\.WebCsharp\\CinemaSolution\\CinemaSolution.AdminWebApplication\\wwwroot\\user-content\\" + request.ThumbnailImage.FileName);
-                Console.WriteLine(result);
-            }
-            return View();
+            var result = await _movieService.Create(request);
+            Console.WriteLine(result);
+            return RedirectToAction("Index");
         }
     }
 }

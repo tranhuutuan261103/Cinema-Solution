@@ -15,7 +15,7 @@ namespace CinemaSolution.ViewModels.Movie
         public string Director { get; set; } = string.Empty;
         public string Actors { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public List<string>? MovieImages { get; set; }
+        public List<MovieImageViewModel> MovieImages { get; set; } = new List<MovieImageViewModel>();
         public string TrailerUrl { get; set; } = string.Empty;
         public DateTime ReleaseDate { get; set; } = DateTime.Now;
         public DateTime EndDate { get; set; } = DateTime.Now;
