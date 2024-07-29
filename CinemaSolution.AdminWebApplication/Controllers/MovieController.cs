@@ -72,5 +72,12 @@ namespace CinemaSolution.AdminWebApplication.Controllers
             Console.WriteLine(result);
             return RedirectToAction("Index");
         }
+
+        [HttpPost("{id}/delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _movieService.Delete(id);
+            return RedirectToAction("Index");
+        }
     }
 }

@@ -12,5 +12,6 @@ namespace CinemaSolution.Application.Movie
     {
         Task<PagedResult<MovieViewModel>> GetPagedResult(GetMoviePagingRequest request);
         Task<MovieViewModel> Create(MovieCreateRequest request);
+        Task<int> Delete(int id);
     }
 }
