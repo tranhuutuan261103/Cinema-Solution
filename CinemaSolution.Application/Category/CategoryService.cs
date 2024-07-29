@@ -18,7 +18,19 @@ namespace CinemaSolution.Application.Category
         {
             this.cinemaDBContext = cinemaDBContext;
         }
-        public async Task<PagedResult<CategoryViewModel>> GetAllCategories(GetCategoryPagingRequest request)
+
+        public async Task<List<CategoryViewModel>> GetAllCategories()
+        {
+            var categories = await cinemaDBContext.Categories
+                .Where(c => c.IsDeleted == false)
+                .Select(c => new CategoryViewModel()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                }).ToListAsync();
+            return categories;
+        }
+        public async Task<PagedResult<CategoryViewModel>> GetPagedResult(GetCategoryPagingRequest request)
         {
             var query = from c in cinemaDBContext.Categories
                         where c.IsDeleted == false

@@ -25,7 +25,7 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                 PageIndex = pageIndex,
                 PageSize = pageSize
             };
-            var categoryPagedResult = await _categoryService.GetAllCategories(request);
+            var categoryPagedResult = await _categoryService.GetPagedResult(request);
             return View(categoryPagedResult);
         }
 
