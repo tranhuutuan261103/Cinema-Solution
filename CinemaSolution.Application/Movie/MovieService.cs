@@ -24,6 +24,7 @@ namespace CinemaSolution.Application.Movie
             var query = from m in cinemaDBContext.Movies
                         join mc in cinemaDBContext.MovieInCategories on m.Id equals mc.MovieId
                         join c in cinemaDBContext.Categories on mc.CategoryId equals c.Id
+                        where m.IsDeleted == false
                         select new { m, c };
 
             if (!string.IsNullOrEmpty(request.Category))
@@ -99,6 +100,10 @@ namespace CinemaSolution.Application.Movie
             // Create movie in categories
             foreach (var category in request.Categories)
             {
+                if (category.IsSelected == false)
+                {
+                    continue;
+                }
                 var movieInCategory = new Data.Entities.MovieInCategory()
                 {
                     MovieId = movie.Id,
@@ -157,6 +162,17 @@ namespace CinemaSolution.Application.Movie
                     }
                 }
             };
+        }
+
+        public async Task<int> Delete(int id)
+        {
+            var movie = await cinemaDBContext.Movies.FindAsync(id);
+            if (movie == null)
+            {
+                throw new Exception("Movie not found");
+            }
+            movie.IsDeleted = true;
+            return await cinemaDBContext.SaveChangesAsync();
         }
     }
 }
