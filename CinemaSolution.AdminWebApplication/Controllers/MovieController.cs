@@ -1,5 +1,6 @@
 ﻿using CinemaSolution.AdminWebApplication.Filters;
 using CinemaSolution.Application.Movie;
+using CinemaSolution.Application.Storage;
 using CinemaSolution.ViewModels.Movie;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,11 @@ namespace CinemaSolution.AdminWebApplication.Controllers
     public class MovieController : Controller
     {
         private readonly IMovieService _movieService;
-        public MovieController(IMovieService movieService)
+        private readonly IStorageService _storageService;
+        public MovieController(IMovieService movieService, IStorageService storageService)
         {
             _movieService = movieService;
+            _storageService = storageService;
         }
 
         [HttpGet]
@@ -44,6 +47,18 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         [HttpGet("create")]
         public IActionResult Create()
         {
+            return View();
+        }
+
+        [HttpPost("create")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> Create([FromForm] MovieCreateRequest request)
+        {
+            if (request.ThumbnailImage != null)
+            {
+                string result = await _storageService.SaveFileAsync(request.ThumbnailImage.OpenReadStream(), "D:\\.WebCsharp\\CinemaSolution\\CinemaSolution.AdminWebApplication\\wwwroot\\user-content\\" + request.ThumbnailImage.FileName);
+                Console.WriteLine(result);
+            }
             return View();
         }
     }
