@@ -56,6 +56,21 @@
                     <li class="nav-item @(Convert.ToString(ViewData["BarActive"]) == "category" ? "nav-item__active" : "")">
                         <a class="nav-link" asp-controller="Category" asp-action="Index">Categories</a>
                     </li>
+                </ul>
+            </li>
+
+            <!-- Cinema -->
+            <li class="nav-item collapsible">
+                <button class="nav-link dropdown-btn">
+                    <i class="fa-solid fa-map-location-dot nav-icon"></i>
+                    Manage cinema
+                </button>
+                <ul class="nav @(Convert.ToString(ViewData["BarActive"]) == "cinema" ||
+                    Convert.ToString(ViewData["BarActive"]) == "auditorium"
+                ? "nav-show" : "")">
+                    <li class="nav-item @(Convert.ToString(ViewData["BarActive"]) == "cinema" ? "nav-item__active" : "")">
+                        <a class="nav-link" asp-controller="Cinema" asp-action="Index">Cinemas</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#!">Auditoriums</a>
                     </li>

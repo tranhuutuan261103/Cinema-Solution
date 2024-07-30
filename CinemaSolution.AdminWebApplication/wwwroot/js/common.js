@@ -25,12 +25,12 @@ $(document).ready(function () {
     // Đặt sự kiện click cho mỗi mục
     dropdownItems.click(function () {
         // Lấy nội dung của mục đã chọn
-        var selectedText = $(this).text();
+        var selectedId = $(this).attr("data-id");
         var selectedValue = $(this).attr("data-value");
 
         // Cập nhật nội dung trong thẻ có class "selected"
-        $(".selected").text(selectedText);
-        $(".selected").attr("data-value", selectedValue);
+        $(".selected").attr("data-id", selectedId);
+        $(".selected").text(selectedValue);
     });
 });
 

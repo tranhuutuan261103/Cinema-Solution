@@ -1,11 +1,11 @@
 ﻿@using CinemaSolution.ViewModels.Common.Paging;
-@using CinemaSolution.ViewModels.Movie;
+@using CinemaSolution.ViewModels.Cinema;
 
-@model PagedResult<MovieViewModel>;
+@model PagedResult<CinemaViewModel>
 
 @{
-    ViewData["Title"] = "Movies";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Cinemas";
 }
 
 <nav class="breadcrumb">
@@ -14,7 +14,7 @@
             <a asp-controller="Home">Home</a>
         </li>
         <li class="breadcrumb-item">
-            Movies
+            Cinemas
         </li>
     </ol>
 </nav>
@@ -22,21 +22,33 @@
 <div class="filter-block">
     <div class="dropdown">
         <div class="select">
-            <span class="selected" data-id="-1">Status of movie</span>
+            @if (ViewBag.ProvinceId == null)
+            {
+                <span class="selected" data-id="-1">Select province</span>
+            }
+            else
+            {
+                <span class="selected" data-id="@ViewBag.ProvinceId">@ViewBag.ProvinceName</span>
+            }
             <i class="fa fa-chevron-left select-icon"></i>
         </div>
         <ul class="dropdown-content dropdown-content-show">
-            <li class="dropdown-item" data-id="0" data-value="Status of movie">All movie</li>
-            <li class="dropdown-item" data-id="1" data-value="Valid now">Valid now</li>
-            <li class="dropdown-item" data-id="2" data-value="Going">Going</li>
-            <li class="dropdown-item" data-id="3" data-value="Not Going">Not Going</li>
+            <a asp-action="Index">
+                <li class="dropdown-item" data-id="-1" data-value="Select province">All</li>
+            </a>
+            @foreach (var item in ViewBag.Provinces)
+            {
+                <a asp-action="Index" asp-route-provinceId="@item.Id">
+                    <li class="dropdown-item" data-id="@item.Id" data-value="@item.Name">@item.Name</li>
+                </a>
+            }
         </ul>
     </div>
 
     <form asp-action="Index" class="form-search" method="get">
         <input type="text" name="pageindex" value="@ViewBag.PageIndex" hidden>
         <input type="text" name="pagesize" value="@ViewBag.PageSize" hidden>
-        <input type="text" name="category" value="@ViewBag.Category" hidden>
+        <input type="text" name="provinceId" value="@ViewBag.ProvinceId" hidden>
         <input type="text" name="keyword" value="@ViewBag.Keyword" placeholder="Search" class="form-search-input">
         <button type="submit" class="form-search-btn">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -46,7 +58,7 @@
 
 <div class="table-block">
     <div class="table-header">
-        <h3 class="table-title">All movies</h3>
+        <h3 class="table-title">All cinemas</h3>
         <a class="btn success-btn load-target" asp-action="Create">Create new</a>
     </div>
     <table class="styled-table">
@@ -54,10 +66,8 @@
             <tr>
                 <th>Id</th>
                 <th>Title</th>
-                <th>Categories</th>
-                <th>Release Date</th>
-                <th>End Date</th>
-                <th>Duration</th>
+                <th>Province</th>
+                <th>Address</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -67,22 +77,14 @@
             {
                 <tr>
                     <td>@item.Id</td>
-                    <td>@item.Title</td>
-                    <td>
-                        @for (int i = 0 ; i<item.Categories.Count - 1; i++)
-                        {
-                            <span class="category-item">@item.Categories[i].Name, </span>
-                        }
-                        <span class="category-item">@item.Categories.Last().Name</span>
-                    </td>
-                    <td>@item.ReleaseDate.ToLocalTime()</td>
-                    <td>@item.EndDate.ToLocalTime()</td>
-                    <td>@item.Duration</td>
+                    <td>@item.Name</td>
+                    <td>@item.Province.Name</td>
+                    <td>@item.Address</td>
                     <td class="table-actions-flex">
                         <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
                             <i class="fa-solid fa-pen-to-square table-btn-icon"></i>
                         </a>
-                        <button class="btn-delete table-btn" onclick="showModelMovieDelete(@item.Id)">
+                        <button class="btn-delete table-btn" onclick="showModelCinemaDelete(@item.Id)">
                             <i class="fa-solid fa-trash table-btn-icon"></i>
                         </button>
                     </td>
@@ -93,15 +95,15 @@
     @await Component.InvokeAsync("Pager", Model)
 </div>
 
-<div id="modal-dialog-movie--delete" class="modal-dialog">
+<div id="modal-dialog-cinema--delete" class="modal-dialog">
     <div class="modal-background"></div>
     <div class="modal-content">
-        <form id="modal-dialog-movie--form-action" action="#!" method="post">
+        <form id="modal-dialog-cinema--form-action" action="#!" method="post">
             <div class="modal-header">
                 <h2 class="modal-title">Comfirm delete</h2>
             </div>
-            <div id="modal-dialog-movie--id" class="modal-body">
-                <p>Comfirm delete this movie</p>
+            <div id="modal-dialog-cinema--id" class="modal-body">
+                <p>Comfirm delete this cinema</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn cancel-btn">Cancel</button>
@@ -112,5 +114,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/pages/movie/index.js" asp-append-version="true"></script>
+    <script src="~/js/pages/cinema/index.js" asp-append-version="true"></script>
 }
