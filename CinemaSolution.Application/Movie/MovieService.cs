@@ -81,48 +81,54 @@ namespace CinemaSolution.Application.Movie
 
         public async Task<MovieViewModel> GetById(int id)
         {
-            var query = from m in cinemaDBContext.Movies
-                        join mc in cinemaDBContext.MovieInCategories on m.Id equals mc.MovieId
-                        join c in cinemaDBContext.Categories on mc.CategoryId equals c.Id
-                        join mi in cinemaDBContext.MovieImages on m.Id equals mi.MovieId
-                        join mit in cinemaDBContext.MovieImageTypes on mi.MovieImageTypeId equals mit.Id
-                        where m.Id == id
-                        select new { m, c, mi, mit };
+            var movieQuery = from m in cinemaDBContext.Movies
+                             where m.Id == id
+                             select new
+                             {
+                                 Movie = m,
+                                 Categories = (from mc in cinemaDBContext.MovieInCategories
+                                               join c in cinemaDBContext.Categories on mc.CategoryId equals c.Id
+                                               where mc.MovieId == m.Id
+                                               select c).ToList(),
+                                 Images = (from mi in cinemaDBContext.MovieImages
+                                           join mit in cinemaDBContext.MovieImageTypes on mi.MovieImageTypeId equals mit.Id
+                                           where mi.MovieId == m.Id
+                                           select new { mi, mit.Name }).ToList()
+                             };
 
-            var da = await query.ToListAsync();
-            Console.WriteLine(da.Count);
-            var data = await query
-                .Select(x => new MovieViewModel
-                {
-                    Id = x.m.Id,
-                    Title = x.m.Title,
-                    Description = x.m.Description,
-                    Duration = x.m.Duration,
-                    Language = x.m.Language,
-                    ReleaseDate = x.m.ReleaseDate,
-                    EndDate = x.m.EndDate,
-                    Director = x.m.Director,
-                    Rating = x.m.Rating,
-                    Actors = x.m.Actors,
-                    IsDeleted = x.m.IsDeleted,
-                    TrailerUrl = x.m.TrailerUrl,
-                    Categories = query.Select(x => new CategoryViewModel()
-                    {
-                        Id = x.c.Id,
-                        Name = x.c.Name
-                    }).Distinct().ToList(),
-                    MovieImages = query.Select(x => new MovieImageViewModel()
-                    {
-                        Id = x.mi.Id,
-                        ImageUrl = x.mi.ImageUrl,
-                        ImageType = x.mit.Name
-                    }).Distinct().ToList(),
-                })
-                .FirstOrDefaultAsync();
-            if (data == null)
+            var result = await movieQuery.FirstOrDefaultAsync();
+            if (result == null)
             {
                 throw new Exception("Movie not found");
             }
+
+            var data = new MovieViewModel
+            {
+                Id = result.Movie.Id,
+                Title = result.Movie.Title,
+                Description = result.Movie.Description,
+                Duration = result.Movie.Duration,
+                Language = result.Movie.Language,
+                ReleaseDate = result.Movie.ReleaseDate,
+                EndDate = result.Movie.EndDate,
+                Director = result.Movie.Director,
+                Rating = result.Movie.Rating,
+                Actors = result.Movie.Actors,
+                IsDeleted = result.Movie.IsDeleted,
+                TrailerUrl = result.Movie.TrailerUrl,
+                Categories = result.Categories.Select(c => new CategoryViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                }).ToList(),
+                MovieImages = result.Images.Select(i => new MovieImageViewModel
+                {
+                    Id = i.mi.Id,
+                    ImageUrl = i.mi.ImageUrl,
+                    ImageType = i.Name
+                }).ToList()
+            };
+
             return data;
         }
 
@@ -233,6 +239,7 @@ namespace CinemaSolution.Application.Movie
             movie.ReleaseDate = request.ReleaseDate;
             movie.EndDate = request.EndDate;
             movie.Duration = request.Duration;
+
             // Update movie in categories
             var movieInCategories = await cinemaDBContext.MovieInCategories
                 .Where(x => x.MovieId == request.Id)
@@ -255,6 +262,47 @@ namespace CinemaSolution.Application.Movie
                 cinemaDBContext.MovieInCategories.Add(movieInCategory);
             }
             await cinemaDBContext.SaveChangesAsync();
+
+            // Update movie images
+            var movieImages = await cinemaDBContext.MovieImages
+                .Where(x => x.MovieId == request.Id)
+                .ToListAsync();
+            if (request.ThumbnailImage3x2Url != null)
+            {
+                var movieImage = movieImages.FirstOrDefault(x => x.MovieImageTypeId == (int)Data.Enums.MovieImageType.ThumbnailImage3x2);
+                if (movieImage != null)
+                {
+                    movieImage.ImageUrl = request.ThumbnailImage3x2Url;
+                }
+                else
+                {
+                    cinemaDBContext.MovieImages.Add(new Data.Entities.MovieImage()
+                    {
+                        MovieId = movie.Id,
+                        ImageUrl = request.ThumbnailImage3x2Url,
+                        MovieImageTypeId = (int)Data.Enums.MovieImageType.ThumbnailImage3x2
+                    });
+                }
+            }
+            if (request.ThumbnailImage2x3Url != null)
+            {
+                var movieImage = movieImages.FirstOrDefault(x => x.MovieImageTypeId == (int)Data.Enums.MovieImageType.ThumbnailImage2x3);
+                if (movieImage != null)
+                {
+                    movieImage.ImageUrl = request.ThumbnailImage2x3Url;
+                }
+                else
+                {
+                    cinemaDBContext.MovieImages.Add(new Data.Entities.MovieImage()
+                    {
+                        MovieId = movie.Id,
+                        ImageUrl = request.ThumbnailImage2x3Url,
+                        MovieImageTypeId = (int)Data.Enums.MovieImageType.ThumbnailImage2x3
+                    });
+                }
+            }
+            await cinemaDBContext.SaveChangesAsync();
+
             return new MovieViewModel()
             {
                 Id = movie.Id,

@@ -87,7 +87,6 @@ namespace CinemaSolution.AdminWebApplication.Controllers
             }
 
             var result = await _movieService.Create(request);
-            Console.WriteLine(result);
             return RedirectToAction("Index");
         }
 
@@ -116,16 +115,33 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                     Item = x,
                     IsSelected = movie.Categories.Any(c => c.Id == x.Id)
                 }).ToList(),
-                ThumbnailImage3x2Url = thumbnailImage3x2 != null ? thumbnailImage3x2.ImageUrl : null,
-                ThumbnailImage2x3Url = thumbnailImage2x3 != null ? thumbnailImage2x3.ImageUrl : null
+                ThumbnailImage3x2Url = thumbnailImage3x2?.ImageUrl,
+                ThumbnailImage2x3Url = thumbnailImage2x3?.ImageUrl
             };
-            Console.WriteLine(request);
             return View(request);
         }
 
         [HttpPost("{id}/update")]
         public async Task<IActionResult> Update(MovieUpdateRequest request)
         {
+            if (request.ThumbnailImage3x2 != null)
+            {
+                var thumbnailImage3x2Url = await _storageService.UploadFileAsync(
+                    request.ThumbnailImage3x2.OpenReadStream(),
+                    "movie_thumbnail",
+                    request.ThumbnailImage3x2.FileName);
+                request.ThumbnailImage3x2Url = thumbnailImage3x2Url;
+            }
+
+            if (request.ThumbnailImage2x3 != null)
+            {
+                var thumbnailImage2x3Url = await _storageService.UploadFileAsync(
+                                       request.ThumbnailImage2x3.OpenReadStream(),
+                                       "movie_thumbnail",
+                                       request.ThumbnailImage2x3.FileName);
+                request.ThumbnailImage2x3Url = thumbnailImage2x3Url;
+            }
+
             await _movieService.Update(request);
             return RedirectToAction("Index");
         }
