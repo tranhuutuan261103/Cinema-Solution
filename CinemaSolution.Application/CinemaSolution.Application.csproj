@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FirebaseAuthentication.net" Version="4.1.0" />
+    <PackageReference Include="FirebaseStorage.net" Version="1.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CinemaSolution.Common\CinemaSolution.Common.csproj" />
     <ProjectReference Include="..\CinemaSolution.Data\CinemaSolution.Data.csproj" />
     <ProjectReference Include="..\CinemaSolution.ViewModels\CinemaSolution.ViewModels.csproj" />

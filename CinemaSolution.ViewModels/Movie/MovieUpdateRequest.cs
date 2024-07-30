@@ -23,6 +23,8 @@ namespace CinemaSolution.ViewModels.Movie
         public DateTime EndDate { get; set; } = DateTime.Now;
         public int Duration { get; set; }
         public IFormFile? ThumbnailImage3x2 { get; set; }
+        public string? ThumbnailImage3x2Url { get; set; }
         public IFormFile? ThumbnailImage2x3 { get; set; }
+        public string? ThumbnailImage2x3Url { get; set; }
     }
 }

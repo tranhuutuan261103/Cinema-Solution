@@ -68,6 +68,24 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm] MovieCreateRequest request)
         {
+            if (request.ThumbnailImage3x2 != null)
+            {
+                var thumbnailImage3x2Url = await _storageService.UploadFileAsync(
+                    request.ThumbnailImage3x2.OpenReadStream(), 
+                    "movie_thumbnail",
+                    request.ThumbnailImage3x2.FileName);
+                request.ThumbnailImage3x2Url = thumbnailImage3x2Url;
+            }
+
+            if (request.ThumbnailImage2x3 != null)
+            {
+                var thumbnailImage2x3Url = await _storageService.UploadFileAsync(
+                                       request.ThumbnailImage2x3.OpenReadStream(),
+                                       "movie_thumbnail",
+                                       request.ThumbnailImage2x3.FileName);
+                request.ThumbnailImage2x3Url = thumbnailImage2x3Url;
+            }
+
             var result = await _movieService.Create(request);
             Console.WriteLine(result);
             return RedirectToAction("Index");
@@ -78,6 +96,9 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         {
             var movie = await _movieService.GetById(id);
             var categories = await _categoryService.GetAllCategories();
+
+            var thumbnailImage3x2 = movie.MovieImages.Where(x => x.ImageType == "Poster").FirstOrDefault();
+            var thumbnailImage2x3 = movie.MovieImages.Where(x => x.ImageType == "Backdrop").FirstOrDefault();
             MovieUpdateRequest request = new MovieUpdateRequest()
             {
                 Id = movie.Id,
@@ -94,8 +115,11 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                 {
                     Item = x,
                     IsSelected = movie.Categories.Any(c => c.Id == x.Id)
-                }).ToList()
+                }).ToList(),
+                ThumbnailImage3x2Url = thumbnailImage3x2 != null ? thumbnailImage3x2.ImageUrl : null,
+                ThumbnailImage2x3Url = thumbnailImage2x3 != null ? thumbnailImage2x3.ImageUrl : null
             };
+            Console.WriteLine(request);
             return View(request);
         }
 
