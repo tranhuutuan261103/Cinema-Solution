@@ -79,6 +79,42 @@ namespace CinemaSolution.Application.Movie
             return pagedResult;
         }
 
+        public async Task<MovieViewModel> GetById(int id)
+        {
+            var query = from m in cinemaDBContext.Movies
+                        join mc in cinemaDBContext.MovieInCategories on m.Id equals mc.MovieId
+                        join c in cinemaDBContext.Categories on mc.CategoryId equals c.Id
+                        where m.Id == id
+                        select new { m, c };
+            var data = await query
+                .Select(x => new MovieViewModel
+                {
+                    Id = x.m.Id,
+                    Title = x.m.Title,
+                    Description = x.m.Description,
+                    Duration = x.m.Duration,
+                    Language = x.m.Language,
+                    ReleaseDate = x.m.ReleaseDate,
+                    EndDate = x.m.EndDate,
+                    Director = x.m.Director,
+                    Rating = x.m.Rating,
+                    Actors = x.m.Actors,
+                    IsDeleted = x.m.IsDeleted,
+                    TrailerUrl = x.m.TrailerUrl,
+                    Categories = query.Select(x => new CategoryViewModel()
+                    {
+                        Id = x.c.Id,
+                        Name = x.c.Name
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
+            if (data == null)
+            {
+                throw new Exception("Movie not found");
+            }
+            return data;
+        }
+
         public async Task<MovieViewModel> Create(MovieCreateRequest request)
         {
             // Create new movie
@@ -161,6 +197,64 @@ namespace CinemaSolution.Application.Movie
                         ImageType = "Backdrop"
                     }
                 }
+            };
+        }
+
+        public async Task<MovieViewModel> Update(MovieUpdateRequest request)
+        {
+            var movie = await cinemaDBContext.Movies.FindAsync(request.Id);
+            if (movie == null)
+            {
+                throw new Exception("Movie not found");
+            }
+            movie.Title = request.Title;
+            movie.Language = request.Language;
+            movie.Director = request.Director;
+            movie.Actors = request.Actors;
+            movie.Description = request.Description;
+            movie.TrailerUrl = request.TrailerUrl;
+            movie.ReleaseDate = request.ReleaseDate;
+            movie.EndDate = request.EndDate;
+            movie.Duration = request.Duration;
+            // Update movie in categories
+            var movieInCategories = await cinemaDBContext.MovieInCategories
+                .Where(x => x.MovieId == request.Id)
+                .ToListAsync();
+            foreach (var movieInCategory in movieInCategories)
+            {
+                cinemaDBContext.MovieInCategories.Remove(movieInCategory);
+            }
+            foreach (var category in request.Categories)
+            {
+                if (category.IsSelected == false)
+                {
+                    continue;
+                }
+                var movieInCategory = new Data.Entities.MovieInCategory()
+                {
+                    MovieId = movie.Id,
+                    CategoryId = category.Item.Id
+                };
+                cinemaDBContext.MovieInCategories.Add(movieInCategory);
+            }
+            await cinemaDBContext.SaveChangesAsync();
+            return new MovieViewModel()
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                Duration = movie.Duration,
+                Language = movie.Language,
+                Director = movie.Director,
+                Actors = movie.Actors,
+                Description = movie.Description,
+                ReleaseDate = movie.ReleaseDate,
+                EndDate = movie.EndDate,
+                TrailerUrl = movie.TrailerUrl,
+                Categories = request.Categories.Select(x => new CategoryViewModel()
+                {
+                    Id = x.Item.Id,
+                    Name = x.Item.Name
+                }).ToList()
             };
         }
 

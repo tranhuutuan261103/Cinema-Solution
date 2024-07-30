@@ -73,6 +73,39 @@ namespace CinemaSolution.AdminWebApplication.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet("{id}/update")]
+        public async Task<IActionResult> Update(int id)
+        {
+            var movie = await _movieService.GetById(id);
+            var categories = await _categoryService.GetAllCategories();
+            MovieUpdateRequest request = new MovieUpdateRequest()
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                Description = movie.Description,
+                Duration = movie.Duration,
+                ReleaseDate = movie.ReleaseDate,
+                EndDate = movie.EndDate,
+                Actors = movie.Actors,
+                Director = movie.Director,
+                Language = movie.Language,
+                TrailerUrl = movie.TrailerUrl,
+                Categories = categories.Select(x => new ItemSelection<CategoryViewModel>()
+                {
+                    Item = x,
+                    IsSelected = movie.Categories.Any(c => c.Id == x.Id)
+                }).ToList()
+            };
+            return View(request);
+        }
+
+        [HttpPost("{id}/update")]
+        public async Task<IActionResult> Update(MovieUpdateRequest request)
+        {
+            await _movieService.Update(request);
+            return RedirectToAction("Index");
+        }
+
         [HttpPost("{id}/delete")]
         public async Task<IActionResult> Delete(int id)
         {
