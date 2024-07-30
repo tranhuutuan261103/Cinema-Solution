@@ -1,8 +1,8 @@
-﻿@model CinemaSolution.ViewModels.Movie.MovieCreateRequest;
+﻿@model CinemaSolution.ViewModels.Movie.MovieUpdateRequest;
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Update movie";
 }
 
 @section Styles {
@@ -18,13 +18,13 @@
             <a class="load-target" asp-action="Index">Movies</a>
         </li>
         <li class="breadcrumb-item">
-            Create
+            @Model.Id
         </li>
     </ol>
 </nav>
 
 <div class="content-body">
-    <form asp-action="Create" method="post" enctype="multipart/form-data">
+    <form asp-action="Update" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="fileCustom" id="f-img-1">
                 <span class="file-title">
@@ -47,24 +47,20 @@
 
         <div class="form-group">
             <label for="movie-title" class="form-label">Title</label>
-            <input 
-                type="text" 
-                class="form-control" 
-                id="movie-title" 
-                asp-for="@Model.Title"
-                placeholder="Enter title"
-            >
+            <input type="text"
+                   class="form-control"
+                   id="movie-title"
+                   asp-for="@Model.Title"
+                   placeholder="Enter title">
         </div>
 
         <div class="form-group">
             <label for="movie-duration" class="form-label">Duration</label>
-            <input 
-                type="number" 
-                class="form-control" 
-                id="movie-duration" 
-                asp-for="@Model.Duration"
-                value="120"
-            >
+            <input type="number"
+                   class="form-control"
+                   id="movie-duration"
+                   asp-for="@Model.Duration"
+                   value="120">
         </div>
 
         <div class="form-group">
@@ -74,13 +70,11 @@
 
         <div class="form-group">
             <label for="movie-trailerUrl" class="form-label">Trailer</label>
-            <input 
-                type="text" 
-                class="form-control" 
-                id="movie-trailerUrl"
-                asp-for="@Model.TrailerUrl"
-                placeholder="Enter trailer URL"
-            >
+            <input type="text"
+                   class="form-control"
+                   id="movie-trailerUrl"
+                   asp-for="@Model.TrailerUrl"
+                   placeholder="Enter trailer URL">
         </div>
 
         <div class="row">
@@ -88,7 +82,7 @@
                 <label for="movie-release" class="form-label">Release date</label>
                 <input type="date" class="form-control" id="movie-release" asp-for="@Model.ReleaseDate" placeholder="Enter release date">
             </div>
-    
+
             <div class="form-group">
                 <label for="movie-end" class="form-label">End date</label>
                 <input type="date" class="form-control" id="movie-end" asp-for="@Model.EndDate" placeholder="Enter end date">
@@ -113,7 +107,7 @@
         <div class="form-group">
             <label class="form-label">Category</label>
             <div class="form-checkbox" id="movie-category">
-                @for(int i=0 ; i < Model.Categories.Count; i++)
+                @for (int i = 0; i < Model.Categories.Count; i++)
                 {
                     <label for="category-@Model.Categories[i].Item.Id" class="form-control-checkbox-text">
                         <input type="checkbox" asp-for="Categories[i].IsSelected" id="category-@Model.Categories[i].Item.Id">
