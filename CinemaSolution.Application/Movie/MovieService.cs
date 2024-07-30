@@ -84,8 +84,13 @@ namespace CinemaSolution.Application.Movie
             var query = from m in cinemaDBContext.Movies
                         join mc in cinemaDBContext.MovieInCategories on m.Id equals mc.MovieId
                         join c in cinemaDBContext.Categories on mc.CategoryId equals c.Id
+                        join mi in cinemaDBContext.MovieImages on m.Id equals mi.MovieId
+                        join mit in cinemaDBContext.MovieImageTypes on mi.MovieImageTypeId equals mit.Id
                         where m.Id == id
-                        select new { m, c };
+                        select new { m, c, mi, mit };
+
+            var da = await query.ToListAsync();
+            Console.WriteLine(da.Count);
             var data = await query
                 .Select(x => new MovieViewModel
                 {
@@ -105,7 +110,13 @@ namespace CinemaSolution.Application.Movie
                     {
                         Id = x.c.Id,
                         Name = x.c.Name
-                    }).ToList()
+                    }).Distinct().ToList(),
+                    MovieImages = query.Select(x => new MovieImageViewModel()
+                    {
+                        Id = x.mi.Id,
+                        ImageUrl = x.mi.ImageUrl,
+                        ImageType = x.mit.Name
+                    }).Distinct().ToList(),
                 })
                 .FirstOrDefaultAsync();
             if (data == null)
@@ -150,18 +161,24 @@ namespace CinemaSolution.Application.Movie
             await cinemaDBContext.SaveChangesAsync();
 
             // Create movie images
-            cinemaDBContext.MovieImages.Add(new Data.Entities.MovieImage()
+            if (request.ThumbnailImage3x2Url != null)
             {
-                MovieId = movie.Id,
-                ImageUrl = "https://via.placeholder.com/600x900",
-                MovieImageTypeId = (int)Data.Enums.MovieImageType.ThumbnailImage3x2
-            });
-            cinemaDBContext.MovieImages.Add(new Data.Entities.MovieImage()
+                cinemaDBContext.MovieImages.Add(new Data.Entities.MovieImage()
+                {
+                    MovieId = movie.Id,
+                    ImageUrl = request.ThumbnailImage3x2Url,
+                    MovieImageTypeId = (int)Data.Enums.MovieImageType.ThumbnailImage3x2
+                });
+            }
+            if (request.ThumbnailImage2x3Url != null)
             {
-                MovieId = movie.Id,
-                ImageUrl = "https://via.placeholder.com/900x600",
-                MovieImageTypeId = (int)Data.Enums.MovieImageType.ThumbnailImage2x3
-            });
+                cinemaDBContext.MovieImages.Add(new Data.Entities.MovieImage()
+                {
+                    MovieId = movie.Id,
+                    ImageUrl = request.ThumbnailImage2x3Url,
+                    MovieImageTypeId = (int)Data.Enums.MovieImageType.ThumbnailImage2x3
+                });
+            }
             await cinemaDBContext.SaveChangesAsync();
 
             // Return the created movie

@@ -31,7 +31,7 @@
                     <i class="fas fa-upload"></i>
                     Upload Image 3x2
                 </span>
-                <img class="uploadPreview" src="#" id="preview-image" />
+                <img class="uploadPreview" src="@Model.ThumbnailImage3x2Url" id="preview-image" />
                 <input type="file" accept="image/*" class="file-image" asp-for="@Model.ThumbnailImage3x2" id="file-input">
             </div>
 
@@ -40,7 +40,7 @@
                     <i class="fas fa-upload"></i>
                     Upload Image 2x3
                 </span>
-                <img class="uploadPreview" src="#" id="preview-image-detail-feat-img" />
+                <img class="uploadPreview" src="@Model.ThumbnailImage2x3Url" id="preview-image-detail-feat-img" />
                 <input type="file" accept="image/*" class="file-image" asp-for="@Model.ThumbnailImage2x3" id="file-input-detail-feat-img">
             </div>
         </div>
