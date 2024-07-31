@@ -48,5 +48,33 @@ namespace CinemaSolution.AdminWebApplication.Controllers
             }
             return View(cinema);
         }
+
+        [HttpGet("create")]
+        public async Task<IActionResult> Create()
+        {
+            var provinces = await _provinceService.GetAll();
+            ViewBag.Provinces = provinces;
+            return View();
+        }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> Create(CinemaCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                var provinces = await _provinceService.GetAll();
+                ViewBag.Provinces = provinces;
+                return View(request);
+            }
+            try
+            {
+                var result = await _cinemaService.Create(request);
+                return RedirectToAction("Index");
+            } catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(request);
+            }
+        }
     }
 }
