@@ -76,5 +76,42 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                 return View(request);
             }
         }
+
+        [HttpGet("{id}/update")]
+        public async Task<IActionResult> Update(int id)
+        {
+            var cinema = await _cinemaService.GetById(id);
+            var provinces = await _provinceService.GetAll();
+            ViewBag.Provinces = provinces;
+            ViewBag.ProvinceId = cinema.Province.Id;
+            ViewBag.ProvinceName = cinema.Province.Name;
+            return View(new CinemaUpdateRequest()
+            {
+                Id = id,
+                Name = cinema.Name,
+                Address = cinema.Address,
+                ProvinceId = cinema.Province.Id
+            });
+        }
+
+        [HttpPost("{id}/update")]
+        public async Task<IActionResult> Update(CinemaUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                var provinces = await _provinceService.GetAll();
+                ViewBag.Provinces = provinces;
+                return View(request);
+            }
+            try
+            {
+                var result = await _cinemaService.Update(request);
+                return RedirectToAction("Index");
+            } catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(request);
+            }
+        }
     }
 }

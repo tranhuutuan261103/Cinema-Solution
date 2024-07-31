@@ -11,6 +11,8 @@ namespace CinemaSolution.Application.Cinema
     public interface ICinemaService
     {
         Task<PagedResult<CinemaViewModel>> GetPagedResult(GetCinemaPagingRequest request);
+        Task<CinemaViewModel> GetById(int id);
         Task<CinemaViewModel> Create(CinemaCreateRequest request);
+        Task<CinemaViewModel> Update(CinemaUpdateRequest request);
     }
 }
