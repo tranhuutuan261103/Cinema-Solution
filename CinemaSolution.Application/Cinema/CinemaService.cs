@@ -51,5 +51,40 @@ namespace CinemaSolution.Application.Cinema
             };
             return pagedResult;
         }
+
+        public async Task<CinemaViewModel> Create(CinemaCreateRequest request)
+        {
+            try
+            {
+                var cinema = new Data.Entities.Cinema()
+                {
+                    Name = request.Name,
+                    ProvinceId = request.ProvinceId,
+                    Address = request.Address,
+                    IsDeleted = false
+                };
+                cinemaDBContext.Cinemas.Add(cinema);
+                await cinemaDBContext.SaveChangesAsync();
+
+                var province = await cinemaDBContext.Provinces.FindAsync(request.ProvinceId);
+
+                return new CinemaViewModel
+                {
+                    Id = cinema.Id,
+                    Name = cinema.Name,
+                    Province = new ProvinceViewModel
+                    {
+                        Id = cinema.ProvinceId,
+                        Name = province?.Name
+                    },
+                    Address = cinema.Address,
+                    IsDeleted = cinema.IsDeleted
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

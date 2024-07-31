@@ -7,3 +7,8 @@ function showModelCinemaDelete(cinemaId) {
     var modalDialogCinemaDelete = document.getElementById('modal-dialog-cinema--delete');
     modalDialogCinemaDelete.classList.add('modal-dialog--active');
 }
+
+function updateSelection(provinceId) {
+    var provinceSelectionInput = document.getElementById('cinema-province');
+    provinceSelectionInput.value = provinceId;
+}
