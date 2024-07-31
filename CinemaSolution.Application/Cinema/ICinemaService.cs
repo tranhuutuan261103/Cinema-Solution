@@ -14,5 +14,6 @@ namespace CinemaSolution.Application.Cinema
         Task<CinemaViewModel> GetById(int id);
         Task<CinemaViewModel> Create(CinemaCreateRequest request);
         Task<CinemaViewModel> Update(CinemaUpdateRequest request);
+        Task<int> Delete(int id);
     }
 }

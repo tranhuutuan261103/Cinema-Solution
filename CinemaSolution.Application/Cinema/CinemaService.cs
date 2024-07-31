@@ -22,6 +22,7 @@ namespace CinemaSolution.Application.Cinema
         {
             var query = from c in cinemaDBContext.Cinemas
                         join p in cinemaDBContext.Provinces on c.ProvinceId equals p.Id
+                        where c.IsDeleted == false && (string.IsNullOrEmpty(request.Keyword) || c.Name.Contains(request.Keyword))
                         select new { c, p };
             if (request.ProvinceId != null)
             {
@@ -152,6 +153,17 @@ namespace CinemaSolution.Application.Cinema
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<int> Delete(int id)
+        {
+            var cinema = await cinemaDBContext.Cinemas.FindAsync(id);
+            if (cinema == null)
+            {
+                throw new Exception("Cinema not found");
+            }
+            cinema.IsDeleted = true;
+            return await cinemaDBContext.SaveChangesAsync();
         }
     }
 }

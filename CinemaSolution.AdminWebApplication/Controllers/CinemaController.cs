@@ -46,6 +46,10 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                 ViewBag.ProvinceId = null;
                 ViewBag.ProvinceName = "All";
             }
+            if (!string.IsNullOrEmpty(Keyword))
+            {
+                ViewBag.Keyword = Keyword;
+            }
             return View(cinema);
         }
 
@@ -112,6 +116,13 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                 ModelState.AddModelError("", ex.Message);
                 return View(request);
             }
+        }
+
+        [HttpPost("{id}/delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _cinemaService.Delete(id);
+            return RedirectToAction("Index");
         }
     }
 }
