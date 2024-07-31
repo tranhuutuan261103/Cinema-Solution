@@ -52,10 +52,43 @@ namespace CinemaSolution.Application.Cinema
             return pagedResult;
         }
 
+        public async Task<CinemaViewModel> GetById(int id)
+        {
+            var cinema = await cinemaDBContext.Cinemas.FindAsync(id);
+            if (cinema == null)
+            {
+                throw new Exception("Cinema not found");
+            }
+            var province = await cinemaDBContext.Provinces.FindAsync(cinema.ProvinceId);
+            if (province == null)
+            {
+                throw new Exception("Province not found");
+            }
+            return new CinemaViewModel
+            {
+                Id = cinema.Id,
+                Name = cinema.Name,
+                Province = new ProvinceViewModel
+                {
+                    Id = province.Id,
+                    Name = province.Name
+                },
+                Address = cinema.Address,
+                IsDeleted = cinema.IsDeleted
+            };
+        }
+
         public async Task<CinemaViewModel> Create(CinemaCreateRequest request)
         {
             try
             {
+                var province = await cinemaDBContext.Provinces.FindAsync(request.ProvinceId);
+
+                if (province == null)
+                {
+                    throw new Exception("Province not found");
+                }
+
                 var cinema = new Data.Entities.Cinema()
                 {
                     Name = request.Name,
@@ -66,8 +99,6 @@ namespace CinemaSolution.Application.Cinema
                 cinemaDBContext.Cinemas.Add(cinema);
                 await cinemaDBContext.SaveChangesAsync();
 
-                var province = await cinemaDBContext.Provinces.FindAsync(request.ProvinceId);
-
                 return new CinemaViewModel
                 {
                     Id = cinema.Id,
@@ -75,13 +106,49 @@ namespace CinemaSolution.Application.Cinema
                     Province = new ProvinceViewModel
                     {
                         Id = cinema.ProvinceId,
-                        Name = province?.Name
+                        Name = province.Name
                     },
                     Address = cinema.Address,
                     IsDeleted = cinema.IsDeleted
                 };
             }
             catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<CinemaViewModel> Update(CinemaUpdateRequest request)
+        {
+            try
+            {
+                var cinema = await cinemaDBContext.Cinemas.FindAsync(request.Id);
+                if (cinema == null)
+                {
+                    throw new Exception("Cinema not found");
+                }
+                var province = await cinemaDBContext.Provinces.FindAsync(request.ProvinceId);
+                if (province == null)
+                {
+                    throw new Exception("Province not found");
+                }
+                cinema.Name = request.Name;
+                cinema.ProvinceId = request.ProvinceId;
+                cinema.Address = request.Address;
+                await cinemaDBContext.SaveChangesAsync();
+                return new CinemaViewModel
+                {
+                    Id = cinema.Id,
+                    Name = cinema.Name,
+                    Province = new ProvinceViewModel
+                    {
+                        Id = cinema.ProvinceId,
+                        Name = province.Name
+                    },
+                    Address = cinema.Address,
+                    IsDeleted = cinema.IsDeleted
+                };
+            } catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
