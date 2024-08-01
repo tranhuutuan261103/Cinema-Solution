@@ -14,6 +14,7 @@ namespace CinemaSolution.Data.Entities
         public string Name { get; set; } = string.Empty;
         public int NumberOfRowSeats { get; set; }
         public int NumberOfColumnSeats { get; set; }
+        public string SeatMapVector { get; set; } = string.Empty;
         public virtual ICollection<Screening>? Screenings { get; set; }
     }
 }
