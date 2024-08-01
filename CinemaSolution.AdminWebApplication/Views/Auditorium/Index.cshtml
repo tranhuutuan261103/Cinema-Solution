@@ -1,0 +1,98 @@
+﻿@using CinemaSolution.ViewModels.Common.Paging;
+@using CinemaSolution.ViewModels.Auditorium;
+@model PagedResult<AuditoriumViewModel>
+@{
+    ViewData["Title"] = "Auditoriums";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/auditorium/index.css" asp-append-version="true" />
+}
+
+<nav class="breadcrumb">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+            <a asp-controller="Home">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a asp-controller="Cinema">Cinemas</a>
+        </li>
+        <li class="breadcrumb-item">
+            @ViewBag.CinemaId
+        </li>
+        <li class="breadcrumb-item">
+            Auditoriums
+        </li>
+    </ol>
+</nav>
+
+<div class="filter-block filter-block-auditorium">
+    <form action="" class="form-search form-search-auditorium">
+        <input type="text" placeholder="Search" class="form-search-input">
+        <button type="submit" class="form-search-btn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </form>
+</div>
+
+<div class="table-block">
+    <div class="table-header">
+        <h3 class="table-title">All categories</h3>
+        <a class="btn success-btn load-target" asp-action="Create">Create new</a>
+    </div>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Seats per row</th>
+                <th>Seats per column</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.SeatsPerRow</td>
+                    <td>@item.SeatsPerColumn</td>
+                    <td class="table-actions-flex">
+                        <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
+                            <i class="fa-solid fa-pen-to-square table-btn-icon"></i>
+                        </a>
+                        <button class="btn-delete table-btn" onclick="showModelAuditoriumDelete(@ViewBag.CinemaId, @item.Id)">
+                            <i class="fa-solid fa-trash table-btn-icon"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @await Component.InvokeAsync("Pager", Model)
+</div>
+
+<div id="modal-dialog-auditorium--delete" class="modal-dialog">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <form id="modal-dialog-auditorium--form-action" action="#!" method="post">
+            <div class="modal-header">
+                <h2 class="modal-title">Comfirm delete</h2>
+            </div>
+            <div id="modal-dialog-auditorium--id" class="modal-body">
+                <p>Comfirm delete this auditorium</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn cancel-btn">Cancel</button>
+                <button type="submit" class="btn update-btn">Oke</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/pages/auditorium/index.js" asp-append-version="true"></script>
+}
