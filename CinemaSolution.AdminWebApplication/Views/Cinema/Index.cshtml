@@ -63,7 +63,7 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Title</th>
+                <th>Name</th>
                 <th>Province</th>
                 <th>Address</th>
                 <th>Actions</th>
@@ -75,7 +75,11 @@
             {
                 <tr>
                     <td>@item.Id</td>
-                    <td>@item.Name</td>
+                    <td>
+                        <a class="link-detail" asp-controller="Auditorium" asp-action="Index" asp-route-cinemaId="@item.Id">
+                            @item.Name
+                        </a>
+                    </td>
                     <td>@item.Province.Name</td>
                     <td>@item.Address</td>
                     <td class="table-actions-flex">

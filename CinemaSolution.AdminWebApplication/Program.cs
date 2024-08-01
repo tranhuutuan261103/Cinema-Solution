@@ -1,4 +1,5 @@
 using CinemaSolution.Application.Account;
+using CinemaSolution.Application.Auditorium;
 using CinemaSolution.Application.Category;
 using CinemaSolution.Application.Cinema;
 using CinemaSolution.Application.Movie;
@@ -16,6 +17,7 @@ var connectionString = builder.Configuration.GetConnectionString("CinemaSolution
 builder.Services.AddDbContext<CinemaDBContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddTransient<IAccountService, AccountService>();
+builder.Services.AddTransient<IAuditoriumService, AuditoriumService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<ICinemaService, CinemaService>();
 builder.Services.AddTransient<IMovieService, MovieService>();
