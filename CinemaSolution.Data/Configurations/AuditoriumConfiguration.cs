@@ -19,6 +19,7 @@ namespace CinemaSolution.Data.Configurations
             builder.Property(x => x.CinemaId).IsRequired();
             builder.Property(x => x.NumberOfRowSeats).IsRequired().HasDefaultValue(12);
             builder.Property(x => x.NumberOfColumnSeats).IsRequired().HasDefaultValue(12);
+            builder.Property(x => x.SeatMapVector).IsRequired().HasMaxLength(1024);
 
             builder.HasOne(x => x.Cinema).WithMany(x => x.Auditoriums).HasForeignKey(x => x.CinemaId);
         }
