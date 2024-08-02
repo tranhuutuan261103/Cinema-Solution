@@ -1,0 +1,117 @@
+﻿@using CinemaSolution.ViewModels.Common.Paging;
+@using CinemaSolution.ViewModels.Screening;
+
+@model PagedResult<ScreeningViewModel>;
+
+@{
+    ViewData["Title"] = "Screenings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<nav class="breadcrumb">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+            <a asp-controller="Home">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            Screenings
+        </li>
+    </ol>
+</nav>
+
+<div class="filter-block">
+    <div class="dropdown">
+        <div class="select">
+            <span class="selected" data-id="-1">Status of movie</span>
+            <i class="fa fa-chevron-left select-icon"></i>
+        </div>
+        <ul class="dropdown-content dropdown-content-show">
+            <li class="dropdown-item" data-id="0" data-value="Status of movie">All movie</li>
+            <li class="dropdown-item" data-id="1" data-value="Valid now">Valid now</li>
+            <li class="dropdown-item" data-id="2" data-value="Going">Going</li>
+            <li class="dropdown-item" data-id="3" data-value="Not Going">Not Going</li>
+        </ul>
+    </div>
+
+    <form asp-action="Index" class="form-search" method="get">
+        <input type="text" name="keyword" value="@ViewBag.Keyword" placeholder="Search" class="form-search-input">
+        <button type="submit" class="form-search-btn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </form>
+</div>
+
+<div class="table-block">
+    <div class="table-header">
+        <h3 class="table-title">All screenings</h3>
+        <a class="btn success-btn load-target" asp-action="Create">Create new</a>
+    </div>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Movie name</th>
+                <th>Auditorium</th>
+                <th>Start date</th>
+                <th>Start time</th>
+                <th>Duration</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Movie.Title</td>
+                    <td>@item.Auditorium.Name</td>
+                    <td>@item.StartDate.ToLocalTime()</td>
+                    <td>@item.StartTime</td>
+                    <td>@item.Movie.Duration</td>
+                    <td class="table-actions-flex">
+                        <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
+                            <i class="fa-solid fa-pen-to-square table-btn-icon"></i>
+                        </a>
+                        <button class="btn-delete table-btn" onclick="showModelScreeningDelete(@item.Id)">
+                            <i class="fa-solid fa-trash table-btn-icon"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @await Component.InvokeAsync("Pager", Model)
+</div>
+
+<div id="modal-dialog-screening--delete" class="modal-dialog">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <form id="modal-dialog-screening--form-action" action="#!" method="post">
+            <div class="modal-header">
+                <h2 class="modal-title">Comfirm delete</h2>
+            </div>
+            <div id="modal-dialog-screening--id" class="modal-body">
+                <p>Comfirm delete this screening</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn cancel-btn">Cancel</button>
+                <button type="submit" class="btn update-btn">Oke</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Show model for delete Screening
+        function showModelScreeningDelete(screeningId) {
+            var modalDialogScreeningId = document.getElementById('modal-dialog-screening--id');
+            modalDialogScreeningId.innerHTML = "Comfirm delete " + screeningId + "?";
+            var modalDialogScreeningFormAction = document.getElementById('modal-dialog-screening--form-action');
+            modalDialogScreeningFormAction.action = `/screenings/${screeningId}/delete`;
+            var modalDialogScreeningDelete = document.getElementById('modal-dialog-screening--delete');
+            modalDialogScreeningDelete.classList.add('modal-dialog--active');
+        }
+    </script>
+}
