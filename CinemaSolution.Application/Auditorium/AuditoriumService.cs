@@ -20,12 +20,17 @@ namespace CinemaSolution.Application.Auditorium
         public async Task<PagedResult<AuditoriumViewModel>> GetByCinemaId(int cinemaId)
         {
             var query = from a in cinemaDBContext.Auditoriums
+                        join c in cinemaDBContext.Cinemas on a.CinemaId equals c.Id
                         where a.CinemaId == cinemaId
                         select new AuditoriumViewModel()
                         {
                             Id = a.Id,
                             Name = a.Name,
-                            CinemaId = a.CinemaId,
+                            Cinema = new ViewModels.Cinema.CinemaViewModel()
+                            {
+                                Id = c.Id,
+                                Name = c.Name
+                            },
                             SeatsPerRow = a.NumberOfColumnSeats,
                             SeatsPerColumn = a.NumberOfRowSeats
                         };
@@ -40,27 +45,94 @@ namespace CinemaSolution.Application.Auditorium
             return result;
         }
 
-        public async Task<AuditoriumViewModel> Create(AuditoriumCreateRequest request)
+        public async Task<AuditoriumViewModel> GetById(int auditoriumId)
+        {
+            var auditoriumQuery = from a in cinemaDBContext.Auditoriums
+                                  join c in cinemaDBContext.Cinemas on a.CinemaId equals c.Id
+                                  where a.Id == auditoriumId
+                                  select new AuditoriumViewModel()
+                                  {
+                                      Id = a.Id,
+                                      Name = a.Name,
+                                      Cinema = new ViewModels.Cinema.CinemaViewModel()
+                                      {
+                                          Id = c.Id,
+                                          Name = c.Name
+                                      },
+                                      SeatsPerRow = a.NumberOfColumnSeats,
+                                      SeatsPerColumn = a.NumberOfRowSeats,
+                                      SeatMapVector = a.SeatMapVector
+                                  };
+            var auditorium = await auditoriumQuery.FirstOrDefaultAsync();
+            if (auditorium == null)
             {
-                var auditorium = new Data.Entities.Auditorium()
-                    {
-                        Name = request.Name,
-                        CinemaId = request.CinemaId,
-                        NumberOfColumnSeats = request.SeatsPerRow,
-                        NumberOfRowSeats = request.SeatsPerColumn,
-                        SeatMapVector = string.Join("",request.Seats.Select(x => x.TypeId))
-                    };
-                cinemaDBContext.Auditoriums.Add(auditorium);
-                await cinemaDBContext.SaveChangesAsync();
-                return new AuditoriumViewModel()
-                    {
-                        Id = auditorium.Id,
-                        Name = auditorium.Name,
-                        CinemaId = auditorium.CinemaId,
-                        SeatsPerRow = auditorium.NumberOfColumnSeats,
-                        SeatsPerColumn = auditorium.NumberOfRowSeats
-                    };
+                throw new Exception($"Cannot find a auditorium: {auditoriumId}");
             }
+            return auditorium;
+        }
+
+        public async Task<AuditoriumViewModel> Create(AuditoriumCreateRequest request)
+        {
+            var cinema = await cinemaDBContext.Cinemas.FindAsync(request.CinemaId);
+            if (cinema == null)
+            {
+                throw new Exception($"Cannot find a cinema: {request.CinemaId}");
+            }
+            var auditorium = new Data.Entities.Auditorium()
+                {
+                    Name = request.Name,
+                    CinemaId = request.CinemaId,
+                    NumberOfColumnSeats = request.SeatsPerRow,
+                    NumberOfRowSeats = request.SeatsPerColumn,
+                    SeatMapVector = string.Join("",request.Seats.Select(x => x.TypeId))
+                };
+            cinemaDBContext.Auditoriums.Add(auditorium);
+            await cinemaDBContext.SaveChangesAsync();
+            return new AuditoriumViewModel()
+            {
+                Id = auditorium.Id,
+                Name = auditorium.Name,
+                Cinema = new ViewModels.Cinema.CinemaViewModel() 
+                {
+                    Id = cinema.Id,
+                    Name = cinema.Name
+                },
+                SeatsPerRow = auditorium.NumberOfColumnSeats,
+                SeatsPerColumn = auditorium.NumberOfRowSeats
+            };
+        }
+
+        public async Task<AuditoriumViewModel> Update(AuditoriumUpdateRequest request)
+        {
+            var auditorium = await cinemaDBContext.Auditoriums.FindAsync(request.Id);
+            if (auditorium == null)
+            {
+                throw new Exception($"Cannot find a auditorium: {request.Id}");
+            }
+            var cinema = await cinemaDBContext.Cinemas.FindAsync(request.CinemaId);
+            if (cinema == null)
+            {
+                throw new Exception($"Cannot find a cinema: {request.CinemaId}");
+            }
+            auditorium.Name = request.Name;
+            auditorium.CinemaId = request.CinemaId;
+            auditorium.NumberOfColumnSeats = request.SeatsPerRow;
+            auditorium.NumberOfRowSeats = request.SeatsPerColumn;
+            auditorium.SeatMapVector = string.Join("", request.Seats.Select(x => x.TypeId));
+            await cinemaDBContext.SaveChangesAsync();
+            return new AuditoriumViewModel()
+            {
+                Id = auditorium.Id,
+                Name = auditorium.Name,
+                Cinema = new ViewModels.Cinema.CinemaViewModel()
+                {
+                    Id = cinema.Id,
+                    Name = cinema.Name
+                },
+                SeatsPerRow = auditorium.NumberOfColumnSeats,
+                SeatsPerColumn = auditorium.NumberOfRowSeats
+            };
+        }
 
         public async Task<int> Delete(int auditoriumId)
         {

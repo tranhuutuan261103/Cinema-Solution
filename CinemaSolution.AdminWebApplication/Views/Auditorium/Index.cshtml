@@ -47,6 +47,7 @@
                 <th>Name</th>
                 <th>Seats per row</th>
                 <th>Seats per column</th>
+                <th>Cinema name</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -59,8 +60,9 @@
                     <td>@item.Name</td>
                     <td>@item.SeatsPerRow</td>
                     <td>@item.SeatsPerColumn</td>
+                    <td>@item.Cinema.Name</td>
                     <td class="table-actions-flex">
-                        <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
+                        <a class="btn-edit table-btn load-target" asp-route-cinemaId="@item.Cinema.Id" asp-route-id="@item.Id" asp-action="Update">
                             <i class="fa-solid fa-pen-to-square table-btn-icon"></i>
                         </a>
                         <button class="btn-delete table-btn" onclick="showModelAuditoriumDelete(@ViewBag.CinemaId, @item.Id)">

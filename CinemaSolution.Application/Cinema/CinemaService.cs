@@ -48,7 +48,9 @@ namespace CinemaSolution.Application.Cinema
             var pagedResult = new PagedResult<CinemaViewModel>
             {
                 TotalRecords = totalRow,
-                Items = data
+                Items = data,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize
             };
             return pagedResult;
         }
