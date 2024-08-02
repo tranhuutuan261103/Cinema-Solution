@@ -40,6 +40,28 @@ namespace CinemaSolution.Application.Auditorium
             return result;
         }
 
+        public async Task<AuditoriumViewModel> Create(AuditoriumCreateRequest request)
+            {
+                var auditorium = new Data.Entities.Auditorium()
+                    {
+                        Name = request.Name,
+                        CinemaId = request.CinemaId,
+                        NumberOfColumnSeats = request.SeatsPerRow,
+                        NumberOfRowSeats = request.SeatsPerColumn,
+                        SeatMapVector = string.Join("",request.Seats.Select(x => x.TypeId))
+                    };
+                cinemaDBContext.Auditoriums.Add(auditorium);
+                await cinemaDBContext.SaveChangesAsync();
+                return new AuditoriumViewModel()
+                    {
+                        Id = auditorium.Id,
+                        Name = auditorium.Name,
+                        CinemaId = auditorium.CinemaId,
+                        SeatsPerRow = auditorium.NumberOfColumnSeats,
+                        SeatsPerColumn = auditorium.NumberOfRowSeats
+                    };
+            }
+
         public async Task<int> Delete(int auditoriumId)
         {
             var auditorium = await cinemaDBContext.Auditoriums.FindAsync(auditoriumId);
