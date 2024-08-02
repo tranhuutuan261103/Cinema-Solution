@@ -18,16 +18,32 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Index(int PageIndex = 1, int PageSize = 5, int? movieId = null)
+        public async Task<IActionResult> Index(int PageIndex = 1, int PageSize = 5, int? movieId = null, int? auditoriumId = null)
         {
             var request = new GetScreeningPagingRequest
             {
                 PageIndex = PageIndex,
                 PageSize = PageSize,
-                MovieId = movieId
+                MovieId = movieId,
+                AuditoriumId = auditoriumId
             };
             var screenings = await _screeningService.GetPagedResult(request);
             return View(screenings);
+        }
+
+        [HttpPost("{id}/delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _screeningService.Delete(id);
+            if (result > 0)
+            {
+                TempData["SuccessMessage"] = "Screening deleted successfully";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Screening deleted failed";
+            }
+            return RedirectToAction("Index");
         }
     }
 }

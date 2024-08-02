@@ -10,5 +10,6 @@ namespace CinemaSolution.ViewModels.Screening
     public class GetScreeningPagingRequest : PagingRequestBase
     {
         public int? MovieId { get; set; }
+        public int? AuditoriumId { get; set; }
     }
 }
