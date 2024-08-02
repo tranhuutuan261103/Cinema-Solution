@@ -1,0 +1,127 @@
+﻿@model CinemaSolution.ViewModels.Auditorium.AuditoriumCreateRequest;
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/seatMap.css" />
+}
+
+<nav class="breadcrumb">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+            <a asp-controller="Home">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a asp-controller="Cinema">Cinemas</a>
+        </li>
+        <li class="breadcrumb-item">
+            @ViewBag.CinemaId
+        </li>
+        <li class="breadcrumb-item">
+            <a asp-action="Index" asp-route-cinemaId="@ViewBag.CinemaId">Auditoriums</a>
+        </li>
+        <li class="breadcrumb-item">
+            Create
+        </li>
+    </ol>
+</nav>
+
+<div class="content-body">
+    <form asp-action="CreateMap" asp-route-cinemaId="@ViewBag.CinemaId" method="post">
+        <div class="form-group">
+            <div class="row">
+                <div class="form-group">
+                    <label for="seat-row" class="form-label">Seats per column</label>
+                    <input type="number" min="1" max="30" class="form-control" asp-for="SeatsPerColumn" style="width: 200px;" id="seat-row" placeholder="Enter column">
+                </div>
+
+                <div class="form-group">
+                    <label for="seat-column" class="form-label">Seats per row</label>
+                    <input type="number" min="1" max="30" class="form-control" asp-for="SeatsPerRow" style="width: 200px;" id="seat-column" placeholder="Enter row">
+                </div>
+
+                <div style="margin-top: auto;">
+                    <button type="submit" class="btn success-btn">Create</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form asp-action="Create" method="post">
+        <input type="number" hidden asp-for="SeatsPerRow" />
+        <input type="number" hidden asp-for="SeatsPerColumn" />
+        <div class="form-group form-group-seat">
+            <div id="seat-map" class="seat-map">
+                <div class="seat-map-edit">
+                    <i class="fa-solid fa-pen-to-square seat-map-edit-icon"></i>
+                </div>
+                <div class="seat-map-screen">Screen</div>
+                <div class="seat-area" id="seat-area">
+                    @for(int i=1; i<=Model.SeatsPerColumn; i++)
+                    {
+                        char seatLabel = (char)('A' + i - 1);
+                        <div class="seat-row" id="seat-row-@i">
+                            <div class="seat-label">@seatLabel</div>
+                            @for (int j=1; j <= Model.SeatsPerRow; j++)
+                            {
+                                <div class="seat-container @(Model.Seats[(i - 1) * Model.SeatsPerColumn + (j - 1)].TypeId == 2 ? "seat-vip" : "")">
+                                    <input type="hidden" asp-for="@Model.Seats[(i - 1) * Model.SeatsPerColumn + (j - 1)].Row" value="@i" />
+                                    <input type="hidden" asp-for="@Model.Seats[(i - 1) * Model.SeatsPerColumn + (j - 1)].Column" value="@j" />
+                                    <input type="hidden" asp-for="@Model.Seats[(i - 1) * Model.SeatsPerColumn + (j - 1)].TypeId" id="seat-type-@i-@j" class="seat-type" value="@Model.Seats[(i - 1) * Model.SeatsPerColumn + (j - 1)].TypeId" />
+                                    <div class="seat-number">@j</div>
+                                </div>
+                            }
+                            <div class="seat-row-checkbox">
+                                <label for="seat-row-checkbox-@i" class="seat-row-checkbox-label">
+                                    <input type="checkbox" class="seat-row-checkbox-input" id="seat-row-checkbox-@i" hidden
+                                           onchange="toggleSeatRow('seat-row-@i')">
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="category-name" class="form-label">Name of auditorium</label>
+            <input type="text" class="form-control" id="category-name" asp-for="Name" placeholder="Enter name">
+        </div>
+
+        <div class="row form-group-btn">
+            <button type="submit" class="btn success-btn">Save</button>
+            <button type="reset" class="btn reset-btn">Reset</button>
+            <a class="btn delete-btn load-target" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleSeatRow(rowId) {
+            var row = document.getElementById(rowId);
+            var checkbox = row.querySelector('.seat-row-checkbox-input');
+            var seatContainers = row.querySelectorAll('.seat-container');
+            var seatType = row.querySelectorAll('.seat-type');
+
+            if (checkbox.checked) {
+                seatContainers.forEach(seatContainer => {
+                    seatContainer.classList.add('seat-vip');
+                });
+                seatType.forEach(seat => {
+                    seat.value = 2;
+                });
+            } else {
+                seatContainers.forEach(seatContainer => {
+                    seatContainer.classList.remove('seat-vip');
+                });
+                seatType.forEach(seat => {
+                    seat.value = 1;
+                });
+            }
+        }
+    </script>
+}

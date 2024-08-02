@@ -12,5 +12,6 @@ namespace CinemaSolution.Application.Auditorium
     {
         Task<PagedResult<AuditoriumViewModel>> GetByCinemaId(int cinemaId);
         Task<int> Delete(int auditoriumId);
+        Task<AuditoriumViewModel> Create(AuditoriumCreateRequest request);
     }
 }
