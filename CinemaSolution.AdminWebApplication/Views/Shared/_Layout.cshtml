@@ -83,9 +83,9 @@
                     <i class="fa-solid fa-receipt nav-icon"></i>
                     Manage showtime
                 </button>
-                <ul class="nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#!">Showtimes</a>
+                <ul class="nav @(Convert.ToString(ViewData["BarActive"]) == "screening" ? "nav-show" : "")">
+                    <li class="nav-item @(Convert.ToString(ViewData["BarActive"]) == "screening" ? "nav-item__active" : "")">
+                        <a class="nav-link" asp-controller="Screening" asp-action="Index">Showtimes</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#!">Schedule</a>
