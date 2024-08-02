@@ -1,5 +1,6 @@
 ﻿using CinemaSolution.Data.EF;
 using CinemaSolution.ViewModels.Auditorium;
+using CinemaSolution.ViewModels.Cinema;
 using CinemaSolution.ViewModels.Common.Paging;
 using CinemaSolution.ViewModels.Movie;
 using CinemaSolution.ViewModels.Screening;
@@ -24,11 +25,17 @@ namespace CinemaSolution.Application.Screening
             var screening = from s in cinemaDBContext.Screenings
                             join m in cinemaDBContext.Movies on s.MovieId equals m.Id
                             join t in cinemaDBContext.Auditoriums on s.AuditoriumId equals t.Id
-                            select new { s, m, t };
+                            join c in cinemaDBContext.Cinemas on t.CinemaId equals c.Id
+                            select new { s, m, t, c };
 
             if (request.MovieId != null)
             {
                 screening = screening.Where(x => x.m.Id == request.MovieId);
+            }
+
+            if (request.AuditoriumId != null)
+            {
+                screening = screening.Where(x => x.t.Id == request.AuditoriumId);
             }
 
             int totalRow = await screening.CountAsync();
@@ -47,6 +54,11 @@ namespace CinemaSolution.Application.Screening
                     {
                         Id = x.t.Id,
                         Name = x.t.Name,
+                        Cinema = new CinemaViewModel()
+                        {
+                            Id = x.c.Id,
+                            Name = x.c.Name,
+                        }
                     },
                     StartTime = x.s.StartTime,
                     StartDate = x.s.StartDate,
@@ -59,6 +71,17 @@ namespace CinemaSolution.Application.Screening
                 PageSize = request.PageSize,
                 TotalRecords = totalRow,
             };
+        }
+
+        public async Task<int> Delete(int id)
+        {
+            var screening = await cinemaDBContext.Screenings.FindAsync(id);
+            if (screening == null)
+            {
+                throw new Exception($"Cannot find a screening: {id}");
+            }
+            screening.IsDeleted = true;
+            return await cinemaDBContext.SaveChangesAsync();
         }
     }
 }
