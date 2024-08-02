@@ -11,7 +11,9 @@ namespace CinemaSolution.Application.Auditorium
     public interface IAuditoriumService
     {
         Task<PagedResult<AuditoriumViewModel>> GetByCinemaId(int cinemaId);
-        Task<int> Delete(int auditoriumId);
+        Task<AuditoriumViewModel> GetById(int auditoriumId);
         Task<AuditoriumViewModel> Create(AuditoriumCreateRequest request);
+        Task<AuditoriumViewModel> Update(AuditoriumUpdateRequest request);
+        Task<int> Delete(int auditoriumId);
     }
 }

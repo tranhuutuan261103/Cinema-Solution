@@ -30,7 +30,6 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         [HttpGet("create")]
         public IActionResult Create(int cinemaId)
         {
-            ViewBag.CinemaId = cinemaId;
             List<SeatDefaultViewModel> seats = new List<SeatDefaultViewModel>();
             for (int i = 1; i <= 12; i++)
             {
@@ -69,6 +68,7 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                     });
                 }
             }
+            request.CinemaId = cinemaId;
             return View("Create", request);
         }
 
@@ -77,6 +77,44 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         {
             await _auditoriumService.Create(request);
             ViewBag.CinemaId = cinemaId;
+            return RedirectToAction("Index", new { cinemaId });
+        }
+
+        [HttpGet("{id}/update")]
+        public async Task<IActionResult> Update(int cinemaId, int id)
+        {
+            var auditorium = await _auditoriumService.GetById(id);
+
+            var seats = new List<SeatDefaultViewModel>();
+            int[] seatMapVector = auditorium.SeatMapVector.Select(c => int.Parse(c.ToString())).ToArray();
+            for (int i = 0; i < auditorium.SeatsPerRow; i++)
+            {
+                for (int j = 0; j < auditorium.SeatsPerColumn; j++)
+                {
+                    seats.Add(new SeatDefaultViewModel
+                    {
+                        Row = i + 1,
+                        Column = j + 1,
+                        TypeId = seatMapVector[i * auditorium.SeatsPerColumn + j]
+                    });
+                }
+            }
+
+            return View(new AuditoriumUpdateRequest()
+            {
+                Id = id,
+                Name = auditorium.Name,
+                SeatsPerColumn = auditorium.SeatsPerColumn,
+                SeatsPerRow = auditorium.SeatsPerRow,
+                Seats = seats,
+                CinemaId = cinemaId,
+            });
+        }
+
+        [HttpPost("{id}/update")]
+        public async Task<IActionResult> Update(int cinemaId, AuditoriumUpdateRequest request)
+        {
+            await _auditoriumService.Update(request);
             return RedirectToAction("Index", new { cinemaId });
         }
 

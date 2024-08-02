@@ -1,4 +1,4 @@
-﻿@model CinemaSolution.ViewModels.Auditorium.AuditoriumCreateRequest;
+﻿@model CinemaSolution.ViewModels.Auditorium.AuditoriumUpdateRequest;
 
 @{
     ViewData["Title"] = "Create";
@@ -24,7 +24,7 @@
             <a asp-action="Index" asp-route-cinemaId="@Model.CinemaId">Auditoriums</a>
         </li>
         <li class="breadcrumb-item">
-            Create
+            Update
         </li>
     </ol>
 </nav>
@@ -50,7 +50,7 @@
         </div>
     </form>
 
-    <form asp-action="Create" method="post">
+    <form asp-action="Update" method="post">
         <input type="number" hidden asp-for="SeatsPerRow" />
         <input type="number" hidden asp-for="SeatsPerColumn" />
         <div class="form-group form-group-seat">
@@ -60,12 +60,12 @@
                 </div>
                 <div class="seat-map-screen">Screen</div>
                 <div class="seat-area" id="seat-area">
-                    @for(int i=1; i<=Model.SeatsPerColumn; i++)
+                    @for (int i = 1; i <= Model.SeatsPerColumn; i++)
                     {
                         char seatLabel = (char)('A' + i - 1);
                         <div class="seat-row" id="seat-row-@i">
                             <div class="seat-label">@seatLabel</div>
-                            @for (int j=1; j <= Model.SeatsPerRow; j++)
+                            @for (int j = 1; j <= Model.SeatsPerRow; j++)
                             {
                                 <div class="seat-container @(Model.Seats[(i - 1) * Model.SeatsPerColumn + (j - 1)].TypeId == 2 ? "seat-vip" : "")">
                                     <input type="hidden" asp-for="@Model.Seats[(i - 1) * Model.SeatsPerColumn + (j - 1)].Row" value="@i" />
@@ -77,6 +77,7 @@
                             <div class="seat-row-checkbox">
                                 <label for="seat-row-checkbox-@i" class="seat-row-checkbox-label">
                                     <input type="checkbox" class="seat-row-checkbox-input" id="seat-row-checkbox-@i" hidden
+                                           @(Model.Seats[(i-1) * Model.SeatsPerColumn].TypeId == 2 ? "checked" : "")
                                            onchange="toggleSeatRow('seat-row-@i')">
                                 </label>
                             </div>
