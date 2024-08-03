@@ -73,6 +73,39 @@ namespace CinemaSolution.Application.Screening
             };
         }
 
+        public async Task<ScreeningViewModel> Create(ScreeningCreateRequest request)
+        {
+            var screening = new Data.Entities.Screening()
+            {
+                MovieId = request.MovieId,
+                AuditoriumId = request.Auditorium.Id,
+                StartDate = request.StartDate,
+                StartTime = request.StartTime,
+            };
+            await cinemaDBContext.Screenings.AddAsync(screening);
+            await cinemaDBContext.SaveChangesAsync();
+            var seats = new List<Data.Entities.Seat>();
+            foreach (var seat in request.SeatDefaults)
+            {
+                seats.Add(new Data.Entities.Seat()
+                {
+                    ScreeningId = screening.Id,
+                    Row = seat.Row,
+                    Number = seat.Column,
+                    SeatTypeId = seat.TypeId,
+                    SeatStatusId = 1,
+                });
+            }
+            await cinemaDBContext.Seats.AddRangeAsync(seats);
+            await cinemaDBContext.SaveChangesAsync();
+            return new ScreeningViewModel()
+            {
+                Id = screening.Id,
+                StartDate = screening.StartDate,
+                StartTime= screening.StartTime,
+            };
+        }
+
         public async Task<int> Delete(int id)
         {
             var screening = await cinemaDBContext.Screenings.FindAsync(id);

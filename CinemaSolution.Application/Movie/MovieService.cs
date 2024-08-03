@@ -19,6 +19,37 @@ namespace CinemaSolution.Application.Movie
             this.cinemaDBContext = cinemaDBContext;
         }
 
+        public async Task<List<MovieViewModel>> GetMovieOnGoing()
+        {
+            var movies = await cinemaDBContext.Movies
+                .Where(x => x.EndDate >= DateTime.Now && x.ReleaseDate <= DateTime.Now)
+                .Select(x => new MovieViewModel()
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    Duration = x.Duration,
+                    Language = x.Language,
+                    ReleaseDate = x.ReleaseDate,
+                    EndDate = x.EndDate,
+                    Director = x.Director,
+                    Actors = x.Actors,
+                    TrailerUrl = x.TrailerUrl,
+                    Rating = x.Rating,
+                    Categories = cinemaDBContext.MovieInCategories
+                        .Where(y => y.MovieId == x.Id)
+                        .Select(y => new CategoryViewModel()
+                        {
+                            Id = y.CategoryId,
+                            Name = cinemaDBContext.Categories
+                                .Where(z => z.Id == y.CategoryId)
+                                .Select(z => z.Name)
+                                .FirstOrDefault() ?? ""
+                        }).ToList()
+                }).ToListAsync();
+            return movies;
+        }
+
         public async Task<PagedResult<MovieViewModel>> GetPagedResult(GetMoviePagingRequest request)
         {
             var query = from m in cinemaDBContext.Movies
