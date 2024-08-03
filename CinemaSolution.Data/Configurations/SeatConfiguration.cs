@@ -13,7 +13,7 @@ namespace CinemaSolution.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Seat> builder)
         {
-            builder.ToTable("Seat");
+            builder.ToTable("Seats");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).UseIdentityColumn();
             builder.Property(x => x.Row).IsRequired();
