@@ -39,14 +39,17 @@
 
     <div class="actions">
         <a class="btn detail-btn" asp-controller="Screening" asp-action="Index">Get all</a>
-        <a class="btn detail-btn" asp-controller="Cinema" asp-action="Index">Search by auditorium</a>
     </div>
 </div>
 
 <div class="table-block">
     <div class="table-header">
         <h3 class="table-title">All screenings</h3>
-        <a class="btn success-btn load-target" asp-action="Create">Create new</a>
+        @if (ViewBag.AuditoriumId != null) {
+            <a class="btn success-btn load-target" asp-action="Create" asp-route-auditoriumId="@ViewBag.AuditoriumId">Create new</a>
+        } else {
+            <a class="btn detail-btn load-target" asp-controller="Cinema" asp-action="Index">Search by auditorium</a>
+        }
     </div>
     <table class="styled-table">
         <thead>
@@ -70,7 +73,7 @@
                     <td>@item.Movie.Title</td>
                     <td>@item.Auditorium.Cinema.Name</td>
                     <td>@item.Auditorium.Name</td>
-                    <td>@item.StartDate.ToLocalTime()</td>
+                    <td>@item.StartDate.ToString("dd/MM/yyyy")</td>
                     <td>@item.StartTime</td>
                     <td>@item.Movie.Duration</td>
                     <td class="table-actions-flex">
