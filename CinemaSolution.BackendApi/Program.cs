@@ -1,4 +1,5 @@
 using CinemaSolution.Application.Category;
+using CinemaSolution.Application.Movie;
 using CinemaSolution.Data.EF;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ builder.Services.AddDbContext<CinemaDBContext>(options => options.UseSqlServer(c
 
 // Inject Services
 builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IMovieService, MovieService>();
 
 var app = builder.Build();
 
@@ -25,6 +27,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseHttpsRedirection();
 

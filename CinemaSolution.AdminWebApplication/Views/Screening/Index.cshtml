@@ -68,7 +68,20 @@
         <tbody>
             @foreach (var item in Model.Items)
             {
-                <tr style="background-color: @(item.StartDate.ToLocalTime() < DateTime.Now ? "#ffcccc" : item.StartTime < DateTime.Now.AddMinutes(30).TimeOfDay ? "#ffcc99" : "#ccffcc")">
+                var currentDateTime = DateTime.Now;
+                var screeningDateTime = item.StartDate.Add(item.StartTime);
+                var timeToStart = screeningDateTime - currentDateTime;
+                var timeToStartInMinutes = timeToStart.TotalMinutes;
+                var status = "Expried";
+                if (timeToStartInMinutes > 30)
+                {
+                    status = "Future";
+                }
+                else if (timeToStartInMinutes > 0)
+                {
+                    status = "Going";
+                }
+                <tr style="background-color: @(status == "Expried" ? "#ffcccc" : (status == "Going") ? "#ffcc99" : "#ccffcc")">
                     <td>@item.Id</td>
                     <td>@item.Movie.Title</td>
                     <td>@item.Auditorium.Cinema.Name</td>
