@@ -103,37 +103,112 @@ namespace CinemaSolution.Data.Extensions
                 new Category()
                 {
                     Id = 1,
-                    Name = "Action",
+                    Name = "Cao bồi",
                 },
                 new Category()
                 {
                     Id = 2,
-                    Name = "Adventure",
+                    Name = "Chiến tranh",
                 },
                 new Category()
                 {
                     Id = 3,
-                    Name = "Animation",
+                    Name = "Gia đình",
                 },
                 new Category()
                 {
                     Id = 4,
-                    Name = "Comedy",
+                    Name = "Giả tưởng",
                 },
                 new Category()
                 {
                     Id = 5,
-                    Name = "Crime",
+                    Name = "Giật Gân",
                 },
                 new Category()
                 {
                     Id = 6,
-                    Name = "Documentary",
+                    Name = "Hài",
                 },
                 new Category()
                 {
                     Id = 7,
-                    Name = "Drama",
+                    Name = "Hành động",
+                },
+                new Category()
+                {
+                    Id = 8,
+                    Name = "Hình sự",
+                },
+                new Category()
+                {
+                    Id = 9,
+                    Name = "Hoạt hình",
+                },
+                new Category()
+                {
+                    Id = 10,
+                    Name = "Kinh dị",
+                },
+                new Category()
+                {
+                    Id = 11,
+                    Name = "Lãng mạn",
+                },
+                new Category()
+                {
+                    Id = 12,
+                    Name = "Lịch sử",
+                },
+                new Category()
+                {
+                    Id = 13,
+                    Name = "Ly kì",
+                },
+                new Category()
+                {
+                    Id = 14,
+                    Name = "Nhạc kịch",
+                },
+                new Category()
+                {
+                    Id = 15,
+                    Name = "Phiêu lưu",
+                },
+                new Category()
+                {
+                    Id = 16,
+                    Name = "Tài liệu",
+                },
+                new Category()
+                {
+                    Id = 17,
+                    Name = "Tâm lý",
+                },
+                new Category()
+                {
+                    Id = 18,
+                    Name = "Thần thoại",
+                },
+                new Category()
+                {
+                    Id = 19,
+                    Name = "Thể thao",
+                },
+                new Category()
+                {
+                    Id = 20,
+                    Name = "Tiểu sử",
+                },
+                new Category()
+                {
+                    Id = 21,
+                    Name = "Tình cảm",
+                },
+                new Category()
+                {
+                    Id = 22,
+                    Name = "Tội phạm",
                 }
             );
 
@@ -141,31 +216,46 @@ namespace CinemaSolution.Data.Extensions
                 new Movie()
                 {
                     Id = 1,
-                    Title = "The Old Guard",
-                    Description = "Four undying warriors who've secretly protected humanity for centuries become targeted for their mysterious powers just as they discover a new immortal.",
-                    Duration = 125,
+                    Title = "Deadpool & Wolverine",
+                    Description = "Sau một số tác phẩm chưa đạt thành công như kì vọng gần đây, Marvel Studios ngày càng thận trọng khi ra mắt các dự án mới. Deadpool & Wolverine chính là bộ phim Marvel duy nhất ra mắt năm 2024. Bộ phim là tác phẩm mà công chúng kì vọng sẽ cứu rỗi vũ trụ điện ảnh Marvel khỏi cơn thoái trào. Chính vì vậy, chẳng có gì ngạc nhiên khi Deadpool & Wolverine được đầu tư, chăm chút hết sức kĩ lưỡng. \r\nSau teaser và trailer đầu tiên, cốt truyện Deadpool & Wolverine dần dần hé lộ. Đặc sản “trứng phục sinh” bùng nổ ở trailer, khiến khán giả đồn đoán liên tục, gợi nhớ đến loạt tác phẩm quen thuộc như Ant-Man, X-Men United, X-Men: First Class, Loki… \r\nPhản diện phần này là Cassandra Nova – em gái song sinh độc ác của giáo sư X. Ả sở hữu khả năng ngoại cảm cùng hàng tá kĩ năng dễ dàng đo ván Wolverine và Deadpool. Vai diễn nặng kí này Emma Corrin đảm nhận. Cô được biết đến khi trở thành vương phi Diana thời trẻ trong series truyền hình nổi tiếng The Crown. \r\nSau Tim Miller (Deadpool) và David Leitch (Deadpool 2), đạo diễn Shawn Levy của Real Steel và Free Guy là cái tên tiếp theo cầm trịch tác phẩm về gã phản anh hùng nói nhiều. Ryan Reynolds tiếp tục quay lại vai diễn mang tính biểu tượng trong sự nghiệp. Anh tham gia luôn khâu biên kịch cùng Rhett Reese, Paul Wernick, Zeb Wells và Shawn Levy. Hugh Jackman cũng tái xuất vai diễn dường như chẳng ai thay thế nổi – Wolverine.",
+                    Duration = 127,
                     Rating = 9,
-                    Language = "English",
-                    TrailerUrl = "https://www.youtube.com/embed/aK-X2d0lJ_s",
+                    Language = "Phụ đề",
+                    TrailerUrl = "https://www.youtube.com/embed/lW4-A3ZQnVQ",
                     IsDeleted = false,
-                    Director = "Gina Prince-Bythewood",
-                    Actors = "Charlize Theron, KiKi Layne, Marwan Kenzari, Luca Marinelli, Harry Melling",
-                    ReleaseDate = new DateTime(2024, 5, 20),
+                    Director = "Shawn Levy",
+                    Actors = "Ryan Reynolds, Hugh Jackman, Patrick Stewart",
+                    ReleaseDate = new DateTime(2024, 7, 27),
                     EndDate = new DateTime(2024, 12, 20)
                 },
                 new Movie()
                 {
                     Id = 2,
-                    Title = "The Kissing Booth 2",
-                    Description = "In the sequel to 2018's THE KISSING BOOTH, high school senior Elle juggles a long-distance relationship with her dreamy boyfriend Noah, college applications, and a new friendship with a handsome classmate that could change everything.",
-                    Duration = 130,
-                    Rating = 7,
-                    Language = "English",
-                    TrailerUrl = "https://www.youtube.com/embed/ZR2JlDnT2l8",
+                    Title = "Thám Tử Lừng Danh Conan: Ngôi Sao 5 Cánh 1 Triệu Đô",
+                    Description = "Siêu trộm Kaito Kid và thám tử miền Tây Hattori Heiji cùng đối đầu trong cuộc tranh giành thanh kiếm thuộc về Hijikata Toushizou - phó chỉ huy của Shinsengumi! Thù mới hận cũ, Heiji sẽ xử trí Kid thế nào đây?\r\nNgoài ra, một bí mật kinh khủng về Kaito Kid sắp được tiếp lộ...",
+                    Duration = 111,
+                    Rating = 9.8,
+                    Language = "Phụ đề Lồng tiếng",
+                    TrailerUrl = "https://www.youtube.com/embed/x_gGMJOppAo",
                     IsDeleted = false,
-                    Director = "Vince Marcello",
-                    Actors = "Joey King, Joel Courtney, Jacob Elordi",
-                    ReleaseDate = new DateTime(2024, 5, 20),
+                    Director = "Nagaoka Tomoka",
+                    Actors = "Takayama Minami, Yamazaki Wakana",
+                    ReleaseDate = new DateTime(2024, 8, 2),
+                    EndDate = new DateTime(2024, 12, 20)
+                },
+                new Movie()
+                {
+                    Id = 3,
+                    Title = "Vây Hãm Trên Không",
+                    Description = "Bộ phim hành động ly kỳ dựa trên sự kiện có thật với sự tham gia của Ha Jung Woo, Yeo Jin Goo và Sung Dong Il được dựa trên một sự kiện có thật năm 1971, khi một thanh niên Hàn Quốc định cướp một chiếc máy bay chở khách khởi hành từ thành phố cảnh phía đông Sokcho bay tới Seoul. Mọi người trên chuyến bay này đều đang đặt cược mạng sống của mình!",
+                    Duration = 100,
+                    Rating = 9.5,
+                    Language = "Phụ đề",
+                    TrailerUrl = "https://www.youtube.com/embed/1Umr4h5dn5I",
+                    IsDeleted = false,
+                    Director = "Kim Sung Han",
+                    Actors = "Ha Jung Woo, Yeo Jin Goo, Sung Dong Il",
+                    ReleaseDate = new DateTime(2024, 7, 19),
                     EndDate = new DateTime(2024, 12, 20)
                 }
             );
@@ -175,32 +265,37 @@ namespace CinemaSolution.Data.Extensions
                new MovieInCategory()
                {
                    MovieId = 1,
-                   CategoryId = 1
+                   CategoryId = 7
                },
                 new MovieInCategory()
                 {
                     MovieId = 1,
-                    CategoryId = 2
+                    CategoryId = 6
                 },
                 new MovieInCategory()
                 {
                     MovieId = 1,
-                    CategoryId = 3
-                },
-                new MovieInCategory()
-                {
-                    MovieId = 2,
                     CategoryId = 4
                 },
                 new MovieInCategory()
                 {
                     MovieId = 2,
+                    CategoryId = 9
+                },
+                new MovieInCategory()
+                {
+                    MovieId = 3,
+                    CategoryId = 7
+                },
+                new MovieInCategory()
+                {
+                    MovieId = 3,
                     CategoryId = 5
                 },
                 new MovieInCategory()
                 {
-                    MovieId = 2,
-                    CategoryId = 6
+                    MovieId = 3,
+                    CategoryId = 22
                 }
             );
 
@@ -228,7 +323,7 @@ namespace CinemaSolution.Data.Extensions
                     Id = 1,
                     MovieId = 1,
                     MovieImageTypeId = 1,
-                    ImageUrl = "https://image.tmdb.org/t/p/w500/7D430eqZj8y3oVkLFfsWXGRcpEG.jpg",
+                    ImageUrl = "https://firebasestorage.googleapis.com/v0/b/tune-cinema.appspot.com/o/movie_thumbnail%2FDeadpool%20%26%20Wolverine.jpg?alt=media&token=ae6340d3-3b0d-4b59-b1ef-d8c56aa72c54",
                     IsPoster = true,
                 },
                 new MovieImage()
@@ -236,7 +331,7 @@ namespace CinemaSolution.Data.Extensions
                     Id = 2,
                     MovieId = 1,
                     MovieImageTypeId = 2,
-                    ImageUrl = "https://image.tmdb.org/t/p/w500/5aXp2s4l6g5PcMMesIj63mx8hmJ.jpg",
+                    ImageUrl = "https://firebasestorage.googleapis.com/v0/b/tune-cinema.appspot.com/o/movie_thumbnail%2FDeadpool%20%26%20Wolverine%20-%20Backdrop.jpg?alt=media&token=68132efe-85cc-4760-845a-12164e26453b",
                     IsPoster = false,
                 },
                 new MovieImage()
@@ -244,7 +339,7 @@ namespace CinemaSolution.Data.Extensions
                     Id = 3,
                     MovieId = 2,
                     MovieImageTypeId = 1,
-                    ImageUrl = "https://image.tmdb.org/t/p/w500/7D430eqZj8y3oVkLFfsWXGRcpEG.jpg",
+                    ImageUrl = "https://firebasestorage.googleapis.com/v0/b/tune-cinema.appspot.com/o/movie_thumbnail%2FConan.jpg?alt=media&token=c0ffb6db-f8b1-4930-9136-54bd38ccc209",
                     IsPoster = true,
                 },
                 new MovieImage()
@@ -252,8 +347,16 @@ namespace CinemaSolution.Data.Extensions
                     Id = 4,
                     MovieId = 2,
                     MovieImageTypeId = 2,
-                    ImageUrl = "https://image.tmdb.org/t/p/w500/5aXp2s4l6g5PcMMesIj63mx8hmJ.jpg",
+                    ImageUrl = "https://firebasestorage.googleapis.com/v0/b/tune-cinema.appspot.com/o/movie_thumbnail%2FConan-Backdrop.jpg?alt=media&token=6fb5b903-397d-4fa2-9c2a-90f52007359e",
                     IsPoster = false,
+                },
+                new MovieImage()
+                {
+                    Id = 5,
+                    MovieId = 3,
+                    MovieImageTypeId = 1,
+                    ImageUrl = "https://firebasestorage.googleapis.com/v0/b/tune-cinema.appspot.com/o/movie_thumbnail%2FVay%20Ham%20Tren%20Khong.jpg?alt=media&token=fa1c6658-db84-4bbc-9410-7c00c9f98b68",
+                    IsPoster = true,
                 });
 
             // Comment
@@ -312,11 +415,11 @@ namespace CinemaSolution.Data.Extensions
                     Id = 1,
                     Name = "Hà Nội"
                 },
-                               new Province()
-                               {
-                                   Id = 2,
-                                   Name = "Đà Nẵng"
-                               }
+                new Province()
+                {
+                    Id = 2,
+                    Name = "Đà Nẵng"
+                }
             );
 
             modelBuilder.Entity<Cinema>().HasData(
@@ -372,7 +475,7 @@ namespace CinemaSolution.Data.Extensions
                 Id = 1,
                 MovieId = 1,
                 AuditoriumId = 1,
-                StartDate = new DateTime(2024, 5, 20),
+                StartDate = new DateTime(2024, 8, 15),
                 StartTime = new TimeSpan(10, 0, 0),
                 IsDeleted = false
             },
@@ -381,7 +484,7 @@ namespace CinemaSolution.Data.Extensions
                     Id = 2,
                     MovieId = 1,
                     AuditoriumId = 1,
-                    StartDate = new DateTime(2024, 5, 20),
+                    StartDate = new DateTime(2024, 8, 16),
                     StartTime = new TimeSpan(20, 0, 0),
                     IsDeleted = false
                 },
@@ -390,7 +493,7 @@ namespace CinemaSolution.Data.Extensions
                     Id = 3,
                     MovieId = 1,
                     AuditoriumId = 2,
-                    StartDate = new DateTime(2024, 5, 20),
+                    StartDate = new DateTime(2024, 8, 18),
                     StartTime = new TimeSpan(20, 0, 0),
                     IsDeleted = false
                 },
@@ -399,7 +502,7 @@ namespace CinemaSolution.Data.Extensions
                     Id = 4,
                     MovieId = 2,
                     AuditoriumId = 3,
-                    StartDate = new DateTime(2024, 5, 20),
+                    StartDate = new DateTime(2024, 8, 18),
                     StartTime = new TimeSpan(20, 0, 0),
                     IsDeleted = false
                 }
