@@ -20,7 +20,7 @@ namespace CinemaSolution.Data.Configurations
             builder.Property(x => x.Language).IsRequired().HasMaxLength(32);
             builder.Property(x => x.Director).IsRequired().HasMaxLength(128);
             builder.Property(x => x.Actors).IsRequired().HasMaxLength(256);
-            builder.Property(x => x.Description).HasMaxLength(1028);
+            builder.Property(x => x.Description).HasMaxLength(2048);
             builder.Property(x => x.Duration).IsRequired();
 
             builder.Property(x => x.ReleaseDate).IsRequired().HasDefaultValue(DateTime.Now);
