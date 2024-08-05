@@ -45,6 +45,19 @@ namespace CinemaSolution.Application.Cinema
             return pagedResult;
         }
 
+        public async Task<List<CinemaViewModel>> GetAll()
+        {
+            var cinemas = await cinemaDBContext.Cinemas.Where(x => x.IsDeleted == false)
+                .Select(x => new CinemaViewModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    LogoUrl = x.LogoUrl,
+                    IsDeleted = x.IsDeleted
+                }).ToListAsync();
+            return cinemas;
+        }
+
         public async Task<CinemaViewModel> GetById(int id)
         {
             var cinema = await cinemaDBContext.Cinemas.FindAsync(id);
