@@ -426,16 +426,14 @@ namespace CinemaSolution.Data.Extensions
                 new Cinema()
                 {
                     Id = 1,
-                    Name = "CGV Hà Nội",
-                    Address = "Hà Nội",
-                    ProvinceId = 1
+                    Name = "CGV",
+                    LogoUrl = "https://firebasestorage.googleapis.com/v0/b/tune-cinema.appspot.com/o/cinema_logo%2FCGV.png?alt=media&token=b1da43c8-0877-480a-96be-a557b3347a20",
                 },
                 new Cinema()
                 {
                     Id = 2,
-                    Name = "CGV Đà Nẵng",
-                    Address = "Đà Nẵng",
-                    ProvinceId = 2
+                    Name = "Lotte",
+                    LogoUrl = "https://firebasestorage.googleapis.com/v0/b/tune-cinema.appspot.com/o/cinema_logo%2FLotte.png?alt=media&token=02d3da6d-061c-47d2-9838-2e6061b101d6",
                 }
             );
 
@@ -443,28 +441,66 @@ namespace CinemaSolution.Data.Extensions
                 new Auditorium()
                 {
                     Id = 1,
-                    Name = "A1",
+                    Name = "CGV Long Biên",
                     CinemaId = 1,
+                    Address = "Hà Nội",
+                    ProvinceId = 1,
+                    Longitude = 21,
+                    Latitude = 105,
                     SeatMapVector = "111111111111111111111111222222222222222222222222222222222222111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
                 },
                 new Auditorium()
                 {
                     Id = 2,
-                    Name = "A2",
+                    Name = "CGV Vincom Bà Triệu",
                     CinemaId = 1,
+                    Address = "Hà Nội",
+                    ProvinceId = 1,
+                    Longitude = 21,
+                    Latitude = 105,
                     SeatMapVector = "111111111111111111111111222222222222222222222222222222222222111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
                 },
                 new Auditorium()
                 {
                     Id = 3,
-                    Name = "A3",
-                    CinemaId = 2,
+                    Name = "CGV Vincom Đà Nẵng",
+                    Address = "Đà Nẵng",
+                    ProvinceId = 2,
+                    Longitude = 16,
+                    Latitude = 108,
+                    CinemaId = 1,
                     SeatMapVector = "111111111111111111111111222222222222222222222222222222222222111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
                 },
                 new Auditorium()
                 {
                     Id = 4,
-                    Name = "A4",
+                    Name = "CGV Vĩnh Trung Plaza",
+                    Address = "Đà Nẵng",
+                    ProvinceId = 2,
+                    Longitude = 16,
+                    Latitude = 108,
+                    CinemaId = 1,
+                    SeatMapVector = "111111111111111111111111222222222222222222222222222222222222111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+                },
+                new Auditorium()
+                {
+                    Id = 5,
+                    Name = "Lotte Đà Nẵng",
+                    Address = "Đà Nẵng",
+                    ProvinceId = 2,
+                    Longitude = 16,
+                    Latitude = 108,
+                    CinemaId = 2,
+                    SeatMapVector = "111111111111111111111111222222222222222222222222222222222222111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+                },
+                new Auditorium()
+                {
+                    Id = 6,
+                    Name = "Lotte Vĩnh Trung Plaza",
+                    Address = "Đà Nẵng",
+                    ProvinceId = 2,
+                    Longitude = 16,
+                    Latitude = 108,
                     CinemaId = 2,
                     SeatMapVector = "111111111111111111111111222222222222222222222222222222222222111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
                 }

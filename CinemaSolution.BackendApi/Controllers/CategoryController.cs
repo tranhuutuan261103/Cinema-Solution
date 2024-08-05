@@ -4,7 +4,7 @@ using CinemaSolution.Application.Category;
 namespace CinemaSolution.BackendApi.Controllers
 {
     [ApiController]
-    [Route("categories")]
+    [Route("api/categories")]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;

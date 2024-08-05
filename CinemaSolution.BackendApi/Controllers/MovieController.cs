@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CinemaSolution.BackendApi.Controllers
 {
     [ApiController]
-    [Route("movies")]
+    [Route("api/movies")]
     public class MovieController : Controller
     {
         private readonly IMovieService _movieService;

@@ -10,7 +10,6 @@ namespace CinemaSolution.ViewModels.Cinema
     public class CinemaCreateRequest
     {
         public string Name { get; set; } = string.Empty;
-        public int ProvinceId { get; set; }
-        public string Address { get; set; } = string.Empty;
+        public string LogoUrl { get; set; } = string.Empty;
     }
 }

@@ -64,8 +64,7 @@
             <tr>
                 <th>Id</th>
                 <th>Name</th>
-                <th>Province</th>
-                <th>Address</th>
+                <th>LogoUrl</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -80,8 +79,7 @@
                             @item.Name
                         </a>
                     </td>
-                    <td>@item.Province.Name</td>
-                    <td>@item.Address</td>
+                    <td>@item.LogoUrl</td>
                     <td class="table-actions-flex">
                         <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
                             <i class="fa-solid fa-pen-to-square table-btn-icon"></i>
