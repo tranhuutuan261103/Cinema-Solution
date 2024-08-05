@@ -71,8 +71,8 @@
                     <li class="nav-item @(Convert.ToString(ViewData["BarActive"]) == "cinema" ? "nav-item__active" : "")">
                         <a class="nav-link" asp-controller="Cinema" asp-action="Index">Cinemas</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#!">Auditoriums</a>
+                    <li class="nav-item @(Convert.ToString(ViewData["BarActive"]) == "auditorium" ? "nav-item__active" : "")">
+                        <a class="nav-link" asp-controller="Auditorium" asp-action="Index">Auditoriums</a>
                     </li>
                 </ul>
             </li>

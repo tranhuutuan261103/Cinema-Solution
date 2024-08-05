@@ -18,9 +18,6 @@
             <a asp-controller="Cinema">Cinemas</a>
         </li>
         <li class="breadcrumb-item">
-            @ViewBag.CinemaId
-        </li>
-        <li class="breadcrumb-item">
             Auditoriums
         </li>
     </ol>
@@ -37,7 +34,7 @@
 
 <div class="table-block">
     <div class="table-header">
-        <h3 class="table-title">All categories</h3>
+        <h3 class="table-title">All auditoriums</h3>
         <a class="btn success-btn load-target" asp-action="Create" asp-route-cinemaId="@ViewBag.CinemaId">Create new</a>
     </div>
     <table class="styled-table">
@@ -45,6 +42,8 @@
             <tr>
                 <th>Id</th>
                 <th>Name</th>
+                <th>Address</th>
+                <th>Coordinates</th>
                 <th>Seats per row</th>
                 <th>Seats per column</th>
                 <th>Cinema name</th>
@@ -67,11 +66,13 @@
                             @item.Name
                         </a>
                     </td>
+                    <td>@item.Address</td>
+                    <td>@item.Latitue, @item.Longitude</td>
                     <td>@item.SeatsPerRow</td>
                     <td>@item.SeatsPerColumn</td>
                     <td>@item.Cinema.Name</td>
                     <td class="table-actions-flex">
-                        <a class="btn-edit table-btn load-target" asp-route-cinemaId="@item.Cinema.Id" asp-route-id="@item.Id" asp-action="Update">
+                        <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
                             <i class="fa-solid fa-pen-to-square table-btn-icon"></i>
                         </a>
                         <button class="btn-delete table-btn" onclick="showModelAuditoriumDelete(@ViewBag.CinemaId, @item.Id)">

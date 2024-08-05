@@ -1,34 +1,48 @@
 ﻿using Azure.Core;
 using CinemaSolution.AdminWebApplication.Filters;
 using CinemaSolution.Application.Auditorium;
+using CinemaSolution.Application.Cinema;
+using CinemaSolution.Application.Province;
+using CinemaSolution.Data.Entities;
 using CinemaSolution.ViewModels.Auditorium;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CinemaSolution.AdminWebApplication.Controllers
 {
-    [Route("cinemas/{cinemaId}/auditoriums")]
+    [Route("auditoriums")]
     [Authorize(Roles = "Administrator")]
-    [SetBarActive("cinemas")]
+    [SetBarActive("auditorium")]
     public class AuditoriumController : Controller
     {
         private readonly IAuditoriumService _auditoriumService;
+        private readonly ICinemaService _cinemaService;
+        private readonly IProvinceService _provinceService;
 
-        public AuditoriumController(IAuditoriumService auditoriumService)
+        public AuditoriumController(IAuditoriumService auditoriumService, ICinemaService cinemaService, IProvinceService provinceService)
         {
             _auditoriumService = auditoriumService;
+            _cinemaService = cinemaService;
+            _provinceService = provinceService;
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Index(int cinemaId)
+        public async Task<IActionResult> Index(int? cinemaId, int? provinceId, int pageIndex = 1, int pageSize = 5)
         {
-            var auditoriums = await _auditoriumService.GetByCinemaId(cinemaId);
+            var request = new GetAuditoriumPagingRequest()
+            {
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                CinemaId = cinemaId,
+                ProvinceId = provinceId
+            };
+            var auditoriums = await _auditoriumService.GetPagedResult(request);
             ViewBag.CinemaId = cinemaId;
             return View(auditoriums);
         }
 
         [HttpGet("create")]
-        public IActionResult Create(int cinemaId)
+        public async Task<IActionResult> Create(int cinemaId)
         {
             List<SeatDefaultViewModel> seats = new List<SeatDefaultViewModel>();
             for (int i = 1; i <= 12; i++)
@@ -43,6 +57,13 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                     });
                 }
             }
+
+            var provinces = await _provinceService.GetAll();
+            ViewBag.Provinces = provinces;
+
+            var cinemas = await _cinemaService.GetAll();
+            ViewBag.Cinemas = cinemas;
+
             return View(new AuditoriumCreateRequest { 
                 CinemaId = cinemaId,
                 SeatsPerColumn = 12,
@@ -73,15 +94,14 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create(int cinemaId, AuditoriumCreateRequest request)
+        public async Task<IActionResult> Create(AuditoriumCreateRequest request)
         {
             await _auditoriumService.Create(request);
-            ViewBag.CinemaId = cinemaId;
-            return RedirectToAction("Index", new { cinemaId });
+            return RedirectToAction("Index");
         }
 
         [HttpGet("{id}/update")]
-        public async Task<IActionResult> Update(int cinemaId, int id)
+        public async Task<IActionResult> Update(int id)
         {
             var auditorium = await _auditoriumService.GetById(id);
 
@@ -100,6 +120,12 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                 }
             }
 
+            var provinces = await _provinceService.GetAll();
+            ViewBag.Provinces = provinces;
+
+            var cinemas = await _cinemaService.GetAll();
+            ViewBag.Cinemas = cinemas;
+
             return View(new AuditoriumUpdateRequest()
             {
                 Id = id,
@@ -107,15 +133,14 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                 SeatsPerColumn = auditorium.SeatsPerColumn,
                 SeatsPerRow = auditorium.SeatsPerRow,
                 Seats = seats,
-                CinemaId = cinemaId,
             });
         }
 
         [HttpPost("{id}/update")]
-        public async Task<IActionResult> Update(int cinemaId, AuditoriumUpdateRequest request)
+        public async Task<IActionResult> Update(AuditoriumUpdateRequest request)
         {
             await _auditoriumService.Update(request);
-            return RedirectToAction("Index", new { cinemaId });
+            return RedirectToAction("Index");
         }
 
         [HttpPost("{auditoriumId}/delete")]

@@ -10,6 +10,7 @@ namespace CinemaSolution.Application.Auditorium
 {
     public interface IAuditoriumService
     {
+        Task<PagedResult<AuditoriumViewModel>> GetPagedResult(GetAuditoriumPagingRequest request);
         Task<PagedResult<AuditoriumViewModel>> GetByCinemaId(int cinemaId);
         Task<AuditoriumViewModel> GetById(int auditoriumId);
         Task<AuditoriumViewModel> Create(AuditoriumCreateRequest request);

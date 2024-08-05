@@ -7,18 +7,17 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/seatMap.css" />
+    <style>
+        .form-group-dropdown {
+            width: 200px;
+        }
+    </style>
 }
 
 <nav class="breadcrumb">
     <ol class="breadcrumb-list">
         <li class="breadcrumb-item">
             <a asp-controller="Home">Home</a>
-        </li>
-        <li class="breadcrumb-item">
-            <a asp-controller="Cinema">Cinemas</a>
-        </li>
-        <li class="breadcrumb-item">
-            @Model.CinemaId
         </li>
         <li class="breadcrumb-item">
             <a asp-action="Index" asp-route-cinemaId="@Model.CinemaId">Auditoriums</a>
@@ -91,6 +90,71 @@
             <input type="text" class="form-control" id="auditorium-name" asp-for="Name" placeholder="Enter name">
         </div>
 
+        <div class="form-group form-group-dropdown">
+            <label for="auditorium-province" class="form-label">Province</label>
+            <div class="dropdown">
+                <input type="text" class="form-control" id="auditorium-province" asp-for="ProvinceId" hidden>
+                <div class="select">
+                    @if (ViewBag.ProvinceId == null)
+                    {
+                        <span id="auditorium-province-selection" class="selected" data-id="-1">Select province</span>
+                    }
+                    else
+                    {
+                        <span id="auditorium-province-selection" class="selected" data-id="@ViewBag.ProvinceId">@ViewBag.ProvinceName</span>
+                    }
+                    <i class="fa fa-chevron-left select-icon"></i>
+                </div>
+                <ul class="dropdown-content dropdown-content-show">
+                    @foreach (var item in ViewBag.Provinces)
+                    {
+                        <li class="dropdown-item" data-id="@item.Id" data-value="@item.Name" onclick="updateSelection(@item.Id, 'auditorium-province')">@item.Name</li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group form-group-dropdown">
+            <label for="auditorium-cinema" class="form-label">Cinema</label>
+            <div class="dropdown">
+                <input type="text" class="form-control" id="auditorium-cinema" asp-for="CinemaId" hidden>
+                <div class="select">
+                    @if (ViewBag.CinemaId == null)
+                    {
+                        <span id="auditorium-cinema-selection" class="selected" data-id="-1">Select cinema</span>
+                    }
+                    else
+                    {
+                        <span id="auditorium-cinema-selection" class="selected" data-id="@ViewBag.ProvinceId">@ViewBag.ProvinceName</span>
+                    }
+                    <i class="fa fa-chevron-left select-icon"></i>
+                </div>
+                <ul class="dropdown-content dropdown-content-show">
+                    @foreach (var item in ViewBag.Cinemas)
+                    {
+                        <li class="dropdown-item" data-id="@item.Id" data-value="@item.Name" onclick="updateSelection(@item.Id, 'auditorium-cinema')">@item.Name</li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="auditorium-address" class="form-label">Address of auditorium</label>
+            <input type="text" class="form-control" id="auditorium-address" asp-for="Address" placeholder="Enter address">
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="auditorium-latitude" class="form-label">Latitude of auditorium</label>
+                <input type="number" class="form-control" id="auditorium-latitude" asp-for="Latitude" placeholder="Enter latitude">
+            </div>
+
+            <div class="form-group">
+                <label for="auditorium-longitude" class="form-label">Longitude of auditorium</label>
+                <input type="number" class="form-control" id="auditorium-longitude" asp-for="Longitude" placeholder="Enter longitude">
+            </div>
+        </div>
+
         <div class="row form-group-btn">
             <button type="submit" class="btn success-btn">Save</button>
             <button type="reset" class="btn reset-btn">Reset</button>
@@ -122,6 +186,11 @@
                     seat.value = 1;
                 });
             }
+        }
+
+        function updateSelection(provinceId, elementId) {
+            var provinceSelectionInput = document.getElementById(elementId);
+            provinceSelectionInput.value = provinceId;
         }
     </script>
 }

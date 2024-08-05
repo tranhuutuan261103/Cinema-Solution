@@ -17,6 +17,55 @@ namespace CinemaSolution.Application.Auditorium
         {
             this.cinemaDBContext = cinemaDBContext;
         }
+
+        public async Task<PagedResult<AuditoriumViewModel>> GetPagedResult(GetAuditoriumPagingRequest request)
+        {
+            var query = from a in cinemaDBContext.Auditoriums
+                        join c in cinemaDBContext.Cinemas on a.CinemaId equals c.Id
+                        join p in cinemaDBContext.Provinces on a.ProvinceId equals p.Id
+                        select new AuditoriumViewModel()
+                        {
+                            Id = a.Id,
+                            Name = a.Name,
+                            Cinema = new ViewModels.Cinema.CinemaViewModel()
+                            {
+                                Id = c.Id,
+                                Name = c.Name
+                            },
+                            Province = new ViewModels.Province.ProvinceViewModel()
+                            {
+                                Id = p.Id,
+                                Name = p.Name
+                            },
+                            SeatsPerRow = a.NumberOfColumnSeats,
+                            SeatsPerColumn = a.NumberOfRowSeats,
+                            Address = a.Address,
+                            Latitue = a.Latitude,
+                            Longitude = a.Longitude,
+                        };
+            if (request.CinemaId.HasValue)
+            {
+                query = query.Where(x => x.Cinema.Id == request.CinemaId);
+            }
+            if (request.ProvinceId.HasValue)
+            {
+                query = query.Where(x => x.Province.Id == request.ProvinceId);
+            }
+
+            var totalRecords = await query.CountAsync();
+
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .ToListAsync();
+            var result = new PagedResult<AuditoriumViewModel>()
+            {
+                Items = data,
+                TotalRecords = totalRecords,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize
+            };
+            return result;
+        }
         public async Task<PagedResult<AuditoriumViewModel>> GetByCinemaId(int cinemaId)
         {
             var query = from a in cinemaDBContext.Auditoriums
@@ -82,6 +131,10 @@ namespace CinemaSolution.Application.Auditorium
                 {
                     Name = request.Name,
                     CinemaId = request.CinemaId,
+                    Address = request.Address,
+                    Latitude = request.Latitude,
+                    Longitude = request.Longitude,
+                    ProvinceId = request.ProvinceId,
                     NumberOfColumnSeats = request.SeatsPerRow,
                     NumberOfRowSeats = request.SeatsPerColumn,
                     SeatMapVector = string.Join("",request.Seats.Select(x => x.TypeId))
@@ -116,6 +169,10 @@ namespace CinemaSolution.Application.Auditorium
             }
             auditorium.Name = request.Name;
             auditorium.CinemaId = request.CinemaId;
+            auditorium.Address = request.Address;
+            auditorium.Latitude = request.Latitude;
+            auditorium.Longitude = request.Longitude;
+            auditorium.ProvinceId = request.ProvinceId;
             auditorium.NumberOfColumnSeats = request.SeatsPerRow;
             auditorium.NumberOfRowSeats = request.SeatsPerColumn;
             auditorium.SeatMapVector = string.Join("", request.Seats.Select(x => x.TypeId));

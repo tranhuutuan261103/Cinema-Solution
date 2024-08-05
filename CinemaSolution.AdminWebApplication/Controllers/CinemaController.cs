@@ -57,7 +57,6 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         public async Task<IActionResult> Create()
         {
             var provinces = await _provinceService.GetAll();
-            ViewBag.Provinces = provinces;
             return View();
         }
 
