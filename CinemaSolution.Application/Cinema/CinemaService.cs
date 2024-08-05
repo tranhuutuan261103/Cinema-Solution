@@ -21,13 +21,8 @@ namespace CinemaSolution.Application.Cinema
         public async Task<PagedResult<CinemaViewModel>> GetPagedResult(GetCinemaPagingRequest request)
         {
             var query = from c in cinemaDBContext.Cinemas
-                        join p in cinemaDBContext.Provinces on c.ProvinceId equals p.Id
                         where c.IsDeleted == false && (string.IsNullOrEmpty(request.Keyword) || c.Name.Contains(request.Keyword))
-                        select new { c, p };
-            if (request.ProvinceId != null)
-            {
-                query = query.Where(x => x.c.ProvinceId == request.ProvinceId);
-            }
+                        select new { c };
             var totalRow = await query.CountAsync();
             var data = await query
                 .Skip((request.PageIndex - 1) * request.PageSize)
@@ -37,12 +32,7 @@ namespace CinemaSolution.Application.Cinema
                 {
                     Id = x.c.Id,
                     Name = x.c.Name,
-                    Province = new ProvinceViewModel
-                    {
-                        Id = x.p.Id,
-                        Name = x.p.Name
-                    },
-                    Address = x.c.Address,
+                    LogoUrl = x.c.LogoUrl,
                     IsDeleted = x.c.IsDeleted
                 }).ToListAsync();
             var pagedResult = new PagedResult<CinemaViewModel>
@@ -62,21 +52,11 @@ namespace CinemaSolution.Application.Cinema
             {
                 throw new Exception("Cinema not found");
             }
-            var province = await cinemaDBContext.Provinces.FindAsync(cinema.ProvinceId);
-            if (province == null)
-            {
-                throw new Exception("Province not found");
-            }
             return new CinemaViewModel
             {
                 Id = cinema.Id,
                 Name = cinema.Name,
-                Province = new ProvinceViewModel
-                {
-                    Id = province.Id,
-                    Name = province.Name
-                },
-                Address = cinema.Address,
+                LogoUrl = cinema.LogoUrl,
                 IsDeleted = cinema.IsDeleted
             };
         }
@@ -85,18 +65,10 @@ namespace CinemaSolution.Application.Cinema
         {
             try
             {
-                var province = await cinemaDBContext.Provinces.FindAsync(request.ProvinceId);
-
-                if (province == null)
-                {
-                    throw new Exception("Province not found");
-                }
-
                 var cinema = new Data.Entities.Cinema()
                 {
                     Name = request.Name,
-                    ProvinceId = request.ProvinceId,
-                    Address = request.Address,
+                    LogoUrl = request.LogoUrl,
                     IsDeleted = false
                 };
                 cinemaDBContext.Cinemas.Add(cinema);
@@ -106,12 +78,7 @@ namespace CinemaSolution.Application.Cinema
                 {
                     Id = cinema.Id,
                     Name = cinema.Name,
-                    Province = new ProvinceViewModel
-                    {
-                        Id = cinema.ProvinceId,
-                        Name = province.Name
-                    },
-                    Address = cinema.Address,
+                    LogoUrl = cinema.LogoUrl,
                     IsDeleted = cinema.IsDeleted
                 };
             }
@@ -130,25 +97,14 @@ namespace CinemaSolution.Application.Cinema
                 {
                     throw new Exception("Cinema not found");
                 }
-                var province = await cinemaDBContext.Provinces.FindAsync(request.ProvinceId);
-                if (province == null)
-                {
-                    throw new Exception("Province not found");
-                }
                 cinema.Name = request.Name;
-                cinema.ProvinceId = request.ProvinceId;
-                cinema.Address = request.Address;
+                cinema.LogoUrl = request.LogoUrl;
                 await cinemaDBContext.SaveChangesAsync();
                 return new CinemaViewModel
                 {
                     Id = cinema.Id,
                     Name = cinema.Name,
-                    Province = new ProvinceViewModel
-                    {
-                        Id = cinema.ProvinceId,
-                        Name = province.Name
-                    },
-                    Address = cinema.Address,
+                    LogoUrl = cinema.LogoUrl,
                     IsDeleted = cinema.IsDeleted
                 };
             } catch (Exception ex)

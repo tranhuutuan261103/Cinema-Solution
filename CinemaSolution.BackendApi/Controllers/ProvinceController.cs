@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CinemaSolution.BackendApi.Controllers
 {
     [ApiController]
-    [Route("provinces")]
+    [Route("api/provinces")]
     public class ProvinceController : Controller
     {
         private readonly IProvinceService _provinceService;

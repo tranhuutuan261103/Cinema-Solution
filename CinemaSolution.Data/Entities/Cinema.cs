@@ -10,9 +10,7 @@ namespace CinemaSolution.Data.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public int ProvinceId { get; set; }
-        public virtual Province? Province { get; set; }
-        public string Address { get; set; } = string.Empty;
+        public string LogoUrl { get; set; } = string.Empty;
         public bool IsDeleted { get; set; }
         public virtual ICollection<Auditorium>? Auditoriums { get; set; }
     }

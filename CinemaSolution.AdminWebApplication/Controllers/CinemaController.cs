@@ -85,16 +85,11 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         public async Task<IActionResult> Update(int id)
         {
             var cinema = await _cinemaService.GetById(id);
-            var provinces = await _provinceService.GetAll();
-            ViewBag.Provinces = provinces;
-            ViewBag.ProvinceId = cinema.Province.Id;
-            ViewBag.ProvinceName = cinema.Province.Name;
             return View(new CinemaUpdateRequest()
             {
                 Id = id,
                 Name = cinema.Name,
-                Address = cinema.Address,
-                ProvinceId = cinema.Province.Id
+                LogoUrl = cinema.LogoUrl,
             });
         }
 

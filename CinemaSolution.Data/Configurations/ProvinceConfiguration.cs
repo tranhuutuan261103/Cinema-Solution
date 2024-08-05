@@ -16,7 +16,7 @@ namespace CinemaSolution.Data.Configurations
             builder.ToTable("Provinces");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Name).IsRequired().HasMaxLength(32);
-            builder.HasMany(p => p.Cinemas).WithOne(c => c.Province).HasForeignKey(c => c.ProvinceId);
+            builder.HasMany(p => p.Auditoriums).WithOne(c => c.Province).HasForeignKey(c => c.ProvinceId);
         }
     }
 }
