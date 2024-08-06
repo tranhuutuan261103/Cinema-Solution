@@ -13,6 +13,7 @@ namespace CinemaSolution.Application.Cinema
         Task<PagedResult<CinemaViewModel>> GetPagedResult(GetCinemaPagingRequest request);
         Task<List<CinemaViewModel>> GetAll();
         Task<CinemaViewModel> GetById(int id);
+        Task<List<CinemaViewModel>> GetByProvinceId(int provinceId);
         Task<CinemaViewModel> Create(CinemaCreateRequest request);
         Task<CinemaViewModel> Update(CinemaUpdateRequest request);
         Task<int> Delete(int id);

@@ -40,7 +40,7 @@ namespace CinemaSolution.Application.Auditorium
                             SeatsPerRow = a.NumberOfColumnSeats,
                             SeatsPerColumn = a.NumberOfRowSeats,
                             Address = a.Address,
-                            Latitue = a.Latitude,
+                            Latitude = a.Latitude,
                             Longitude = a.Longitude,
                         };
             if (request.CinemaId.HasValue)

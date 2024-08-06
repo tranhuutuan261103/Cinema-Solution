@@ -1,4 +1,5 @@
 using CinemaSolution.Application.Category;
+using CinemaSolution.Application.Cinema;
 using CinemaSolution.Application.Movie;
 using CinemaSolution.Application.Province;
 using CinemaSolution.Data.EF;
@@ -20,6 +21,7 @@ builder.Services.AddDbContext<CinemaDBContext>(options => options.UseSqlServer(c
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IMovieService, MovieService>();
 builder.Services.AddTransient<IProvinceService, ProvinceService>();
+builder.Services.AddTransient<ICinemaService, CinemaService>();
 
 var app = builder.Build();
 

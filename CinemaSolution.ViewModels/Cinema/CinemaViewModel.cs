@@ -1,4 +1,5 @@
-﻿using CinemaSolution.ViewModels.Province;
+﻿using CinemaSolution.ViewModels.Auditorium;
+using CinemaSolution.ViewModels.Province;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace CinemaSolution.ViewModels.Cinema
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string LogoUrl { get; set; } = string.Empty;
+        public List<AuditoriumViewModel> Auditoriums { get; set; } = new List<AuditoriumViewModel>();
         public bool IsDeleted { get; set; }
     }
 }

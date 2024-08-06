@@ -16,7 +16,7 @@ namespace CinemaSolution.ViewModels.Auditorium
         public ProvinceViewModel Province { get; set; } = new ProvinceViewModel();
         public string Address { get; set; } = string.Empty;
         public double Longitude { get; set; }
-        public double Latitue { get; set; }
+        public double Latitude { get; set; }
         public int SeatsPerRow { get; set; }
         public int SeatsPerColumn { get; set; }
         public string SeatMapVector { get; set; } = string.Empty;
