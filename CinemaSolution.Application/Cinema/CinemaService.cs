@@ -1,4 +1,5 @@
 ﻿using CinemaSolution.Data.EF;
+using CinemaSolution.ViewModels.Auditorium;
 using CinemaSolution.ViewModels.Cinema;
 using CinemaSolution.ViewModels.Common.Paging;
 using CinemaSolution.ViewModels.Province;
@@ -57,6 +58,45 @@ namespace CinemaSolution.Application.Cinema
                 }).ToListAsync();
             return cinemas;
         }
+
+        public async Task<List<CinemaViewModel>> GetByProvinceId(int provinceId)
+        {
+            // Query to get cinemas and their auditoriums based on the province ID
+            var cinemas = from c in cinemaDBContext.Cinemas
+                          join a in cinemaDBContext.Auditoriums on c.Id equals a.CinemaId
+                          join p in cinemaDBContext.Provinces on a.ProvinceId equals p.Id
+                          where a.ProvinceId == provinceId
+                          select new { c, a, p };
+
+            // Group the results by cinema
+            var groupedCinemas = await cinemas
+                .GroupBy(x => x.c)
+                .Select(g => new CinemaViewModel
+                {
+                    Id = g.Key.Id,
+                    Name = g.Key.Name,
+                    LogoUrl = g.Key.LogoUrl,
+                    IsDeleted = g.Key.IsDeleted,
+                    Auditoriums = g.Select(x => new AuditoriumViewModel
+                    {
+                        Id = x.a.Id,
+                        Name = x.a.Name,
+                        Latitude = x.a.Latitude,
+                        Longitude = x.a.Longitude,
+                        Address = x.a.Address,
+                        SeatsPerColumn = x.a.NumberOfRowSeats,
+                        SeatsPerRow = x.a.NumberOfColumnSeats,
+                        Province = new ProvinceViewModel
+                        {
+                            Id = x.p.Id,
+                            Name = x.p.Name
+                        }
+                    }).ToList()
+                }).ToListAsync();
+
+            return groupedCinemas;
+        }
+
 
         public async Task<CinemaViewModel> GetById(int id)
         {
