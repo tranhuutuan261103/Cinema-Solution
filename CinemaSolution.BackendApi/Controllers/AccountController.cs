@@ -32,7 +32,29 @@ namespace CinemaSolution.BackendApi.Controllers
                 {
                     return BadRequest("User not found.");
                 }
-                return Json(GenerateToken(user));
+                var token = GenerateToken(user);
+                return Json(new { token });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("profile")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> Profile()
+        {
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var user = await _accountService.GetProfile(int.Parse(userId));
+                if (user == null)
+                {
+                    return BadRequest("User not found.");
+                }
+                return Json(user);
             }
             catch (Exception ex)
             {

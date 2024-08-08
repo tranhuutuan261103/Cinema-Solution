@@ -11,5 +11,6 @@ namespace CinemaSolution.Application.Account
     {
         Task<AccountViewModel> Login(LoginRequest request);
         Task<AccountViewModel> Register(RegisterRequest request);
+        Task<AccountViewModel> GetProfile(int userId);
     }
 }
