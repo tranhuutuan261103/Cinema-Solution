@@ -95,5 +95,31 @@ namespace CinemaSolution.Application.Account
                 Role = "Administrator",
             };
         }
+
+        public async Task<AccountViewModel> GetProfile(int userId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+            var roles = await _context.UsersInRoles
+                .Join(_context.Roles, u => u.RoleId, r => r.Id, (u, r) => new { u, r })
+                .Where(x => x.u.UserId == user.Id)
+                .Select(x => new { x.r })
+                .ToListAsync();
+            foreach (var role in roles)
+            {
+                return new AccountViewModel
+                {
+                    Id = user.Id,
+                    Username = user.Username,
+                    Role = role.r.Name,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                };
+            }
+            throw new Exception("User has no role.");
+        }
     }
 }
