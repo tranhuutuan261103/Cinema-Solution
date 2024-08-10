@@ -2,6 +2,7 @@ using CinemaSolution.Application.Account;
 using CinemaSolution.Application.Category;
 using CinemaSolution.Application.Cinema;
 using CinemaSolution.Application.Movie;
+using CinemaSolution.Application.Product;
 using CinemaSolution.Application.Province;
 using CinemaSolution.Data.EF;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -77,6 +78,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IMovieService, MovieService>();
+builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IProvinceService, ProvinceService>();
 builder.Services.AddTransient<ICinemaService, CinemaService>();
 
