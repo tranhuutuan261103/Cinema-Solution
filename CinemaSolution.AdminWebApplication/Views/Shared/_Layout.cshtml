@@ -124,12 +124,12 @@
                     <i class="fa-solid fa-users nav-icon"></i>
                     User
                 </button>
-                <ul class="nav">
-                    <li class="nav-item">
-                        <a class="nav-link " href="#!">Custommer</a>
+                <ul class="nav @(Convert.ToString(ViewData["BarActive"]) == "user" ? "nav-show" : "")">
+                    <li class="nav-item @(Convert.ToString(ViewData["BarActive"]) == "user" && Convert.ToInt32(ViewData["RoleId"]) == 2 ? "nav-item__active" : "")">
+                        <a class="nav-link" asp-controller="User" asp-action="Index" asp-route-roleId="2">Custommer</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="#!">Admin</a>
+                    <li class="nav-item @(Convert.ToString(ViewData["BarActive"]) == "user" && Convert.ToInt32(ViewData["RoleId"]) == 1 ? "nav-item__active" : "")">
+                        <a class="nav-link" asp-controller="User" asp-action="Index" asp-route-roleId="1">Admin</a>
                     </li>
                 </ul>
             </li>
