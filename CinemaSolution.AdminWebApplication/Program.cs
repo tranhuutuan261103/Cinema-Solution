@@ -6,6 +6,7 @@ using CinemaSolution.Application.Movie;
 using CinemaSolution.Application.Province;
 using CinemaSolution.Application.Screening;
 using CinemaSolution.Application.Storage;
+using CinemaSolution.Application.User;
 using CinemaSolution.Data.EF;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +26,7 @@ builder.Services.AddTransient<IMovieService, MovieService>();
 builder.Services.AddTransient<IStorageService, StorageService>();
 builder.Services.AddTransient<IProvinceService, ProvinceService>();
 builder.Services.AddTransient<IScreeningService, ScreeningService>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 builder.Services.AddAuthentication("CookieAuthentication")
     .AddCookie("CookieAuthentication", config =>
