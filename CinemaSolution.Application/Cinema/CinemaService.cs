@@ -3,6 +3,7 @@ using CinemaSolution.ViewModels.Auditorium;
 using CinemaSolution.ViewModels.Cinema;
 using CinemaSolution.ViewModels.Common.Paging;
 using CinemaSolution.ViewModels.Province;
+using CinemaSolution.ViewModels.Screening;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -96,7 +97,61 @@ namespace CinemaSolution.Application.Cinema
 
             return groupedCinemas;
         }
+        public async Task<List<CinemaViewModel>> GetScreeningsByProvinceId(int provinceId)
+        {
+            // Step 1: Fetch the data from the database
+            var cinemaData = await (from c in cinemaDBContext.Cinemas
+                                    join a in cinemaDBContext.Auditoriums on c.Id equals a.CinemaId
+                                    join p in cinemaDBContext.Provinces on a.ProvinceId equals p.Id
+                                    join s in cinemaDBContext.Screenings on a.Id equals s.AuditoriumId
+                                    where a.ProvinceId == provinceId
+                                    select new
+                                    {
+                                        Cinema = c,
+                                        Auditorium = a,
+                                        Province = p,
+                                        Screening = s
+                                    }).ToListAsync();
 
+            // Step 2: Group the data by Cinema
+            var groupedCinemas = cinemaData
+                .GroupBy(x => x.Cinema)
+                .Select(g => new CinemaViewModel
+                {
+                    Id = g.Key.Id,
+                    Name = g.Key.Name,
+                    LogoUrl = g.Key.LogoUrl,
+                    IsDeleted = g.Key.IsDeleted,
+                    Auditoriums = g.GroupBy(ag => new { ag.Auditorium, ag.Province })
+                                    .Select(x => new AuditoriumViewModel
+                                    {
+                                        Id = x.Key.Auditorium.Id,
+                                        Name = x.Key.Auditorium.Name,
+                                        Latitude = x.Key.Auditorium.Latitude,
+                                        Longitude = x.Key.Auditorium.Longitude,
+                                        Address = x.Key.Auditorium.Address,
+                                        SeatsPerColumn = x.Key.Auditorium.NumberOfRowSeats,
+                                        SeatsPerRow = x.Key.Auditorium.NumberOfColumnSeats,
+                                        Province = new ProvinceViewModel
+                                        {
+                                            Id = x.Key.Province.Id,
+                                            Name = x.Key.Province.Name
+                                        },
+                                        Screenings = x.Select(y => new ScreeningViewModel
+                                        {
+                                            Id = y.Screening.Id,
+                                            StartTime = y.Screening.StartTime,
+                                            StartDate = y.Screening.StartDate,
+                                        }).ToList()
+                                    })
+                                    .Where(x => x.Screenings.Any())
+                                    .ToList()
+                })
+                .Where(x => x.Auditoriums.Any())
+                .ToList();
+
+            return groupedCinemas;
+        }
 
         public async Task<CinemaViewModel> GetById(int id)
         {

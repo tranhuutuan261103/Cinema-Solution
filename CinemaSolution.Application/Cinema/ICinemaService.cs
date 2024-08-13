@@ -14,6 +14,7 @@ namespace CinemaSolution.Application.Cinema
         Task<List<CinemaViewModel>> GetAll();
         Task<CinemaViewModel> GetById(int id);
         Task<List<CinemaViewModel>> GetByProvinceId(int provinceId);
+        Task<List<CinemaViewModel>> GetScreeningsByProvinceId(int provinceId);
         Task<CinemaViewModel> Create(CinemaCreateRequest request);
         Task<CinemaViewModel> Update(CinemaUpdateRequest request);
         Task<int> Delete(int id);

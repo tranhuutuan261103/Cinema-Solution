@@ -22,54 +22,72 @@ namespace CinemaSolution.Application.Screening
         }
         public async Task<PagedResult<ScreeningViewModel>> GetPagedResult(GetScreeningPagingRequest request)
         {
-            var screening = from s in cinemaDBContext.Screenings
-                            join m in cinemaDBContext.Movies on s.MovieId equals m.Id
-                            join t in cinemaDBContext.Auditoriums on s.AuditoriumId equals t.Id
-                            join c in cinemaDBContext.Cinemas on t.CinemaId equals c.Id
-                            select new { s, m, t, c };
+            var query = from s in cinemaDBContext.Screenings
+                        join m in cinemaDBContext.Movies on s.MovieId equals m.Id
+                        join t in cinemaDBContext.Auditoriums on s.AuditoriumId equals t.Id
+                        join c in cinemaDBContext.Cinemas on t.CinemaId equals c.Id
+                        select new { s, m, t, c };
 
-            if (request.MovieId != null)
+            // Apply filters before joins
+            if (request.MovieId.HasValue)
             {
-                screening = screening.Where(x => x.m.Id == request.MovieId);
+                query = query.Where(x => x.m.Id == request.MovieId.Value);
             }
 
-            if (request.AuditoriumId != null)
+            if (request.AuditoriumId.HasValue)
             {
-                screening = screening.Where(x => x.t.Id == request.AuditoriumId);
+                query = query.Where(x => x.t.Id == request.AuditoriumId.Value);
             }
 
-            int totalRow = await screening.CountAsync();
-            var data = await screening.Skip((request.PageIndex - 1) * request.PageSize)
+            // Get the total number of records
+            int totalRecords = await query.CountAsync();
+
+            // Paginate the results
+            var screenings = await query
+                .Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
-                .Select(x => new ScreeningViewModel()
+                .ToListAsync();
+
+            // Fetch seats data in parallel
+            var screeningIds = screenings.Select(x => x.s.Id).ToList();
+            var seats = await cinemaDBContext.Seats
+                .Where(s => screeningIds.Contains(s.ScreeningId))
+                .GroupBy(s => s.ScreeningId)
+                .Select(g => new { ScreeningId = g.Key, AvailableSeats = g.Count(s => s.SeatStatusId == 1), SeatTotal = g.Count() })
+                .ToListAsync();
+
+            // Combine the data and create the final result
+            var data = screenings.Select(s => new ScreeningViewModel()
+            {
+                Id = s.s.Id,
+                Movie = new MovieViewModel()
                 {
-                    Id = x.s.Id,
-                    Movie = new MovieViewModel()
+                    Id = s.m.Id,
+                    Title = s.m.Title,
+                    Duration = s.m.Duration,
+                },
+                Auditorium = new AuditoriumViewModel()
+                {
+                    Id = s.t.Id,
+                    Name = s.t.Name,
+                    Cinema = new CinemaViewModel()
                     {
-                        Id = x.m.Id,
-                        Title = x.m.Title,
-                        Duration = x.m.Duration,
-                    },
-                    Auditorium = new AuditoriumViewModel()
-                    {
-                        Id = x.t.Id,
-                        Name = x.t.Name,
-                        Cinema = new CinemaViewModel()
-                        {
-                            Id = x.c.Id,
-                            Name = x.c.Name,
-                        }
-                    },
-                    StartTime = x.s.StartTime,
-                    StartDate = x.s.StartDate,
-                }).ToListAsync();
+                        Id = s.c.Id,
+                        Name = s.c.Name,
+                    }
+                },
+                StartTime = s.s.StartTime,
+                StartDate = s.s.StartDate,
+                SeatsAvailable = seats.FirstOrDefault(x => x.ScreeningId == s.s.Id)?.AvailableSeats ?? 0,
+                SeatsTotal = seats.FirstOrDefault(x => x.ScreeningId == s.s.Id)?.SeatTotal ?? 0,
+            }).ToList();
 
             return new PagedResult<ScreeningViewModel>()
             {
                 Items = data,
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize,
-                TotalRecords = totalRow,
+                TotalRecords = totalRecords,
             };
         }
 

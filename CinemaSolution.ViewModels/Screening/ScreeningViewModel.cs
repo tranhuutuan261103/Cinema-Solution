@@ -11,9 +11,11 @@ namespace CinemaSolution.ViewModels.Screening
     public class ScreeningViewModel
     {
         public int Id { get; set; }
-        public MovieViewModel Movie { get; set; } = new MovieViewModel();
-        public AuditoriumViewModel Auditorium { get; set; } = new AuditoriumViewModel();
+        public MovieViewModel? Movie { get; set; }
+        public AuditoriumViewModel? Auditorium { get; set; }
         public DateTime StartDate { get; set; }
         public TimeSpan StartTime { get; set; }
+        public int SeatsAvailable { get; set; }
+        public int SeatsTotal { get; set; }
     }
 }
