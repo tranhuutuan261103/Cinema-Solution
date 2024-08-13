@@ -61,6 +61,7 @@
                 <th>Start date</th>
                 <th>Start time</th>
                 <th>Duration</th>
+                <th>Seats available</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -89,6 +90,7 @@
                     <td>@item.StartDate.ToString("dd/MM/yyyy")</td>
                     <td>@item.StartTime</td>
                     <td>@item.Movie.Duration</td>
+                    <td>@item.SeatsAvailable / @item.SeatsTotal</td>
                     <td class="table-actions-flex">
                         <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
                             <i class="fa-solid fa-pen-to-square table-btn-icon"></i>
