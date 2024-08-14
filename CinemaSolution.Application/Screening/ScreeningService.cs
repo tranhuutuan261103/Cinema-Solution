@@ -1,9 +1,11 @@
 ﻿using CinemaSolution.Data.EF;
+using CinemaSolution.Data.Entities;
 using CinemaSolution.ViewModels.Auditorium;
 using CinemaSolution.ViewModels.Cinema;
 using CinemaSolution.ViewModels.Common.Paging;
 using CinemaSolution.ViewModels.Movie;
 using CinemaSolution.ViewModels.Screening;
+using CinemaSolution.ViewModels.Seat;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -88,6 +90,67 @@ namespace CinemaSolution.Application.Screening
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize,
                 TotalRecords = totalRecords,
+            };
+        }
+
+        public async Task<ScreeningViewModel> GetScreeningById(int id)
+        {
+            var screening = await cinemaDBContext.Screenings.FindAsync(id);
+            if (screening == null)
+            {
+                throw new Exception($"Cannot find a screening: {id}");
+            }
+            var movie = await cinemaDBContext.Movies.FindAsync(screening.MovieId);
+            var auditorium = await cinemaDBContext.Auditoriums.FindAsync(screening.AuditoriumId);
+            var cinema = await cinemaDBContext.Cinemas.FindAsync(auditorium.CinemaId);
+            var seats = from s in cinemaDBContext.Seats
+                        join sc in cinemaDBContext.Screenings on s.ScreeningId equals sc.Id
+                        join st in cinemaDBContext.SeatTypes on s.SeatTypeId equals st.Id
+                        join ss in cinemaDBContext.SeatStatuses on s.SeatStatusId equals ss.Id
+                        where sc.Id == id
+                        select new { Seat = s, Screening = sc, SeatType = st, SeatStatus = ss };
+            return new ScreeningViewModel()
+            {
+                Id = screening.Id,
+                Movie = new MovieViewModel()
+                {
+                    Id = movie.Id,
+                    Title = movie.Title,
+                    Duration = movie.Duration,
+                },
+                Auditorium = new AuditoriumViewModel()
+                {
+                    Id = auditorium.Id,
+                    Name = auditorium.Name,
+                    SeatsPerRow = auditorium.NumberOfColumnSeats,
+                    SeatsPerColumn = auditorium.NumberOfRowSeats,
+                    Cinema = new CinemaViewModel()
+                    {
+                        Id = cinema.Id,
+                        Name = cinema.Name,
+                    }
+                },
+                StartTime = screening.StartTime,
+                StartDate = screening.StartDate,
+                SeatsAvailable = seats.Count(s => s.SeatStatus.IsAvailable),
+                SeatsTotal = seats.Count(),
+                Seats = seats.Select(s => new SeatViewModel()
+                {
+                    Id = s.Seat.ScreeningId,
+                    Row = s.Seat.Row,
+                    Number = s.Seat.Number,
+                    SeatStatus = new SeatStatusViewModel()
+                    {
+                        Id = s.SeatStatus.Id,
+                        StatusName = s.SeatStatus.StatusName,
+                        IsAvailable = s.SeatStatus.IsAvailable,
+                    },
+                    SeatType = new SeatTypeViewModel()
+                    {
+                        Id = s.SeatType.Id,
+                        Name = s.SeatType.Name,
+                    },
+                }).ToList(),
             };
         }
 

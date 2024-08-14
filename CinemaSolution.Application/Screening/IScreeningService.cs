@@ -11,6 +11,7 @@ namespace CinemaSolution.Application.Screening
     public interface IScreeningService
     {
         Task<PagedResult<ScreeningViewModel>> GetPagedResult(GetScreeningPagingRequest request);
+        Task<ScreeningViewModel> GetScreeningById(int id);
         Task<ScreeningViewModel> Create(ScreeningCreateRequest request);
         Task<int> Delete(int id);
     }
