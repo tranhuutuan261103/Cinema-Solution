@@ -4,6 +4,7 @@ using CinemaSolution.Application.Cinema;
 using CinemaSolution.Application.Movie;
 using CinemaSolution.Application.Product;
 using CinemaSolution.Application.Province;
+using CinemaSolution.Application.Screening;
 using CinemaSolution.Application.Storage;
 using CinemaSolution.Data.EF;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -83,6 +84,7 @@ builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IProvinceService, ProvinceService>();
 builder.Services.AddTransient<ICinemaService, CinemaService>();
 builder.Services.AddTransient<IStorageService, StorageService>();
+builder.Services.AddTransient<IScreeningService, ScreeningService>();
 
 var app = builder.Build();
 

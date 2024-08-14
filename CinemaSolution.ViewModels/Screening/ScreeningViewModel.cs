@@ -1,5 +1,6 @@
 ﻿using CinemaSolution.ViewModels.Auditorium;
 using CinemaSolution.ViewModels.Movie;
+using CinemaSolution.ViewModels.Seat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,6 @@ namespace CinemaSolution.ViewModels.Screening
         public TimeSpan EndTime { get; set; }
         public int SeatsAvailable { get; set; }
         public int SeatsTotal { get; set; }
+        public List<SeatViewModel>? Seats { get; set; }
     }
 }

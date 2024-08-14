@@ -1,5 +1,6 @@
 ﻿using CinemaSolution.ViewModels.Cinema;
 using CinemaSolution.ViewModels.Common.Paging;
+using CinemaSolution.ViewModels.Screening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
