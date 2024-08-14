@@ -45,6 +45,9 @@ namespace CinemaSolution.Application.Account
                             Role = role.r.Name,
                             FirstName = user.FirstName,
                             LastName = user.LastName,
+                            Address = user.Address,
+                            AvatarUrl = user.AvatarUrl,
+                            BackgroundUrl = user.BackgroundUrl,
                         };
                     }
                 }
@@ -120,6 +123,25 @@ namespace CinemaSolution.Application.Account
                 };
             }
             throw new Exception("User has no role.");
+        }
+
+        public async Task<AccountViewModel> UpdateAvatar(int userId, string avatarUrl)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+            user.AvatarUrl = avatarUrl;
+            await _context.SaveChangesAsync();
+            return new AccountViewModel
+            {
+                Id = user.Id,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                AvatarUrl = user.AvatarUrl,
+            };
         }
     }
 }

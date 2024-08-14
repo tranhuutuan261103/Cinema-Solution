@@ -24,6 +24,8 @@ namespace CinemaSolution.Data.Configurations
             builder.Property(x => x.PhoneNumber).HasMaxLength(16);
             builder.Property(x => x.Address).HasMaxLength(128);
             builder.Property(x => x.IsDeleted).IsRequired();
+            builder.Property(x => x.AvatarUrl).HasMaxLength(256);
+            builder.Property(x => x.BackgroundUrl).HasMaxLength(256);
 
             //builder.HasMany(x => x.Tickets).WithOne(x => x.User).HasForeignKey(x => x.UserId);
 

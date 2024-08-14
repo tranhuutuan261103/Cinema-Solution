@@ -15,6 +15,8 @@ namespace CinemaSolution.ViewModels.Account
         public string LastName { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
         public string? Address { get; set; }
+        public string? AvatarUrl { get; set; }
+        public string? BackgroundUrl { get; set; }
         public string Role { get; set; } = string.Empty;
     }
 }
