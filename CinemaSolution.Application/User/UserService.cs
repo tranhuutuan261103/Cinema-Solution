@@ -45,6 +45,8 @@ namespace CinemaSolution.Application.User
                     LastName = x.Key.LastName,
                     PhoneNumber = x.Key.PhoneNumber,
                     Address = x.Key.Address,
+                    AvatarUrl = x.Key.AvatarUrl,
+                    BackgroundUrl = x.Key.BackgroundUrl,
                     Roles = x.Select(x => new RoleViewModel
                     {
                         Id = x.r.Id,

@@ -17,6 +17,8 @@ namespace CinemaSolution.Data.Entities
         public string Email { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
         public string? Address { get; set; }
+        public string? AvatarUrl { get; set; }
+        public string? BackgroundUrl { get; set; }
         public bool IsDeleted { get; set; }
         public virtual List<UserInRole>? UserInRoles { get; set; }
         public virtual List<Invoice>? Invoices { get; set; }

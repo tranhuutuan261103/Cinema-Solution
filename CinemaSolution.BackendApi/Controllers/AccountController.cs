@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using CinemaSolution.Application.Storage;
 
 namespace CinemaSolution.BackendApi.Controllers
 {
@@ -15,10 +16,12 @@ namespace CinemaSolution.BackendApi.Controllers
     public class AccountController : Controller
     {
         private readonly IAccountService _accountService;
+        private readonly IStorageService _storageService;
         private readonly ILogger<AccountController> _logger;
-        public AccountController(IAccountService accountService, ILogger<AccountController> logger)
+        public AccountController(IAccountService accountService, IStorageService storageService, ILogger<AccountController> logger)
         {
             _accountService = accountService;
+            _storageService = storageService;
             _logger = logger;
         }
 
@@ -43,13 +46,43 @@ namespace CinemaSolution.BackendApi.Controllers
         }
 
         [HttpGet("profile")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Profile()
         {
             try
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var user = await _accountService.GetProfile(int.Parse(userId));
+                if (user == null)
+                {
+                    return BadRequest("User not found.");
+                }
+                return Json(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("avatar")]
+        [Authorize(Roles = "Customer")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateAvatar([FromForm] AvatarRequest request)
+        {
+            try
+            {
+                if (request.Avatar == null)
+                {
+                    return BadRequest("Avatar is required.");
+                }
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var avatarUrl = await _storageService.UploadFileAsync(
+                    request.Avatar.OpenReadStream(),
+                    "user_avatar",
+                    request.Avatar.FileName);
+                var user = await _accountService.UpdateAvatar(int.Parse(userId), avatarUrl);
                 if (user == null)
                 {
                     return BadRequest("User not found.");

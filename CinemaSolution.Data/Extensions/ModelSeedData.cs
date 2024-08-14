@@ -23,8 +23,8 @@ namespace CinemaSolution.Data.Extensions
                 new Role()
                 {
                     Id = 2,
-                    Name = "User",
-                    Description = "User"
+                    Name = "Customer",
+                    Description = "Customer"
                 }
             );
 
