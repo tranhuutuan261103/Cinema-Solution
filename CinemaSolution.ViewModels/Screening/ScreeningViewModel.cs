@@ -15,6 +15,7 @@ namespace CinemaSolution.ViewModels.Screening
         public AuditoriumViewModel? Auditorium { get; set; }
         public DateTime StartDate { get; set; }
         public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
         public int SeatsAvailable { get; set; }
         public int SeatsTotal { get; set; }
     }

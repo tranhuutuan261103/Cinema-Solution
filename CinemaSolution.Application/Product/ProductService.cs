@@ -1,4 +1,5 @@
 ﻿using CinemaSolution.Data.EF;
+using CinemaSolution.ViewModels.Common.Paging;
 using CinemaSolution.ViewModels.Product;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -41,6 +42,51 @@ namespace CinemaSolution.Application.Product
                 }).ToListAsync();
 
             return groupedProductCombos;
+        }
+
+        public async Task<PagedResult<ProductComboViewModel>> GetPagedResult(GetProductPagingRequest request)
+        {
+            var query = from pc in cinemaDBContext.ProductCombos
+                        join pic in cinemaDBContext.ProductInProductCombos on pc.Id equals pic.ProductComboId
+                        join p in cinemaDBContext.Products on pic.ProductId equals p.Id
+                        select new { pc, pic, p };
+
+            var groupedProductCombos = await query.GroupBy(x => x.pc).Select(x =>
+                           new ProductComboViewModel
+                           {
+                    Id = x.Key.Id,
+                    Name = x.Key.Name,
+                    Description = x.Key.Description,
+                    ImageUrl = x.Key.ImageUrl,
+                    Price = x.Key.Price,
+                    Items = x.Select(y => new ProductViewModel
+                    {
+                        Id = y.p.Id,
+                        Name = y.p.Name,
+                        Description = y.p.Description,
+                        Quantity = y.pic.Quantity
+                    }).ToList()
+                }).ToListAsync();
+
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                groupedProductCombos = groupedProductCombos.Where(x => x.Name.Contains(request.Keyword)).ToList();
+            }
+
+
+            int totalRow = groupedProductCombos.Count();
+            var data = groupedProductCombos.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .ToList();
+
+            var pagedResult = new PagedResult<ProductComboViewModel>()
+            {
+                TotalRecords = totalRow,
+                Items = data,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize
+            };
+            return pagedResult;
         }
     }
 }

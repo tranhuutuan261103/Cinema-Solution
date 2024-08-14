@@ -16,9 +16,9 @@ namespace CinemaSolution.BackendApi.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Index(int provinceId)
+        public async Task<IActionResult> Index(int provinceId, DateTime startDate)
         {
-            var screenings = await _cinemaService.GetScreeningsByProvinceId(provinceId);
+            var screenings = await _cinemaService.GetScreeningsByProvinceId(provinceId, startDate);
             return Ok(screenings);
         }
     }

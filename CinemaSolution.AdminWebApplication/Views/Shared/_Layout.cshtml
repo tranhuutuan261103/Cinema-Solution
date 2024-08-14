@@ -110,13 +110,12 @@
             </li>
 
             <!-- Product -->
-            <li class="nav-item">
-                <a class="nav-link" href="#">
+            <li class="nav-item @(Convert.ToString(ViewData["BarActive"]) == "product" ? "nav-item__active" : "")">
+                <a class="nav-link" asp-controller="ProductCombo" asp-action="Index">
                     <i class="fa-solid fa-glass-water nav-icon"></i>
                     Product
                 </a>
             </li>
-
 
             <!-- User -->
             <li class="nav-item collapsible">
