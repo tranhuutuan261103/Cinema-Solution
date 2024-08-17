@@ -24,5 +24,6 @@ namespace CinemaSolution.Data.Entities
         public virtual List<Invoice>? Invoices { get; set; }
         public virtual List<Rating>? Ratings { get; set; }
         public virtual List<Comment>? Comments { get; set; }
+        public virtual List<CommentLike>? CommentLikes { get; set; }
     }
 }

@@ -33,6 +33,7 @@ namespace CinemaSolution.Data.EF
 
             modelBuilder.ApplyConfiguration(new RatingConfiguration());
             modelBuilder.ApplyConfiguration(new CommentConfiguration());
+            modelBuilder.ApplyConfiguration(new CommentLikeConfiguration());
 
             modelBuilder.ApplyConfiguration(new ProvinceConfiguration());
             modelBuilder.ApplyConfiguration(new CinemaConfiguration());
@@ -73,6 +74,7 @@ namespace CinemaSolution.Data.EF
 
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<CommentLike> CommentLikes { get; set; }
 
         public DbSet<Province> Provinces { get; set; }
         public DbSet<Cinema> Cinemas { get; set; }
