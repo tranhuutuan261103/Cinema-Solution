@@ -21,6 +21,10 @@ namespace CinemaSolution.Data.Configurations
 
             builder.HasOne(x => x.Movie).WithMany(x => x.Comments).HasForeignKey(x => x.MovieId);
             builder.HasOne(x => x.User).WithMany(x => x.Comments).HasForeignKey(x => x.UserId);
+            builder.HasOne(x => x.Parent) // Thiết lập quan hệ tự tham chiếu
+            .WithMany(x => x.Replies)
+            .HasForeignKey(x => x.ParentId)
+            .OnDelete(DeleteBehavior.Restrict); // Đảm bảo không xóa cha khi xóa con
         }
     }
 }

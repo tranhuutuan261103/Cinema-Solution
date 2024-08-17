@@ -234,7 +234,7 @@ namespace CinemaSolution.Data.Extensions
                     Title = "Thám Tử Lừng Danh Conan: Ngôi Sao 5 Cánh 1 Triệu Đô",
                     Description = "Siêu trộm Kaito Kid và thám tử miền Tây Hattori Heiji cùng đối đầu trong cuộc tranh giành thanh kiếm thuộc về Hijikata Toushizou - phó chỉ huy của Shinsengumi! Thù mới hận cũ, Heiji sẽ xử trí Kid thế nào đây?\r\nNgoài ra, một bí mật kinh khủng về Kaito Kid sắp được tiếp lộ...",
                     Duration = 111,
-                    Rating = 9.8,
+                    Rating = 9.5,
                     Language = "Phụ đề Lồng tiếng",
                     TrailerUrl = "https://www.youtube.com/embed/x_gGMJOppAo",
                     IsDeleted = false,
@@ -249,7 +249,7 @@ namespace CinemaSolution.Data.Extensions
                     Title = "Vây Hãm Trên Không",
                     Description = "Bộ phim hành động ly kỳ dựa trên sự kiện có thật với sự tham gia của Ha Jung Woo, Yeo Jin Goo và Sung Dong Il được dựa trên một sự kiện có thật năm 1971, khi một thanh niên Hàn Quốc định cướp một chiếc máy bay chở khách khởi hành từ thành phố cảnh phía đông Sokcho bay tới Seoul. Mọi người trên chuyến bay này đều đang đặt cược mạng sống của mình!",
                     Duration = 100,
-                    Rating = 9.5,
+                    Rating = 0,
                     Language = "Phụ đề",
                     TrailerUrl = "https://www.youtube.com/embed/1Umr4h5dn5I",
                     IsDeleted = false,
@@ -378,6 +378,30 @@ namespace CinemaSolution.Data.Extensions
                     Content = "This is a comment",
                     CreatedDate = DateTime.Now,
                     IsDeleted = false
+                },
+                new Comment()
+                {
+                    Id = 3,
+                    MovieId = 1,
+                    UserId = 2,
+                    Content = "This is a reply comment",
+                    CreatedDate = DateTime.Now,
+                    ParentId = 2,
+                    IsDeleted = false
+                }
+            );
+
+            // CommentLike
+            modelBuilder.Entity<CommentLike>().HasData(
+                new CommentLike()
+                {
+                    CommentId = 1,
+                    UserId = 2
+                },
+                new CommentLike()
+                {
+                    CommentId = 1,
+                    UserId = 3
                 }
             );
 
@@ -399,13 +423,13 @@ namespace CinemaSolution.Data.Extensions
                 {
                     MovieId = 2,
                     UserId = 2,
-                    Value = 6
+                    Value = 9
                 },
                 new Rating()
                 {
                     MovieId = 2,
                     UserId = 3,
-                    Value = 8
+                    Value = 10
                 }
             );
 
