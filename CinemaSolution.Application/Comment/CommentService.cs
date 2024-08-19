@@ -24,7 +24,7 @@ namespace CinemaSolution.Application.Comment
                            join u in cinemaDBContext.Users on c.UserId equals u.Id
                            join m in cinemaDBContext.Movies on c.MovieId equals m.Id
                            join r in cinemaDBContext.Ratings on new { c.UserId, c.MovieId } equals new { r.UserId, r.MovieId }
-                           where c.MovieId == movieId && r != null
+                           where c.MovieId == movieId && c.ParentId == null
                            select new CommentViewModel
                            {
                                Id = c.Id,
@@ -46,10 +46,39 @@ namespace CinemaSolution.Application.Comment
                                    MovieId = c.MovieId,
                                    UserId = c.UserId,
                                    Value = r.Value
-                               }
+                               },
+                               Replies = (from reply in cinemaDBContext.Comments
+                                          join replyUser in cinemaDBContext.Users on reply.UserId equals replyUser.Id
+                                          join replyRating in cinemaDBContext.Ratings on new { reply.UserId, reply.MovieId } equals new { replyRating.UserId, replyRating.MovieId }
+                                          where reply.ParentId == c.Id
+                                          select new CommentViewModel
+                                          {
+                                              Id = reply.Id,
+                                              Content = reply.Content,
+                                              CreatedDate = reply.CreatedDate,
+                                              IsDeleted = reply.IsDeleted,
+                                              User = new ViewModels.User.UserViewModel
+                                              {
+                                                  Id = replyUser.Id,
+                                                  Username = replyUser.Username,
+                                                  Email = replyUser.Email,
+                                                  AvatarUrl = replyUser.AvatarUrl,
+                                                  FirstName = replyUser.FirstName,
+                                                  LastName = replyUser.LastName,
+                                              },
+                                              MovieId = reply.MovieId,
+                                              Rating = new ViewModels.Rating.RatingViewModel
+                                              {
+                                                  MovieId = reply.MovieId,
+                                                  UserId = reply.UserId,
+                                                  Value = replyRating.Value
+                                              }
+                                          }).ToList()
                            };
+
             return await comments.ToListAsync();
         }
+
         public async Task<CommentViewModel> Create(int userId, CommentCreateRequest request)
         {
             if (request.RatingValue < 1 || request.RatingValue > 10)

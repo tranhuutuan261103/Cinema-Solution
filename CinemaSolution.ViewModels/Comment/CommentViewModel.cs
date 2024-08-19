@@ -17,5 +17,6 @@ namespace CinemaSolution.ViewModels.Comment
         public UserViewModel User { get; set; } = new UserViewModel();
         public int MovieId { get; set; }
         public RatingViewModel Rating { get; set; } = new RatingViewModel();
+        public List<CommentViewModel> Replies { get; set; } = new List<CommentViewModel>();
     }
 }
