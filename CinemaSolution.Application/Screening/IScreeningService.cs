@@ -13,6 +13,7 @@ namespace CinemaSolution.Application.Screening
         Task<PagedResult<ScreeningViewModel>> GetPagedResult(GetScreeningPagingRequest request);
         Task<ScreeningViewModel> GetScreeningById(int id);
         Task<ScreeningViewModel> Create(ScreeningCreateRequest request);
+        Task<ScreeningViewModel> Update(ScreeningUpdateRequest request);
         Task<int> Delete(int id);
     }
 }
