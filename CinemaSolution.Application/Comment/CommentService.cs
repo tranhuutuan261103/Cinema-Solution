@@ -24,7 +24,9 @@ namespace CinemaSolution.Application.Comment
                            join u in cinemaDBContext.Users on c.UserId equals u.Id
                            join m in cinemaDBContext.Movies on c.MovieId equals m.Id
                            join r in cinemaDBContext.Ratings on new { c.UserId, c.MovieId } equals new { r.UserId, r.MovieId }
+                           join cl in cinemaDBContext.CommentLikes on c.Id equals cl.CommentId into commentLikes
                            where c.MovieId == movieId && c.ParentId == null
+                           orderby commentLikes.Count() descending
                            select new CommentViewModel
                            {
                                Id = c.Id,
@@ -51,6 +53,7 @@ namespace CinemaSolution.Application.Comment
                                           join replyUser in cinemaDBContext.Users on reply.UserId equals replyUser.Id
                                           join replyRating in cinemaDBContext.Ratings on new { reply.UserId, reply.MovieId } equals new { replyRating.UserId, replyRating.MovieId }
                                           where reply.ParentId == c.Id
+                                          orderby reply.CreatedDate
                                           select new CommentViewModel
                                           {
                                               Id = reply.Id,
@@ -73,7 +76,8 @@ namespace CinemaSolution.Application.Comment
                                                   UserId = reply.UserId,
                                                   Value = replyRating.Value
                                               }
-                                          }).ToList()
+                                          }).ToList(),
+                                Likes = commentLikes.Count(),
                            };
 
             return await comments.ToListAsync();
@@ -157,6 +161,82 @@ namespace CinemaSolution.Application.Comment
             {
                 throw new Exception("Error creating comment", ex);
             }
+        }
+
+        public async Task<CommentViewModel> Like(int userId, int commentId)
+        {
+            // Fetch the comment from the database
+            var comment = await cinemaDBContext.Comments.FindAsync(commentId);
+            if (comment == null)
+            {
+                throw new Exception("Comment not found");
+            }
+
+            // Check if the user has already liked the comment
+            var commentLike = await cinemaDBContext.CommentLikes
+                .FirstOrDefaultAsync(cl => cl.CommentId == commentId && cl.UserId == userId);
+
+            // If the user has liked the comment, remove the like
+            if (commentLike != null)
+            {
+                cinemaDBContext.CommentLikes.Remove(commentLike);
+            }
+            else
+            {
+                // Otherwise, add a new like
+                var newCommentLike = new Data.Entities.CommentLike
+                {
+                    CommentId = commentId,
+                    UserId = userId,
+                    CreatedAt = DateTime.Now
+                };
+                cinemaDBContext.CommentLikes.Add(newCommentLike);
+            }
+
+            // Save changes to the database
+            await cinemaDBContext.SaveChangesAsync();
+
+            // Query the updated comment details including likes and replies
+            var commentUpdated = from c in cinemaDBContext.Comments
+                                 join u in cinemaDBContext.Users on c.UserId equals u.Id
+                                 join m in cinemaDBContext.Movies on c.MovieId equals m.Id
+                                 join r in cinemaDBContext.Ratings on new { c.UserId, c.MovieId } equals new { r.UserId, r.MovieId }
+                                 join cl in cinemaDBContext.CommentLikes on c.Id equals cl.CommentId into commentLikes
+                                 where c.Id == commentId
+                                 orderby commentLikes.Count() descending
+                                 select new CommentViewModel
+                                 {
+                                     Id = c.Id,
+                                     Content = c.Content,
+                                     CreatedDate = c.CreatedDate,
+                                     IsDeleted = c.IsDeleted,
+                                     User = new ViewModels.User.UserViewModel
+                                     {
+                                         Id = u.Id,
+                                         Username = u.Username,
+                                         Email = u.Email,
+                                         AvatarUrl = u.AvatarUrl,
+                                         FirstName = u.FirstName,
+                                         LastName = u.LastName,
+                                     },
+                                     MovieId = c.MovieId,
+                                     Rating = new ViewModels.Rating.RatingViewModel
+                                     {
+                                         MovieId = c.MovieId,
+                                         UserId = c.UserId,
+                                         Value = r.Value
+                                     },
+                                     Likes = commentLikes.Count(),
+                                 };
+
+            // Return the updated comment or handle null if not found
+            var result = await commentUpdated.FirstOrDefaultAsync();
+            if (result == null)
+            {
+                throw new Exception("Failed to retrieve the updated comment");
+            }
+
+            return result;
         }
     }
 }

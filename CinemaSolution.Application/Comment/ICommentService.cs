@@ -11,5 +11,6 @@ namespace CinemaSolution.Application.Comment
     {
         Task<List<CommentViewModel>> GetAll(int movieId);
         Task<CommentViewModel> Create(int userId, CommentCreateRequest request);
+        Task<CommentViewModel> Like(int userId, int commentId);
     }
 }
