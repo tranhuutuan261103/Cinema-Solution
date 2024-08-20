@@ -50,5 +50,22 @@ namespace CinemaSolution.BackendApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("like")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> Like([FromQuery] int commentId)
+        {
+            try
+            {
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var comment = await _commentService.Like(userId, commentId);
+                return Ok(comment);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error liking comment");
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
