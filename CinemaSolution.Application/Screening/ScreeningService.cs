@@ -187,6 +187,25 @@ namespace CinemaSolution.Application.Screening
             };
         }
 
+        public async Task<ScreeningViewModel> Update(ScreeningUpdateRequest request)
+        {
+            var screening = await cinemaDBContext.Screenings.FindAsync(request.Id);
+            if (screening == null)
+            {
+                throw new Exception($"Cannot find a screening: {request.Id}");
+            }
+            screening.MovieId = request.MovieId;
+            screening.StartDate = request.StartDate;
+            screening.StartTime = request.StartTime;
+            await cinemaDBContext.SaveChangesAsync();
+            return new ScreeningViewModel()
+            {
+                Id = screening.Id,
+                StartDate = screening.StartDate,
+                StartTime = screening.StartTime,
+            };
+        }
+
         public async Task<int> Delete(int id)
         {
             var screening = await cinemaDBContext.Screenings.FindAsync(id);

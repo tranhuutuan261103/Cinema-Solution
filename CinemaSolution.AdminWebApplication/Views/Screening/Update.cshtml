@@ -1,0 +1,111 @@
+﻿@model CinemaSolution.ViewModels.Screening.ScreeningUpdateRequest;
+
+@{
+    ViewData["Title"] = "Update";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/seatMap.css" />
+    <style>
+        .form-group-dropdown {
+            width: 400px;
+        }
+    </style>
+}
+
+<nav class="breadcrumb">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+            <a asp-controller="Home">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a asp-controller="Screening">Screenings</a>
+        </li>
+        <li class="breadcrumb-item">
+            Update
+        </li>
+    </ol>
+</nav>
+
+<div class="content-body">
+    <form asp-action="Update" method="post">
+        <input type="hidden" asp-for="Auditorium.Id" value="@Model.Auditorium.Id" />
+
+        <div class="form-group form-group-dropdown">
+            <label for="screening-movie" class="form-label">Movie</label>
+            <div class="dropdown">
+                <input type="text" class="form-control" id="screening-movie" asp-for="MovieId" hidden>
+                <div class="select">
+                    @if (ViewBag.MovieId == null)
+                    {
+                        <span id="screening-movie-selection" class="selected" data-id="-1">Select movie</span>
+                    }
+                    else
+                    {
+                        <span id="screening-movie-selection" class="selected" data-id="@ViewBag.MovieId">@ViewBag.MovieName</span>
+                    }
+                    <i class="fa fa-chevron-left select-icon"></i>
+                </div>
+                <ul class="dropdown-content dropdown-content-show">
+                    @foreach (var item in ViewBag.Movies)
+                    {
+                        <li class="dropdown-item" data-id="@item.Id" data-value="@item.Title" onclick="updateSelection(@item.Id)">@item.Title</li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group form-group-seat">
+            <div id="seat-map" class="seat-map">
+                <div class="seat-map-screen">Screen</div>
+                <div class="seat-area" id="seat-area">
+                    @for (int i = 1; i <= Model.Auditorium.SeatsPerColumn; i++)
+                    {
+                        char seatLabel = (char)('A' + i - 1);
+                        <div class="seat-row" id="seat-row-@i">
+                            <div class="seat-label">@seatLabel</div>
+                            @for (int j = 1; j <= Model.Auditorium.SeatsPerRow; j++)
+                            {
+                                <div class="seat-container @(Model.SeatDefaults[(i - 1) * Model.Auditorium.SeatsPerColumn + (j - 1)].TypeId == 2 ? "seat-vip" : "")">
+                                    <input type="hidden" asp-for="@Model.SeatDefaults[(i - 1) * Model.Auditorium.SeatsPerColumn + (j - 1)].Row" value="@i" />
+                                    <input type="hidden" asp-for="@Model.SeatDefaults[(i - 1) * Model.Auditorium.SeatsPerColumn + (j - 1)].Column" value="@j" />
+                                    <input type="hidden" asp-for="@Model.SeatDefaults[(i - 1) * Model.Auditorium.SeatsPerColumn + (j - 1)].TypeId" id="seat-type-@i-@j" class="seat-type" value="@Model.SeatDefaults[(i - 1) * Model.Auditorium.SeatsPerColumn + (j - 1)].TypeId" />
+                                    <div class="seat-number">@j</div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="screening-date" class="form-label">Start date</label>
+                <input type="date" class="form-control" id="screening-date" min="@DateTime.Now" asp-for="StartDate" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+                <label for="screening-time" class="form-label">Start time</label>
+                <input type="time" class="form-control" id="screening-time" asp-for="StartTime" placeholder="Enter name">
+            </div>
+        </div>
+
+        <div class="row form-group-btn">
+            <button type="submit" class="btn success-btn">Save</button>
+            <button type="reset" class="btn reset-btn">Reset</button>
+            <a class="btn delete-btn load-target" asp-action="Index" asp-route-auditoriumId="@Model.Auditorium.Id">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function updateSelection(id) {
+            var selection = document.getElementById("screening-movie-selection");
+            selection.setAttribute("data-id", id);
+            selection.innerHTML = event.target.getAttribute("data-value");
+            document.getElementById("screening-movie").value = id;
+        }
+    </script>
+}
