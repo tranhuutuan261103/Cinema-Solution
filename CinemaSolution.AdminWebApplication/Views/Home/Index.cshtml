@@ -2,7 +2,58 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+}
+
+<div class="home">
+    <div class="home-header"></div>
+    <div class="home-info">
+        <div class="home-info-top">
+            <h1 class="home-info-title">Movies</h1>
+            <a class="btn" asp-controller="Movie" asp-action="Create">Add new</a>
+        </div>
+        <div class="home-info-body">
+            <div class="cart">
+                <div class="cart-top">
+                    <h3 class="cart-title">Movies</h3>
+                    <div class="cart-icon-container">
+                        <i class="fa-solid fa-film cart-icon"></i>
+                    </div>
+                </div>
+                <div class="cart-value">@ViewBag.MovieCount</div>
+                <div class="cart-subvalue">@ViewBag.MovieCount are on going</div>
+            </div>
+            <div class="cart">
+                <div class="cart-top">
+                    <h3 class="cart-title">Screenings</h3>
+                    <div class="cart-icon-container">
+                        <i class="fa-solid fa-calendar-days cart-icon"></i>
+                    </div>
+                </div>
+                <div class="cart-value">@ViewBag.ScreeningCount</div>
+                <div class="cart-subvalue">@ViewBag.ScreeningFuture are available</div>
+            </div>
+            <div class="cart">
+                <div class="cart-top">
+                    <h3 class="cart-title">Tickets</h3>
+                    <div class="cart-icon-container">
+                        <i class="fa-solid fa-ticket cart-icon"></i>
+                    </div>
+                </div>
+                <div class="cart-value">18</div>
+                <div class="cart-subvalue">1 completed</div>
+            </div>
+            <div class="cart">
+                <div class="cart-top">
+                    <h3 class="cart-title">Users</h3>
+                    <div class="cart-icon-container">
+                        <i class="fa-solid fa-users cart-icon"></i>
+                    </div>
+                </div>
+                <div class="cart-value">@ViewBag.UserCount</div>
+                <div class="cart-subvalue">@ViewBag.UserCustomerCount customers</div>
+            </div>
+        </div>
+    </div>
 </div>

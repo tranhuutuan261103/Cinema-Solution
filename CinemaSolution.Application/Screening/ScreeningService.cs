@@ -22,6 +22,40 @@ namespace CinemaSolution.Application.Screening
         {
             this.cinemaDBContext = cinemaDBContext;
         }
+
+        public async Task<List<ScreeningViewModel>> GetAll()
+        {
+            var query = from s in cinemaDBContext.Screenings
+                        join m in cinemaDBContext.Movies on s.MovieId equals m.Id
+                        join t in cinemaDBContext.Auditoriums on s.AuditoriumId equals t.Id
+                        join c in cinemaDBContext.Cinemas on t.CinemaId equals c.Id
+                        select new { s, m, t, c };
+            var screenings = await query
+                .Select(s => new ScreeningViewModel()
+                {
+                    Id = s.s.Id,
+                    Movie = new MovieViewModel()
+                    {
+                        Id = s.m.Id,
+                        Title = s.m.Title,
+                        Duration = s.m.Duration,
+                    },
+                    Auditorium = new AuditoriumViewModel()
+                    {
+                        Id = s.t.Id,
+                        Name = s.t.Name,
+                        Cinema = new CinemaViewModel()
+                        {
+                            Id = s.c.Id,
+                            Name = s.c.Name,
+                        }
+                    },
+                    StartTime = s.s.StartTime,
+                    StartDate = s.s.StartDate,
+                })
+                .ToListAsync();
+            return screenings;
+        }
         public async Task<PagedResult<ScreeningViewModel>> GetPagedResult(GetScreeningPagingRequest request)
         {
             var query = from s in cinemaDBContext.Screenings

@@ -10,6 +10,7 @@ namespace CinemaSolution.Application.User
 {
     public interface IUserService
     {
+        Task<int> GetCount(int? roleId = null);
         Task<PagedResult<UserViewModel>> GetPagedResult(GetUserPagingRequest request);
     }
 }
