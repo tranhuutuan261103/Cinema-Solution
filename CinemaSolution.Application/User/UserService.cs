@@ -18,6 +18,15 @@ namespace CinemaSolution.Application.User
             this.cinemaDBContext = cinemaDBContext;
         }
 
+        public async Task<int> GetCount(int? roleId = null)
+        {
+            if (roleId.HasValue)
+            {
+                return await cinemaDBContext.UsersInRoles.CountAsync(x => x.RoleId == roleId);
+            }
+            return await cinemaDBContext.Users.CountAsync();
+        }
+
         public async Task<PagedResult<UserViewModel>> GetPagedResult(GetUserPagingRequest request)
         {
             var userQuery = from u in cinemaDBContext.Users
