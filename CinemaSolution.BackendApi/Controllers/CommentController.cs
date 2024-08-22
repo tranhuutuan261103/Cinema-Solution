@@ -24,6 +24,11 @@ namespace CinemaSolution.BackendApi.Controllers
         {
             try
             {
+                var user = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (user != null)
+                {
+                    return Ok(await _commentService.GetAll(movieId, int.Parse(user.Value)));
+                }
                 var comments = await _commentService.GetAll(movieId);
                 return Ok(comments);
             }
@@ -51,9 +56,9 @@ namespace CinemaSolution.BackendApi.Controllers
             }
         }
 
-        [HttpPost("like")]
+        [HttpPost("{commentId}/like")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> Like([FromQuery] int commentId)
+        public async Task<IActionResult> Like(int commentId)
         {
             try
             {
