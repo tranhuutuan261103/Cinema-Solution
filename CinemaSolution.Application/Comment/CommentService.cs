@@ -18,7 +18,7 @@ namespace CinemaSolution.Application.Comment
             this.cinemaDBContext = cinemaDBContext;
         }
 
-        public async Task<List<CommentViewModel>> GetAll(int movieId)
+        public async Task<List<CommentViewModel>> GetAll(int movieId, int? userId = null)
         {
             var comments = from c in cinemaDBContext.Comments
                            join u in cinemaDBContext.Users on c.UserId equals u.Id
@@ -78,6 +78,7 @@ namespace CinemaSolution.Application.Comment
                                               }
                                           }).ToList(),
                                 Likes = commentLikes.Count(),
+                                IsLiked = commentLikes.Any(cl => cl.UserId == userId)
                            };
 
             return await comments.ToListAsync();
