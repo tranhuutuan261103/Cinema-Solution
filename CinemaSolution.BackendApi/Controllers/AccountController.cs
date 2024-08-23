@@ -45,13 +45,38 @@ namespace CinemaSolution.BackendApi.Controllers
             }
         }
 
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterRequest request)
+        {
+            try
+            {
+                request.RoleRequest = "Customer";
+                var user = await _accountService.Register(request);
+                if (user == null)
+                {
+                    return BadRequest("Register failed.");
+                }
+                var token = GenerateToken(user);
+                return Json(new { token });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("profile")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Profile()
         {
             try
             {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var userId = HttpContext.Items["UserId"] as string;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return BadRequest("User ID not found.");
+                }
                 var user = await _accountService.GetProfile(int.Parse(userId));
                 if (user == null)
                 {
@@ -77,7 +102,11 @@ namespace CinemaSolution.BackendApi.Controllers
                 {
                     return BadRequest("Avatar is required.");
                 }
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var userId = HttpContext.Items["UserId"] as string;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return BadRequest("User ID not found.");
+                }
                 var avatarUrl = await _storageService.UploadFileAsync(
                     request.Avatar.OpenReadStream(),
                     "user_avatar",

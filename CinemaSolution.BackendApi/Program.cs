@@ -8,6 +8,7 @@ using CinemaSolution.Application.Province;
 using CinemaSolution.Application.Rating;
 using CinemaSolution.Application.Screening;
 using CinemaSolution.Application.Storage;
+using CinemaSolution.BackendApi.Middlewares;
 using CinemaSolution.Data.EF;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -104,6 +105,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<UserIdMiddleware>();
 
 app.MapControllers();
 

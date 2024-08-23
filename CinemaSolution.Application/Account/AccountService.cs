@@ -61,42 +61,55 @@ namespace CinemaSolution.Application.Account
 
         public async Task<AccountViewModel> Register(RegisterRequest request)
         {
-            if (request.Password != request.ConfirmPassword)
+            try
             {
-                throw new Exception("Password and Confirm Password do not match.");
+                if (request.Password != request.ConfirmPassword)
+                {
+                    throw new Exception("Password and Confirm Password do not match.");
+                }
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == request.Username);
+                if (user != null)
+                {
+                    throw new Exception("Username is already taken.");
+                }
+                var role = await _context.Roles.FirstOrDefaultAsync(x => x.Name == request.RoleRequest);
+                if (role == null)
+                {
+                    throw new Exception("Role not found.");
+                }
+                var newUser = new Data.Entities.User
+                {
+                    Username = request.Username,
+                    Email = request.Email,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    PhoneNumber = request.PhoneNumber,
+                    Address = request.Address,
+                };
+                GeneratePassword generate = new GeneratePassword(request.Password);
+                newUser.PasswordSalt = generate.GetSalt();
+                newUser.PasswordHash = generate.GetPasswordHash();
+                _context.Users.Add(newUser);
+                await _context.SaveChangesAsync();
+                _context.UsersInRoles.Add(new Data.Entities.UserInRole
+                {
+                    UserId = newUser.Id,
+                    RoleId = role.Id,
+                });
+                await _context.SaveChangesAsync();
+                return new AccountViewModel
+                {
+                    Id = newUser.Id,
+                    Username = newUser.Username,
+                    FirstName = newUser.FirstName,
+                    LastName = newUser.LastName,
+                    Email = newUser.Email,
+                    Role = role.Name,
+                };
+            } catch (Exception ex)
+            {
+                throw ex;
             }
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == request.Username);
-            if (user != null)
-            {
-                throw new Exception("Username is already taken.");
-            }
-            user = new Data.Entities.User
-            {
-                Username = request.Username,
-                Email = request.Email,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-            };
-            GeneratePassword generate = new GeneratePassword(request.Password);
-            user.PasswordSalt = generate.GetSalt();
-            user.PasswordHash = generate.GetPasswordHash();
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            _context.UsersInRoles.Add(new Data.Entities.UserInRole
-            {
-                UserId = user.Id,
-                RoleId = 1, // Default role is Admin
-            });
-            await _context.SaveChangesAsync();
-            return new AccountViewModel
-            {
-                Id = user.Id,
-                Username = user.Username,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                Role = "Administrator",
-            };
         }
 
         public async Task<AccountViewModel> GetProfile(int userId)
