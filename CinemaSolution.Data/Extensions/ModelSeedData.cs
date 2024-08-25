@@ -531,20 +531,20 @@ namespace CinemaSolution.Data.Extensions
             );
 
             modelBuilder.Entity<Screening>().HasData(new Screening()
-            {
-                Id = 1,
-                MovieId = 1,
-                AuditoriumId = 1,
-                StartDate = new DateTime(2024, 8, 15),
-                StartTime = new TimeSpan(10, 0, 0),
-                IsDeleted = false
-            },
+                {
+                    Id = 1,
+                    MovieId = 1,
+                    AuditoriumId = 1,
+                    StartDate = new DateTime(2024, 9, 1),
+                    StartTime = new TimeSpan(10, 0, 0),
+                    IsDeleted = false
+                },
                 new Screening()
                 {
                     Id = 2,
                     MovieId = 1,
                     AuditoriumId = 1,
-                    StartDate = new DateTime(2024, 8, 16),
+                    StartDate = new DateTime(2024, 9, 2),
                     StartTime = new TimeSpan(20, 0, 0),
                     IsDeleted = false
                 },
@@ -553,7 +553,7 @@ namespace CinemaSolution.Data.Extensions
                     Id = 3,
                     MovieId = 1,
                     AuditoriumId = 2,
-                    StartDate = new DateTime(2024, 8, 18),
+                    StartDate = new DateTime(2024, 9, 4),
                     StartTime = new TimeSpan(20, 0, 0),
                     IsDeleted = false
                 },
@@ -562,7 +562,7 @@ namespace CinemaSolution.Data.Extensions
                     Id = 4,
                     MovieId = 2,
                     AuditoriumId = 3,
-                    StartDate = new DateTime(2024, 8, 18),
+                    StartDate = new DateTime(2024, 9, 4),
                     StartTime = new TimeSpan(20, 0, 0),
                     IsDeleted = false
                 }
@@ -641,6 +641,7 @@ namespace CinemaSolution.Data.Extensions
                 });
 
             List<Seat> seats = new List<Seat>();
+            int[] seatTypes = { 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1 };
             for (int k = 0; k < 4; k++)
             {
                 for (int i = 0; i < 12; i++)
@@ -652,7 +653,7 @@ namespace CinemaSolution.Data.Extensions
                             Id = k * 12 * 12 + i * 12 + j + 1,
                             Row = i + 1,
                             Number = j + 1,
-                            SeatTypeId = 2,
+                            SeatTypeId = seatTypes[i],
                             SeatStatusId = 1,
                             ScreeningId = k + 1
                         });

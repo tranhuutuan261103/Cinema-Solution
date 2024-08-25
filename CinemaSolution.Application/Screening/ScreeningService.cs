@@ -114,6 +114,7 @@ namespace CinemaSolution.Application.Screening
                 },
                 StartTime = s.s.StartTime,
                 StartDate = s.s.StartDate,
+                EndTime = s.s.StartTime + TimeSpan.FromMinutes(s.m.Duration),
                 SeatsAvailable = seats.FirstOrDefault(x => x.ScreeningId == s.s.Id)?.AvailableSeats ?? 0,
                 SeatsTotal = seats.FirstOrDefault(x => x.ScreeningId == s.s.Id)?.SeatTotal ?? 0,
             }).ToList();
@@ -175,6 +176,7 @@ namespace CinemaSolution.Application.Screening
                 },
                 StartTime = screening.StartTime,
                 StartDate = screening.StartDate,
+                EndTime = screening.StartTime + TimeSpan.FromMinutes(movie.Duration),
                 SeatsAvailable = seats.Count(s => s.SeatStatus.IsAvailable),
                 SeatsTotal = seats.Count(),
                 Seats = seats.Select(s => new SeatViewModel()
