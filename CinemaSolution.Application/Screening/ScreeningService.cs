@@ -134,16 +134,25 @@ namespace CinemaSolution.Application.Screening
             {
                 throw new Exception($"Cannot find a screening: {id}");
             }
+
             var movie = await cinemaDBContext.Movies.FindAsync(screening.MovieId);
             var auditorium = await cinemaDBContext.Auditoriums.FindAsync(screening.AuditoriumId);
             var cinema = await cinemaDBContext.Cinemas.FindAsync(auditorium.CinemaId);
+
+            var seatPriceTables = await cinemaDBContext.DefaultPriceTables.Select(dpt => new SeatPriceViewModel
+            {
+                SeatTypeId = dpt.SeatTypeId,
+                PersonTypeId = dpt.PersonTypeId,
+                Price = dpt.Price,
+            }).ToListAsync();
+
             var seats = from s in cinemaDBContext.Seats
                         join sc in cinemaDBContext.Screenings on s.ScreeningId equals sc.Id
                         join st in cinemaDBContext.SeatTypes on s.SeatTypeId equals st.Id
                         join ss in cinemaDBContext.SeatStatuses on s.SeatStatusId equals ss.Id
                         where sc.Id == id
                         select new { Seat = s, Screening = sc, SeatType = st, SeatStatus = ss };
-            return new ScreeningViewModel()
+            var screeningResult = new ScreeningViewModel()
             {
                 Id = screening.Id,
                 Movie = new MovieViewModel()
@@ -169,7 +178,7 @@ namespace CinemaSolution.Application.Screening
                 SeatsAvailable = seats.Count(s => s.SeatStatus.IsAvailable),
                 SeatsTotal = seats.Count(),
                 Seats = seats.Select(s => new SeatViewModel()
-                {
+                    {
                     Id = s.Seat.ScreeningId,
                     Row = s.Seat.Row,
                     Number = s.Seat.Number,
@@ -184,8 +193,22 @@ namespace CinemaSolution.Application.Screening
                         Id = s.SeatType.Id,
                         Name = s.SeatType.Name,
                     },
-                }).ToList(),
+                    }).ToList(),
             };
+
+            foreach (SeatViewModel seat in screeningResult.Seats)
+            {
+                seat.Prices = seatPriceTables
+                    .Where(spt => spt.SeatTypeId == seat.SeatType.Id)
+                    .Select(spt => new SeatPriceViewModel
+                {
+                    SeatTypeId = spt.SeatTypeId,
+                    PersonTypeId = spt.PersonTypeId,
+                    Price = spt.Price,
+                }).ToList();
+            }
+
+            return screeningResult;
         }
 
         public async Task<ScreeningViewModel> Create(ScreeningCreateRequest request)
