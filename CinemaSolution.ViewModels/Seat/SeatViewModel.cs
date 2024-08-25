@@ -13,5 +13,6 @@ namespace CinemaSolution.ViewModels.Seat
         public int Number { get; set; }
         public SeatTypeViewModel SeatType { get; set; } = new SeatTypeViewModel();
         public SeatStatusViewModel SeatStatus { get; set; } = new SeatStatusViewModel();
+        public List<SeatPriceViewModel> Prices { get; set; } = new List<SeatPriceViewModel>();
     }
 }
