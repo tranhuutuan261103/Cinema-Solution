@@ -99,9 +99,9 @@
                     <i class="fa-solid fa-chart-bar nav-icon"></i>
                     Statistic
                 </button>
-                <ul class="nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#!">Tickets</a>
+                <ul class="nav @(Convert.ToString(ViewData["BarActive"]) == "invoice" ? "nav-show" : "")">
+                    <li class="nav-item @(Convert.ToString(ViewData["BarActive"]) == "invoice" ? "nav-item__active" : "")">
+                        <a class="nav-link" asp-controller="Invoice" asp-action="Index">Invoices</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#!">Products</a>

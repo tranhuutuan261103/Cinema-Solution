@@ -2,6 +2,7 @@ using CinemaSolution.Application.Account;
 using CinemaSolution.Application.Auditorium;
 using CinemaSolution.Application.Category;
 using CinemaSolution.Application.Cinema;
+using CinemaSolution.Application.Invoice;
 using CinemaSolution.Application.Movie;
 using CinemaSolution.Application.Product;
 using CinemaSolution.Application.Province;
@@ -29,6 +30,7 @@ builder.Services.AddTransient<IProvinceService, ProvinceService>();
 builder.Services.AddTransient<IScreeningService, ScreeningService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddTransient<IInvoiceService, InvoiceService>();
 
 builder.Services.AddAuthentication("CookieAuthentication")
     .AddCookie("CookieAuthentication", config =>
