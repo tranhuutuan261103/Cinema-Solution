@@ -1,0 +1,59 @@
+﻿@using CinemaSolution.ViewModels.Common.Paging;
+@using CinemaSolution.ViewModels.Invoice;
+
+@model PagedResult<InvoiceViewModel>;
+
+@{
+    ViewData["Title"] = "Invoices";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<nav class="breadcrumb">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+            <a asp-controller="Home">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            Invoices
+        </li>
+    </ol>
+</nav>
+
+<div class="table-block">
+    <div class="table-header">
+        <h3 class="table-title">All invoices</h3>
+    </div>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>User</th>
+                <th>Price</th>
+                <th>Discount</th>
+                <th>Total</th>
+                <th>Created date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.User.Username</td>
+                    <td>@item.Price</td>
+                    <td>@item.Discount</td>
+                    <td>@item.SumPrice</td>
+                    <td>@item.DateOfPurchase.ToLocalTime()</td>
+                    <td class="table-actions-flex">
+                        <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
+                            <i class="fa-solid fa-pen-to-square table-btn-icon"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @await Component.InvokeAsync("Pager", Model)
+</div>
