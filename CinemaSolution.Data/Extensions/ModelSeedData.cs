@@ -897,7 +897,7 @@ namespace CinemaSolution.Data.Extensions
                 new Invoice()
                 {
                     Id = 1,
-                    UserId = 1,
+                    UserId = 2,
                     TicketId = 1,
                     OrderId = 1,
                     Price = 80000 + 109000,
@@ -909,19 +909,19 @@ namespace CinemaSolution.Data.Extensions
                 new Invoice()
                 {
                     Id = 2,
-                    UserId = 1,
+                    UserId = 2,
                     TicketId = 2,
                     OrderId = 2,
                     Price = 80000 + 129000,
                     Discount = 0,
                     SumPrice = 80000 + 129000,
-                    DateOfPurchase = DateTime.Now,
+                    DateOfPurchase = DateTime.Now.AddDays(1),
                     IsDeleted = false
                 },
                 new Invoice()
                 {
                     Id = 3,
-                    UserId = 1,
+                    UserId = 3,
                     TicketId = 3,
                     OrderId = 3,
                     Price = 80000 + 109000,
