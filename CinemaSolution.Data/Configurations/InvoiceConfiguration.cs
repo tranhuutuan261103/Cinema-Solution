@@ -23,6 +23,9 @@ namespace CinemaSolution.Data.Configurations
             builder.Property(x => x.DateOfPurchase).IsRequired();
             builder.Property(x => x.IsDeleted).IsRequired().HasDefaultValue(false);
 
+            builder.Property(x => x.TicketId).IsRequired(false);
+            builder.Property(x => x.OrderId).IsRequired(false);
+
             builder.HasOne(x => x.User).WithMany(x => x.Invoices).HasForeignKey(x => x.UserId);
             builder.HasOne(i => i.Ticket).WithOne(t => t.Invoice).HasForeignKey<Invoice>(t => t.TicketId);
             builder.HasOne(i => i.Order).WithOne(o => o.Invoice).HasForeignKey<Invoice>(o => o.OrderId);
