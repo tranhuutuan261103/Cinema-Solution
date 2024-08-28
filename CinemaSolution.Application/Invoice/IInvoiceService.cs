@@ -13,5 +13,6 @@ namespace CinemaSolution.Application.Invoice
         Task<int> GetCount();
         Task<decimal> GetTotalPrice();
         Task<PagedResult<InvoiceViewModel>> GetPagedResult(GetInvoicePagingRequest request);
+        Task<List<InvoiceViewModel>> GetInvoicesByUserId(int userId);
     }
 }
