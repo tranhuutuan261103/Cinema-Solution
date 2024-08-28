@@ -2,6 +2,7 @@ using CinemaSolution.Application.Account;
 using CinemaSolution.Application.Category;
 using CinemaSolution.Application.Cinema;
 using CinemaSolution.Application.Comment;
+using CinemaSolution.Application.Invoice;
 using CinemaSolution.Application.Movie;
 using CinemaSolution.Application.Product;
 using CinemaSolution.Application.Province;
@@ -90,6 +91,7 @@ builder.Services.AddTransient<ICinemaService, CinemaService>();
 builder.Services.AddTransient<IStorageService, StorageService>();
 builder.Services.AddTransient<IScreeningService, ScreeningService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
+builder.Services.AddTransient<IInvoiceService, InvoiceService>();
 
 var app = builder.Build();
 
