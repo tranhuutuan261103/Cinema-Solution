@@ -93,8 +93,8 @@ namespace CinemaSolution.Data.EF
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductInProductCombo> ProductInProductCombos { get; set; }
         public DbSet<ProductCombo> ProductCombos { get; set; }
-        public DbSet<ProductComboInOrder> ProductComboInInvoices { get; set; }
-        public DbSet<Order> ProductInInvoices { get; set; }
+        public DbSet<ProductComboInOrder> ProductComboInOrders { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
         public DbSet<Invoice> Invoices { get; set; }
     }
