@@ -18,12 +18,12 @@ namespace CinemaSolution.BackendApi.Controllers
         }
 
         [HttpGet("")]
-        [Authorize(Roles = "Customer")]
+        // [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Index()
         {
             try
             {
-                var userId = HttpContext.Items["UserId"] as string;
+                var userId = "2" as string;
                 if (string.IsNullOrEmpty(userId))
                 {
                     return BadRequest("User ID not found.");

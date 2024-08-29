@@ -12,6 +12,7 @@ namespace CinemaSolution.ViewModels.Invoice
         public int Id { get; set; }
         public UserViewModel User { get; set; } = new UserViewModel();
         public TicketViewModel? Ticket { get; set; }
+        public OrderViewModel? Order { get; set; }
         public decimal Price { get; set; }
         public decimal Discount { get; set; }
         public decimal SumPrice { get; set; }
