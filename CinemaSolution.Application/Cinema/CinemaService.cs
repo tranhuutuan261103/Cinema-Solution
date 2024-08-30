@@ -1,4 +1,5 @@
 ﻿using CinemaSolution.Data.EF;
+using CinemaSolution.Data.Entities;
 using CinemaSolution.ViewModels.Auditorium;
 using CinemaSolution.ViewModels.Cinema;
 using CinemaSolution.ViewModels.Common.Paging;
@@ -97,7 +98,7 @@ namespace CinemaSolution.Application.Cinema
 
             return groupedCinemas;
         }
-        public async Task<List<CinemaViewModel>> GetScreeningsByProvinceId(int provinceId, DateTime startDate)
+        public async Task<List<CinemaViewModel>> GetScreeningsByMovieId(int movieId, int provinceId, DateTime startDate)
         {
             // Step 1: Fetch the data from the database
             var cinemaData = await (from c in cinemaDBContext.Cinemas
@@ -106,7 +107,7 @@ namespace CinemaSolution.Application.Cinema
                                     join s in cinemaDBContext.Screenings on a.Id equals s.AuditoriumId
                                     join m in cinemaDBContext.Movies on s.MovieId equals m.Id
                                     join ss in cinemaDBContext.Seats on s.Id equals ss.ScreeningId
-                                    where a.ProvinceId == provinceId && s.StartDate.Date == startDate.Date
+                                    where a.ProvinceId == provinceId && m.Id == movieId && s.StartDate.Date == startDate.Date
                                     select new
                                     {
                                         Cinema = c,
@@ -144,6 +145,82 @@ namespace CinemaSolution.Application.Cinema
                                         Screenings = x.GroupBy(sg => new { sg.Screening, sg.Movie })
                                                         .Select(sg => new ScreeningViewModel
                                                         {
+                                                            Movie = new ViewModels.Movie.MovieViewModel()
+                                                            {
+                                                                Id = sg.Key.Movie.Id,
+                                                                Title = sg.Key.Movie.Title,
+
+                                                            },
+                                                            Id = sg.Key.Screening.Id,
+                                                            StartTime = sg.Key.Screening.StartTime,
+                                                            EndTime = sg.Key.Screening.StartTime + TimeSpan.FromMinutes(sg.Key.Movie.Duration),
+                                                            StartDate = sg.Key.Screening.StartDate,
+                                                            SeatsAvailable = sg.Count(x => x.Seat.SeatStatusId == 1),
+                                                            SeatsTotal = sg.Count(),
+                                                        }).ToList()
+                                    })
+                                    .Where(x => x.Screenings.Any())
+                                    .ToList()
+                })
+                .Where(x => x.Auditoriums.Any())
+                .ToList();
+
+            return groupedCinemas;
+        }
+
+        public async Task<List<CinemaViewModel>> GetScreeningsByAuditoriumId(int auditoriumId, DateTime startDate)
+        {
+            // Step 1: Fetch the data from the database
+            var cinemaData = await (from c in cinemaDBContext.Cinemas
+                                    join a in cinemaDBContext.Auditoriums on c.Id equals a.CinemaId
+                                    join p in cinemaDBContext.Provinces on a.ProvinceId equals p.Id
+                                    join s in cinemaDBContext.Screenings on a.Id equals s.AuditoriumId
+                                    join m in cinemaDBContext.Movies on s.MovieId equals m.Id
+                                    join ss in cinemaDBContext.Seats on s.Id equals ss.ScreeningId
+                                    where a.Id == auditoriumId && s.StartDate.Date == startDate.Date
+                                    select new
+                                    {
+                                        Cinema = c,
+                                        Auditorium = a,
+                                        Province = p,
+                                        Screening = s,
+                                        Seat = ss,
+                                        Movie = m
+                                    }).ToListAsync();
+
+            // Step 2: Group the data by Cinema
+            var groupedCinemas = cinemaData
+                .GroupBy(x => x.Cinema)
+                .Select(g => new CinemaViewModel
+                {
+                    Id = g.Key.Id,
+                    Name = g.Key.Name,
+                    LogoUrl = g.Key.LogoUrl,
+                    IsDeleted = g.Key.IsDeleted,
+                    Auditoriums = g.GroupBy(ag => new { ag.Auditorium, ag.Province })
+                                    .Select(x => new AuditoriumViewModel
+                                    {
+                                        Id = x.Key.Auditorium.Id,
+                                        Name = x.Key.Auditorium.Name,
+                                        Latitude = x.Key.Auditorium.Latitude,
+                                        Longitude = x.Key.Auditorium.Longitude,
+                                        Address = x.Key.Auditorium.Address,
+                                        SeatsPerColumn = x.Key.Auditorium.NumberOfRowSeats,
+                                        SeatsPerRow = x.Key.Auditorium.NumberOfColumnSeats,
+                                        Province = new ProvinceViewModel
+                                        {
+                                            Id = x.Key.Province.Id,
+                                            Name = x.Key.Province.Name
+                                        },
+                                        Screenings = x.GroupBy(sg => new { sg.Screening, sg.Movie })
+                                                        .Select(sg => new ScreeningViewModel
+                                                        {
+                                                            Movie = new ViewModels.Movie.MovieViewModel()
+                                                            {
+                                                                Id = sg.Key.Movie.Id,
+                                                                Title = sg.Key.Movie.Title,
+
+                                                            },
                                                             Id = sg.Key.Screening.Id,
                                                             StartTime = sg.Key.Screening.StartTime,
                                                             EndTime = sg.Key.Screening.StartTime + TimeSpan.FromMinutes(sg.Key.Movie.Duration),
