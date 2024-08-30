@@ -18,10 +18,25 @@ namespace CinemaSolution.BackendApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet("")]
-        public async Task<IActionResult> Index(int provinceId, DateTime startDate)
+        [HttpGet("movie/{movieId}")]
+        public async Task<IActionResult> Index(int movieId, [FromQuery] int provinceId, [FromQuery] DateTime startDate)
         {
-            var screenings = await _cinemaService.GetScreeningsByProvinceId(provinceId, startDate);
+            if (startDate == default)
+            {
+                startDate = DateTime.Now;
+            }
+            var screenings = await _cinemaService.GetScreeningsByMovieId(movieId, provinceId, startDate);
+            return Ok(screenings);
+        }
+
+        [HttpGet("auditorium/{auditoriumId}")]
+        public async Task<IActionResult> Index(int auditoriumId, [FromQuery] DateTime startDate)
+        {
+            if (startDate == default)
+            {
+                startDate = DateTime.Now;
+            }
+            var screenings = await _cinemaService.GetScreeningsByAuditoriumId(auditoriumId, startDate);
             return Ok(screenings);
         }
 
