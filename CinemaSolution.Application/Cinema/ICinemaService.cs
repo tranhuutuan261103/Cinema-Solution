@@ -16,7 +16,7 @@ namespace CinemaSolution.Application.Cinema
         Task<CinemaViewModel> GetById(int id);
         Task<List<CinemaViewModel>> GetByProvinceId(int provinceId);
         Task<List<CinemaViewModel>> GetScreeningsByMovieId(int movieId, int provinceId, DateTime startDate);
-        Task<List<CinemaViewModel>> GetScreeningsByAuditoriumId(int auditoriumId, DateTime startDate);
+        Task<List<MovieScreeningViewModel>> GetScreeningsByAuditoriumId(int auditoriumId, DateTime startDate);
         Task<CinemaViewModel> Create(CinemaCreateRequest request);
         Task<CinemaViewModel> Update(CinemaUpdateRequest request);
         Task<int> Delete(int id);
