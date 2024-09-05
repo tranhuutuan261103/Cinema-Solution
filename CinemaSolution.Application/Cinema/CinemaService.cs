@@ -4,6 +4,7 @@ using CinemaSolution.ViewModels.Auditorium;
 using CinemaSolution.ViewModels.Category;
 using CinemaSolution.ViewModels.Cinema;
 using CinemaSolution.ViewModels.Common.Paging;
+using CinemaSolution.ViewModels.Movie;
 using CinemaSolution.ViewModels.Province;
 using CinemaSolution.ViewModels.Screening;
 using Microsoft.EntityFrameworkCore;
@@ -175,6 +176,8 @@ namespace CinemaSolution.Application.Cinema
             var cinemaData = await (from m in cinemaDBContext.Movies
                                     join mic in cinemaDBContext.MovieInCategories on m.Id equals mic.MovieId
                                     join c in cinemaDBContext.Categories on mic.CategoryId equals c.Id
+                                    join mi in cinemaDBContext.MovieImages on m.Id equals mi.MovieId
+                                    join mit in cinemaDBContext.MovieImageTypes on mi.MovieImageTypeId equals mit.Id
                                     join s in cinemaDBContext.Screenings on m.Id equals s.AuditoriumId
                                     join ss in cinemaDBContext.Seats on s.Id equals ss.ScreeningId
                                     where s.AuditoriumId == auditoriumId && s.StartDate.Date == startDate.Date
@@ -182,6 +185,8 @@ namespace CinemaSolution.Application.Cinema
                                     {
                                         Movie = m,
                                         Category = c,
+                                        MovieImage = mi,
+                                        MovieImageType = mit,
                                         Screening = s,
                                         Seat = ss,
                                     }).ToListAsync();
@@ -193,6 +198,15 @@ namespace CinemaSolution.Application.Cinema
                 {
                     Id = g.Key.Id,
                     Title = g.Key.Title,
+                    Duration = g.Key.Duration,
+                    Language = g.Key.Language,
+                    MovieImages = g.GroupBy(mig => mig.MovieImage)
+                                .Select(mig => new MovieImageViewModel
+                                {
+                                    Id = mig.Key.Id,
+                                    ImageUrl = mig.Key.ImageUrl,
+                                    ImageType = mig.Key.MovieImageType.Name
+                                }).ToList(),
                     Categories = g.GroupBy(cg => cg.Category)
                                 .Select(cg => new CategoryViewModel
                                 {
