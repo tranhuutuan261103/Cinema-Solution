@@ -172,14 +172,13 @@ namespace CinemaSolution.Application.Cinema
 
         public async Task<List<MovieScreeningViewModel>> GetScreeningsByAuditoriumId(int auditoriumId, DateTime startDate)
         {
-            // Step 1: Fetch the data from the database
+            // Fetch the data from the database
             var cinemaData = await (from m in cinemaDBContext.Movies
                                     join mic in cinemaDBContext.MovieInCategories on m.Id equals mic.MovieId
                                     join c in cinemaDBContext.Categories on mic.CategoryId equals c.Id
                                     join mi in cinemaDBContext.MovieImages on m.Id equals mi.MovieId
                                     join mit in cinemaDBContext.MovieImageTypes on mi.MovieImageTypeId equals mit.Id
-                                    join s in cinemaDBContext.Screenings on m.Id equals s.AuditoriumId
-                                    join ss in cinemaDBContext.Seats on s.Id equals ss.ScreeningId
+                                    join s in cinemaDBContext.Screenings on m.Id equals s.MovieId
                                     where s.AuditoriumId == auditoriumId && s.StartDate.Date == startDate.Date
                                     select new
                                     {
@@ -188,18 +187,20 @@ namespace CinemaSolution.Application.Cinema
                                         MovieImage = mi,
                                         MovieImageType = mit,
                                         Screening = s,
-                                        Seat = ss,
+                                        Seat = s.Seats // Get seats directly from the Screening entity
                                     }).ToListAsync();
 
-            // Step 2: Group the data by Movie
+            // Group by Movie and Screening
             var groupedMovies = cinemaData
-                .GroupBy(x => x.Movie)
+                .GroupBy(x => new { x.Movie, x.Screening })
                 .Select(g => new MovieScreeningViewModel
                 {
-                    Id = g.Key.Id,
-                    Title = g.Key.Title,
-                    Duration = g.Key.Duration,
-                    Language = g.Key.Language,
+                    Id = g.Key.Movie.Id,
+                    Title = g.Key.Movie.Title,
+                    Duration = g.Key.Movie.Duration,
+                    Language = g.Key.Movie.Language,
+                    Rating = g.Key.Movie.Rating,
+                    Director = g.Key.Movie.Director,
                     MovieImages = g.GroupBy(mig => mig.MovieImage)
                                 .Select(mig => new MovieImageViewModel
                                 {
@@ -213,25 +214,24 @@ namespace CinemaSolution.Application.Cinema
                                     Id = cg.Key.Id,
                                     Name = cg.Key.Name
                                 }).ToList(),
-                    TrailerUrl = g.Key.TrailerUrl,
-                    Actors = g.Key.Actors,
-                    IsDeleted = g.Key.IsDeleted,
-                    Screenings = g.GroupBy(sg => new { sg.Screening })
-                                .Select(sg => new ScreeningViewModel
-                                {
-                                    Movie = new ViewModels.Movie.MovieViewModel()
-                                    {
-                                        Id = g.Key.Id,
-                                        Title = g.Key.Title,
-
-                                    },
-                                    Id = sg.Key.Screening.Id,
-                                    StartTime = sg.Key.Screening.StartTime,
-                                    EndTime = sg.Key.Screening.StartTime + TimeSpan.FromMinutes(g.Key.Duration),
-                                    StartDate = sg.Key.Screening.StartDate,
-                                    SeatsAvailable = sg.Count(x => x.Seat.SeatStatusId == 1),
-                                    SeatsTotal = sg.Count(),
-                                }).ToList()
+                    TrailerUrl = g.Key.Movie.TrailerUrl,
+                    Actors = g.Key.Movie.Actors,
+                    IsDeleted = g.Key.Movie.IsDeleted,
+                    Screenings = g.GroupBy(sg => sg.Screening)
+                        .Select(sg => new ScreeningViewModel
+                        {
+                            Movie = new ViewModels.Movie.MovieViewModel
+                            {
+                                Id = g.Key.Movie.Id,
+                                Title = g.Key.Movie.Title,
+                            },
+                            Id = sg.Key.Id,
+                            StartTime = sg.Key.StartTime,
+                            EndTime = sg.Key.StartTime + TimeSpan.FromMinutes(g.Key.Movie.Duration),
+                            StartDate = sg.Key.StartDate,
+                            SeatsAvailable = sg.Key.Seats.Count(x => x.SeatStatusId == 1),
+                            SeatsTotal = sg.Key.Seats.Count()
+                        }).ToList()
                 })
                 .ToList();
 
