@@ -116,7 +116,7 @@ namespace CinemaSolution.Application.Cinema
                                         Auditorium = a,
                                         Province = p,
                                         Screening = s,
-                                        Seat = ss,
+                                        Seat = s.Seats, // Get seats directly from the Screening entity
                                         Movie = m
                                     }).ToListAsync();
 
@@ -157,8 +157,8 @@ namespace CinemaSolution.Application.Cinema
                                                             StartTime = sg.Key.Screening.StartTime,
                                                             EndTime = sg.Key.Screening.StartTime + TimeSpan.FromMinutes(sg.Key.Movie.Duration),
                                                             StartDate = sg.Key.Screening.StartDate,
-                                                            SeatsAvailable = sg.Count(x => x.Seat.SeatStatusId == 1),
-                                                            SeatsTotal = sg.Count(),
+                                                            SeatsAvailable = sg.Key.Screening.Seats.Count(x => x.SeatStatusId == 1),
+                                                            SeatsTotal = sg.Key.Screening.Seats.Count()
                                                         }).ToList()
                                     })
                                     .Where(x => x.Screenings.Any())
