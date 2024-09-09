@@ -21,8 +21,8 @@
 </nav>
 
 <div class="filter-block filter-block-category">
-    <form action="" class="form-search form-search-category">
-        <input type="text" placeholder="Search" class="form-search-input">
+    <form asp-action="Index" method="get" class="form-search form-search-category">
+        <input type="text" name="keyword" value="@ViewBag.Keyword" placeholder="Search" class="form-search-input">
         <button type="submit" class="form-search-btn">
             <i class="fa-solid fa-magnifying-glass"></i>
         </button>

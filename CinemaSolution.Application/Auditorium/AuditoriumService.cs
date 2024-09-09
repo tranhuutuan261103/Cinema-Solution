@@ -51,6 +51,10 @@ namespace CinemaSolution.Application.Auditorium
             {
                 query = query.Where(x => x.Province.Id == request.ProvinceId);
             }
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.Name.Contains(request.Keyword));
+            }
 
             var totalRecords = await query.CountAsync();
 

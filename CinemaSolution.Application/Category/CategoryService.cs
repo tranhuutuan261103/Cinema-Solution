@@ -33,7 +33,7 @@ namespace CinemaSolution.Application.Category
         public async Task<PagedResult<CategoryViewModel>> GetPagedResult(GetCategoryPagingRequest request)
         {
             var query = from c in cinemaDBContext.Categories
-                        where c.IsDeleted == false
+                        where c.IsDeleted == false && string.IsNullOrEmpty(request.Keyword) || c.Name.Contains(request.Keyword)
                         select c;
 
             // Total records count

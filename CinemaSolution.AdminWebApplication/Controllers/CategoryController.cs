@@ -3,6 +3,7 @@ using CinemaSolution.Application.Category;
 using CinemaSolution.ViewModels.Category;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace CinemaSolution.AdminWebApplication.Controllers
 {
@@ -18,14 +19,19 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Index(int pageIndex = 1, int pageSize = 5)
+        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 5)
         {
             var request = new GetCategoryPagingRequest
             {
                 PageIndex = pageIndex,
-                PageSize = pageSize
+                PageSize = pageSize,
+                Keyword = keyword
             };
             var categoryPagedResult = await _categoryService.GetPagedResult(request);
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                ViewBag.Keyword = keyword;
+            }
             return View(categoryPagedResult);
         }
 
