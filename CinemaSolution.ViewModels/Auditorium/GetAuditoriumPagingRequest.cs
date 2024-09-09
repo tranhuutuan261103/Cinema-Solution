@@ -9,6 +9,7 @@ namespace CinemaSolution.ViewModels.Auditorium
 {
     public class GetAuditoriumPagingRequest : PagingRequestBase
     {
+        public string Keyword { get; set; } = string.Empty;
         public int? CinemaId { get; set; }
         public int? ProvinceId { get; set; }
     }

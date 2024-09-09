@@ -27,17 +27,23 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Index(int? cinemaId, int? provinceId, int pageIndex = 1, int pageSize = 5)
+        public async Task<IActionResult> Index(string? keyword, int? cinemaId, int? provinceId, int pageIndex = 1, int pageSize = 5)
         {
             var request = new GetAuditoriumPagingRequest()
             {
                 PageIndex = pageIndex,
                 PageSize = pageSize,
                 CinemaId = cinemaId,
-                ProvinceId = provinceId
+                ProvinceId = provinceId,
+                Keyword = keyword ?? string.Empty
             };
             var auditoriums = await _auditoriumService.GetPagedResult(request);
             ViewBag.CinemaId = cinemaId;
+            ViewBag.ProvinceId = provinceId;
+            if (keyword != null)
+            {
+                ViewBag.Keyword = keyword;
+            }
             return View(auditoriums);
         }
 

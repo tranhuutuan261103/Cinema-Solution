@@ -9,5 +9,6 @@ namespace CinemaSolution.ViewModels.Category
 {
     public class GetCategoryPagingRequest : PagingRequestBase
     {
+        public string Keyword { get; set; } = string.Empty;
     }
 }
