@@ -9,7 +9,7 @@ namespace CinemaSolution.ViewModels.Cinema
 {
     public class GetCinemaPagingRequest : PagingRequestBase
     {
-        public string Keyword { get; set; }
+        public string Keyword { get; set; } = string.Empty;
         public int? ProvinceId { get; set; }
     }
 }
