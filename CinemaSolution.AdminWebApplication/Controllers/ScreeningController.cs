@@ -26,19 +26,24 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Index(int PageIndex = 1, int PageSize = 5, int? movieId = null, int? auditoriumId = null)
+        public async Task<IActionResult> Index(ScreeningStatus? status = null, int PageIndex = 1, int PageSize = 5, int? movieId = null, int? auditoriumId = null)
         {
             var request = new GetScreeningPagingRequest
             {
                 PageIndex = PageIndex,
                 PageSize = PageSize,
                 MovieId = movieId,
-                AuditoriumId = auditoriumId
+                AuditoriumId = auditoriumId,
+                Status = status
             };
             var screenings = await _screeningService.GetPagedResult(request);
             if (auditoriumId != null)
             {
                 ViewBag.AuditoriumId = auditoriumId;
+            }
+            if (status != null)
+            {
+                ViewBag.Status = status;
             }
             return View(screenings);
         }

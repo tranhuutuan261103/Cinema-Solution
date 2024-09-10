@@ -75,14 +75,7 @@ namespace CinemaSolution.Application.Screening
                 query = query.Where(x => x.t.Id == request.AuditoriumId.Value);
             }
 
-            // Get the total number of records
-            int totalRecords = await query.CountAsync();
-
-            // Paginate the results
-            var screenings = await query
-                .Skip((request.PageIndex - 1) * request.PageSize)
-                .Take(request.PageSize)
-                .ToListAsync();
+            var screenings = await query.ToListAsync();
 
             // Fetch seats data in parallel
             var screeningIds = screenings.Select(x => x.s.Id).ToList();
@@ -117,11 +110,26 @@ namespace CinemaSolution.Application.Screening
                 EndTime = s.s.StartTime + TimeSpan.FromMinutes(s.m.Duration),
                 SeatsAvailable = seats.FirstOrDefault(x => x.ScreeningId == s.s.Id)?.AvailableSeats ?? 0,
                 SeatsTotal = seats.FirstOrDefault(x => x.ScreeningId == s.s.Id)?.SeatTotal ?? 0,
+                Status = GetStatus(s.s.StartDate, s.s.StartTime),
             }).ToList();
+
+            if (request.Status.HasValue)
+            {
+                data = data.Where(x => x.Status == request.Status.Value).ToList();
+            }
+
+            // Get the total number of records
+            int totalRecords = data.Count;
+
+            // Apply paging
+            var pagedScreenings = data
+                .Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .ToList();
 
             return new PagedResult<ScreeningViewModel>()
             {
-                Items = data,
+                Items = pagedScreenings,
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize,
                 TotalRecords = totalRecords,
@@ -274,6 +282,23 @@ namespace CinemaSolution.Application.Screening
             }
             screening.IsDeleted = true;
             return await cinemaDBContext.SaveChangesAsync();
+        }
+
+        public ScreeningStatus GetStatus(DateTime startDate, TimeSpan startTime)
+        {
+            var currentDateTime = DateTime.Now;
+            var screeningDateTime = startDate.Add(startTime);
+            var timeToStart = screeningDateTime - currentDateTime;
+            var timeToStartInMinutes = timeToStart.TotalMinutes;
+            if (timeToStartInMinutes > 30)
+            {
+                return ScreeningStatus.Future;
+            }
+            else if (timeToStartInMinutes > 0)
+            {
+                return ScreeningStatus.Going;
+            }
+            return ScreeningStatus.Expried;
         }
     }
 }

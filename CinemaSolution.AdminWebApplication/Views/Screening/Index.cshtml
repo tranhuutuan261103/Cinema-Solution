@@ -24,16 +24,29 @@
 </nav>
 
 <div class="filter-block">
-    <div class="dropdown">
+    <div class="dropdown" style="width: 200px">
         <div class="select">
-            <span class="selected" data-id="-1">Status of movie</span>
+            @if (ViewBag.AuditoriumId == null)
+            {
+                <span class="selected" data-id="-1">Status of screening</span>
+            }
+            else
+            {
+                <span class="selected" data-id="@ViewBag.Status">@ViewBag.Status</span>
+            }
             <i class="fa fa-chevron-left select-icon"></i>
         </div>
         <ul class="dropdown-content dropdown-content-show">
-            <li class="dropdown-item" data-id="0" data-value="Status of movie">All movie</li>
-            <li class="dropdown-item" data-id="1" data-value="Valid now">Valid now</li>
-            <li class="dropdown-item" data-id="2" data-value="Going">Going</li>
-            <li class="dropdown-item" data-id="3" data-value="Not Going">Not Going</li>
+            <li class="dropdown-item" data-id="0" data-value="Status of screening">Status of screening</li>
+            <a asp-action="Index" asp-route-status="@ScreeningStatus.Future">
+                <li class="dropdown-item" data-id="Future" data-value="Future">Future</li>
+            </a>
+            <a asp-action="Index" asp-route-status="@ScreeningStatus.Going">
+                <li class="dropdown-item" data-id="Going" data-value="Going">Going</li>
+            </a>
+            <a asp-action="Index" asp-route-status="@ScreeningStatus.Expried">
+                <li class="dropdown-item" data-id="Expried" data-value="Expried">Expried</li>
+            </a>
         </ul>
     </div>
 
@@ -69,20 +82,7 @@
         <tbody>
             @foreach (var item in Model.Items)
             {
-                var currentDateTime = DateTime.Now;
-                var screeningDateTime = item.StartDate.Add(item.StartTime);
-                var timeToStart = screeningDateTime - currentDateTime;
-                var timeToStartInMinutes = timeToStart.TotalMinutes;
-                var status = "Expried";
-                if (timeToStartInMinutes > 30)
-                {
-                    status = "Future";
-                }
-                else if (timeToStartInMinutes > 0)
-                {
-                    status = "Going";
-                }
-                <tr style="background-color: @(status == "Expried" ? "#ffcccc" : (status == "Going") ? "#ffcc99" : "#ccffcc")">
+                <tr style="background-color: @(item.Status == ScreeningStatus.Expried ? "#ffcccc" : (item.Status == ScreeningStatus.Going) ? "#ffcc99" : "#ccffcc")">
                     <td>@item.Id</td>
                     <td>@item.Movie.Title</td>
                     <td>@item.Auditorium.Cinema.Name</td>

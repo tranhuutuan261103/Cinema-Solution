@@ -11,5 +11,6 @@ namespace CinemaSolution.ViewModels.Screening
     {
         public int? MovieId { get; set; }
         public int? AuditoriumId { get; set; }
+        public ScreeningStatus? Status { get; set; }
     }
 }

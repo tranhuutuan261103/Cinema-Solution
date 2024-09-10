@@ -20,5 +20,6 @@ namespace CinemaSolution.ViewModels.Screening
         public int SeatsAvailable { get; set; }
         public int SeatsTotal { get; set; }
         public List<SeatViewModel>? Seats { get; set; }
+        public ScreeningStatus Status { get; set; }
     }
 }
