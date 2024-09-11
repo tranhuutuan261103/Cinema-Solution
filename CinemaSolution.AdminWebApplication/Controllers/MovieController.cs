@@ -26,14 +26,15 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int PageIndex = 1, int PageSize = 5, string Keyword = "", string Category = "")
+        public async Task<IActionResult> Index(MovieStatus? status, int PageIndex = 1, int PageSize = 5, string Keyword = "", string Category = "")
         {
             GetMoviePagingRequest request = new GetMoviePagingRequest()
             {
                 Category = Category,
                 Keyword = Keyword,
                 PageIndex = PageIndex,
-                PageSize = PageSize
+                PageSize = PageSize,
+                Status = status
             };
             var result = await _movieService.GetPagedResult(request);
             ViewBag.PageIndex = PageIndex;
@@ -45,6 +46,10 @@ namespace CinemaSolution.AdminWebApplication.Controllers
             if (!string.IsNullOrEmpty(Keyword))
             {
                 ViewBag.Keyword = Keyword;
+            }
+            if (status.HasValue)
+            {
+                ViewBag.Status = status;
             }
             return View(result);
         }

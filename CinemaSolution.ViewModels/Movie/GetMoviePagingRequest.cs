@@ -11,5 +11,6 @@ namespace CinemaSolution.ViewModels.Movie
     {
         public string Keyword { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
+        public MovieStatus? Status { get; set; }
     }
 }

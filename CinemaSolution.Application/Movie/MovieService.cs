@@ -83,6 +83,19 @@ namespace CinemaSolution.Application.Movie
                 query = query.Where(x => x.m.Title.Contains(request.Keyword));
             }
 
+            if (request.Status == MovieStatus.ValidNow)
+            {
+                query = query.Where(x => x.m.EndDate >= DateTime.Now && x.m.ReleaseDate <= DateTime.Now);
+            }
+            else if (request.Status == MovieStatus.ComingSoon)
+            {
+                query = query.Where(x => x.m.ReleaseDate > DateTime.Now);
+            }
+            else if (request.Status == MovieStatus.Expired)
+            {
+                query = query.Where(x => x.m.EndDate < DateTime.Now);
+            }
+
             // Total records count
             int totalRow = await query.Select(x => x.m.Id).Distinct().CountAsync();
 
