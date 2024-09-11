@@ -22,14 +22,39 @@
 <div class="filter-block">
     <div class="dropdown">
         <div class="select">
-            <span class="selected" data-id="-1">Status of movie</span>
+            @if (ViewBag.Status != null)
+            {
+                @if (ViewBag.Status == MovieStatus.ValidNow)
+                {
+                    <span class="selected" data-id="@MovieStatus.ValidNow">Valid now</span>
+                } else if (ViewBag.Status == MovieStatus.ComingSoon)
+                {
+                    <span class="selected" data-id="@MovieStatus.ComingSoon">Coming soon</span>
+                } else if (ViewBag.Status == MovieStatus.Expired)
+                {
+                    <span class="selected" data-id="@MovieStatus.Expired">Expired</span>
+                } else
+                {
+                    <span class="selected" data-id="-1">Status of movie</span>
+                }
+            }
+            else
+            {
+                <span class="selected" data-id="-1">Status of movie</span>
+            }
             <i class="fa fa-chevron-left select-icon"></i>
         </div>
         <ul class="dropdown-content dropdown-content-show">
             <li class="dropdown-item" data-id="0" data-value="Status of movie">All movie</li>
-            <li class="dropdown-item" data-id="1" data-value="Valid now">Valid now</li>
-            <li class="dropdown-item" data-id="2" data-value="Going">Going</li>
-            <li class="dropdown-item" data-id="3" data-value="Not Going">Not Going</li>
+            <a asp-action="Index" asp-route-status="@MovieStatus.ValidNow">
+                <li class="dropdown-item" data-id="@MovieStatus.ValidNow" data-value="Valid now">Valid now</li>
+            </a>
+            <a asp-action="Index" asp-route-status="@MovieStatus.ComingSoon">
+                <li class="dropdown-item" data-id="2" data-value="@MovieStatus.ComingSoon">Coming soon</li>
+            </a>
+            <a asp-action="Index" asp-route-status="@MovieStatus.Expired">
+                <li class="dropdown-item" data-id="3" data-value="@MovieStatus.Expired">Expired</li>
+            </a>
         </ul>
     </div>
 
