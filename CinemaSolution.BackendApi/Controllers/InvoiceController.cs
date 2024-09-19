@@ -1,4 +1,5 @@
 ﻿using CinemaSolution.Application.Invoice;
+using CinemaSolution.ViewModels.Invoice;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,6 +35,20 @@ namespace CinemaSolution.BackendApi.Controllers
             {
                 _logger.LogError(ex, "Error while getting invoices.");
                 return BadRequest(ex);
+            }
+        }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> Create(InvoiceCreateRequest request)
+        {
+            try
+            {
+                var invoice = await _invoiceService.Create(request);
+                return Json(invoice);
+            } catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while creating invoice.");
+                return BadRequest(ex.Message);
             }
         }
     }

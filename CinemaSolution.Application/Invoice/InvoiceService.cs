@@ -1,4 +1,5 @@
-﻿using CinemaSolution.Data.EF;
+﻿using CinemaSolution.Application.Screening;
+using CinemaSolution.Data.EF;
 using CinemaSolution.Data.Entities;
 using CinemaSolution.ViewModels.Common.Paging;
 using CinemaSolution.ViewModels.Invoice;
@@ -17,9 +18,11 @@ namespace CinemaSolution.Application.Invoice
     public class InvoiceService : IInvoiceService
     {
         private readonly CinemaDBContext cinemaDBContext;
-        public InvoiceService(CinemaDBContext cinemaDBContext)
+        private readonly IScreeningService _screeningService;
+        public InvoiceService(CinemaDBContext cinemaDBContext, IScreeningService screeningService)
         {
             this.cinemaDBContext = cinemaDBContext;
+            _screeningService = screeningService;
         }
 
         public async Task<int> GetCount()
@@ -207,6 +210,208 @@ namespace CinemaSolution.Application.Invoice
                 .ToList();
 
             return groupedData;
+        }
+
+        public async Task<InvoiceViewModel?> GetInvoiceById(int id)
+        {
+            var query = from i in cinemaDBContext.Invoices
+                        join t in cinemaDBContext.Tickets on i.TicketId equals t.Id into tickets // Left join Tickets
+                        from ticket in tickets.DefaultIfEmpty() // Ensures left join
+                        join s in cinemaDBContext.Screenings on ticket.ScreeningId equals s.Id into screenings // Left join Screenings
+                        from screening in screenings.DefaultIfEmpty() // Ensures left join
+                        join u in cinemaDBContext.Users on i.UserId equals u.Id // Inner join with Users
+                        join seat in cinemaDBContext.Seats on ticket.Id equals seat.TicketId into seats // Left join Seats
+                        from seat in seats.DefaultIfEmpty() // Ensures left join
+                        join o in cinemaDBContext.Orders on i.OrderId equals o.Id into orders
+                        from order in orders.DefaultIfEmpty()
+                        join pcio in cinemaDBContext.ProductComboInOrders on order.Id equals pcio.OrderId into productComboInOrders
+                        from pcio in productComboInOrders.DefaultIfEmpty()
+                        join pc in cinemaDBContext.ProductCombos on pcio.ProductComboId equals pc.Id into productCombos
+                        from productCombo in productCombos.DefaultIfEmpty()
+                        where i.Id == id
+                        select new
+                        {
+                            Invoice = i,
+                            User = u,
+                            Ticket = ticket,
+                            Order = order,
+                            Screening = screening,
+                            Seat = seat,
+                            ProductComboInOrder = pcio,
+                            ProductCombo = productCombo
+                        };
+            // Execute the query and bring the result set into memory
+            var raw = await query.ToListAsync();
+            // Group data in memory to avoid EF Core translation issues
+            var groupedData = raw
+                .GroupBy(x => new
+                {
+                    x.Invoice,
+                    x.User,
+                    x.Ticket,
+                    x.Order,
+                    x.Screening,
+                })
+                .Select(g => new InvoiceViewModel()
+                {
+                    Id = g.Key.Invoice.Id,
+                    User = new UserViewModel()
+                    {
+                        Username = g.Key.User.Username,
+                        Email = g.Key.User.Email,
+                        Id = g.Key.User.Id
+                    },
+                    Price = g.Key.Invoice.Price,
+                    Discount = g.Key.Invoice.Discount,
+                    SumPrice = g.Key.Invoice.SumPrice,
+                    DateOfPurchase = g.Key.Invoice.DateOfPurchase,
+                    Ticket = g.Key.Ticket == null ? null : new TicketViewModel()
+                    {
+                        Id = g.Key.Ticket.Id,
+                        Price = g.Key.Ticket.Price,
+                        Screening = g.Key.Screening == null ? new ScreeningViewModel() : new ScreeningViewModel()
+                        {
+                            Id = g.Key.Screening.Id,
+                            StartDate = g.Key.Screening.StartDate,
+                            StartTime = g.Key.Screening.StartTime,
+                        },
+                        Seats = g.Where(x => x.Seat != null).Select(y => new SeatViewModel()
+                        {
+                            Id = y.Seat.Id,
+                            Row = y.Seat.Row,
+                            Number = y.Seat.Number,
+                        }).ToList()
+                    },
+                    Order = g.Key.Order == null ? null : new OrderViewModel()
+                    {
+                        Id = g.Key.Order.Id,
+                        // Use distinct grouping to prevent duplicate ProductCombos
+                        ProductCombos = g
+                            .Where(x => x.ProductCombo != null && x.ProductComboInOrder != null)
+                            .GroupBy(x => new { x.ProductCombo.Id, x.ProductComboInOrder.Quantity }) // Group by unique properties
+                            .Select(y => y.First()) // Take first to avoid duplicates
+                            .Select(y => new ProductComboViewModel()
+                            {
+                                Id = y.ProductCombo.Id,
+                                Name = y.ProductCombo.Name,
+                                Price = y.ProductCombo.Price,
+                                Description = y.ProductCombo.Description,
+                                ImageUrl = y.ProductCombo.ImageUrl,
+                                Quantity = y.ProductComboInOrder.Quantity,
+                            })
+                            .ToList(),
+                        TotalPrice = g.Key.Order.TotalPrice,
+                    }
+                });
+            return groupedData.FirstOrDefault();
+        }
+
+        public async Task<InvoiceViewModel> Create(InvoiceCreateRequest request)
+        {
+            ScreeningViewModel screeningViewModel = await _screeningService.GetScreeningById(request.ScreeningId);
+
+            if (request.Seats != null)
+            {
+                List<int> ints = request.Seats.Select(x => x.Id).ToList();
+                var seats = await cinemaDBContext.Seats
+                    .Where(x => ints.Contains(x.Id))
+                    .ToListAsync();
+
+                var seatPriceTables = await cinemaDBContext.DefaultPriceTables.Select(dpt => new SeatPriceViewModel
+                {
+                    SeatTypeId = dpt.SeatTypeId,
+                    PersonTypeId = dpt.PersonTypeId,
+                    Price = dpt.Price,
+                }).ToListAsync();
+
+                int totalPrice = 0;
+
+                foreach (Seat seat in seats)
+                {
+                    if (seat.TicketId != null)
+                    {
+                        throw new Exception("Seat is already taken");
+                    }
+                    if (seat.SeatStatusId != 1)
+                    {
+                        throw new Exception("Seat is not available");
+                    }
+                    if (seat.ScreeningId != request.ScreeningId)
+                    {
+                        throw new Exception("Seat not available for this screening");
+                    }
+
+                    seat.SeatStatusId = 2;
+                    seat.PersonTypeId = request.Seats.FirstOrDefault(x => x.Id == seat.Id).PersonTypeId;
+                
+                    totalPrice += seatPriceTables.FirstOrDefault(x => x.SeatTypeId == seat.SeatTypeId && x.PersonTypeId == seat.PersonTypeId).Price;
+                }
+
+                Ticket ticket = new Ticket()
+                {
+                    Price = totalPrice,
+                    ScreeningId = request.ScreeningId,
+                    Seats = seats,
+                };
+
+                cinemaDBContext.Tickets.Add(ticket);
+                await cinemaDBContext.SaveChangesAsync();
+
+                foreach (Seat seat in seats)
+                {
+                    seat.TicketId = ticket.Id;
+                }
+
+                cinemaDBContext.Seats.UpdateRange(seats);
+                await cinemaDBContext.SaveChangesAsync();
+
+                var invoice = new Data.Entities.Invoice()
+                {
+                    Price = ticket.Price,
+                    Discount = 0,
+                    SumPrice = ticket.Price,
+                    DateOfPurchase = DateTime.Now,
+                    TicketId = ticket.Id,
+                    UserId = request.UserId,
+                    OrderId = null
+                };
+
+                cinemaDBContext.Invoices.Add(invoice);
+                await cinemaDBContext.SaveChangesAsync();
+
+                return new InvoiceViewModel()
+                {
+                    Id = invoice.Id,
+                    Price = invoice.Price,
+                    Discount = invoice.Discount,
+                    SumPrice = invoice.SumPrice,
+                    DateOfPurchase = invoice.DateOfPurchase,
+                    Ticket = new TicketViewModel()
+                    {
+                        Id = ticket.Id,
+                        Price = ticket.Price,
+                        Screening = new ScreeningViewModel()
+                        {
+                            Id = screeningViewModel.Id,
+                            StartDate = screeningViewModel.StartDate,
+                            StartTime = screeningViewModel.StartTime,
+                        },
+                        Seats = ticket.Seats.Select(x => new SeatViewModel()
+                        {
+                            Id = x.Id,
+                            Row = x.Row,
+                            Number = x.Number,
+                        }).ToList()
+                    },
+                    User = new UserViewModel()
+                    {
+                        Id = request.UserId
+                    },
+                    Order = null,
+                };
+            }
+
+            throw new Exception("No seats selected");
         }
     }
 }
