@@ -88,5 +88,31 @@ namespace CinemaSolution.Application.Product
             };
             return pagedResult;
         }
+
+        public async Task<ProductComboViewModel> GetById(int id)
+        {
+            var productComboQuery = from pc in cinemaDBContext.ProductCombos
+                                    join pic in cinemaDBContext.ProductInProductCombos on pc.Id equals pic.ProductComboId
+                                    join p in cinemaDBContext.Products on pic.ProductId equals p.Id
+                                    where pc.Id == id
+                                    select new { pc, pic, p };
+            var groupedProductCombos = await productComboQuery.GroupBy(x => x.pc).Select(x =>
+                           new ProductComboViewModel
+                           {
+                    Id = x.Key.Id,
+                    Name = x.Key.Name,
+                    Description = x.Key.Description,
+                    ImageUrl = x.Key.ImageUrl,
+                    Price = x.Key.Price,
+                    Items = x.Select(y => new ProductViewModel
+                    {
+                        Id = y.p.Id,
+                        Name = y.p.Name,
+                        Description = y.p.Description,
+                        Quantity = y.pic.Quantity
+                    }).ToList()
+                }).FirstOrDefaultAsync();
+            return groupedProductCombos;
+        }
     }
 }
