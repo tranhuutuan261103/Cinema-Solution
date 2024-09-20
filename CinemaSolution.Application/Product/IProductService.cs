@@ -12,5 +12,6 @@ namespace CinemaSolution.Application.Product
     {
         Task<List<ProductComboViewModel>> GetProductCombos();
         Task<PagedResult<ProductComboViewModel>> GetPagedResult(GetProductPagingRequest request);
+        Task<ProductComboViewModel> GetById(int id);
     }
 }

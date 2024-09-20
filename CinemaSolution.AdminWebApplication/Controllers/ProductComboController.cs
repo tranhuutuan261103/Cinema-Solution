@@ -29,5 +29,23 @@ namespace CinemaSolution.AdminWebApplication.Controllers
             var products = await _productService.GetPagedResult(request);
             return View(products);
         }
+
+        [HttpGet("{id}/update")]
+        public async Task<IActionResult> Update(int id)
+        {
+            var product = await _productService.GetById(id);
+            
+            var productCombo = new ProductComboUpdateRequest
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                ImageUrl = product.ImageUrl,
+                Price = product.Price,
+                Items = product.Items
+            };
+
+            return View(productCombo);
+        }
     }
 }
