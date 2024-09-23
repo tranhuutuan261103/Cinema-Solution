@@ -1,6 +1,7 @@
 ﻿using CinemaSolution.Data.EF;
 using CinemaSolution.Data.Entities;
 using CinemaSolution.ViewModels.Auditorium;
+using CinemaSolution.ViewModels.Category;
 using CinemaSolution.ViewModels.Cinema;
 using CinemaSolution.ViewModels.Common.Paging;
 using CinemaSolution.ViewModels.Movie;
@@ -144,7 +145,23 @@ namespace CinemaSolution.Application.Screening
                 throw new Exception($"Cannot find a screening: {id}");
             }
 
-            var movie = await cinemaDBContext.Movies.FindAsync(screening.MovieId);
+            var movie = from m in cinemaDBContext.Movies
+                        where m.Id == screening.MovieId
+                        select new
+                        {
+                            Movie = m,
+                            Categories = (from mc in cinemaDBContext.MovieInCategories
+                                          join c in cinemaDBContext.Categories on mc.CategoryId equals c.Id
+                                          where mc.MovieId == m.Id
+                                          select c).ToList(),
+                            Images = (from mi in cinemaDBContext.MovieImages
+                                      join mit in cinemaDBContext.MovieImageTypes on mi.MovieImageTypeId equals mit.Id
+                                      where mi.MovieId == m.Id
+                                      select new { mi, mit.Name }).ToList()
+                        };
+
+            var movieResult = await movie.FirstOrDefaultAsync();
+
             var auditorium = await cinemaDBContext.Auditoriums.FindAsync(screening.AuditoriumId);
             var cinema = await cinemaDBContext.Cinemas.FindAsync(auditorium.CinemaId);
 
@@ -166,9 +183,22 @@ namespace CinemaSolution.Application.Screening
                 Id = screening.Id,
                 Movie = new MovieViewModel()
                 {
-                    Id = movie.Id,
-                    Title = movie.Title,
-                    Duration = movie.Duration,
+                    Id = movieResult.Movie.Id,
+                    Title = movieResult.Movie.Title,
+                    Duration = movieResult.Movie.Duration,
+                    Language = movieResult.Movie.Language,
+                    MovieImages = movieResult.Images.Select(i => new MovieImageViewModel()
+                    {
+                        Id = i.mi.Id,
+                        ImageType = i.Name,
+                        ImageUrl = i.mi.ImageUrl,
+                    }).ToList(),
+                    Categories = movieResult.Categories.Select(c => new CategoryViewModel()
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                    }).ToList(),
+                    TrailerUrl = movieResult.Movie.TrailerUrl,
                 },
                 Auditorium = new AuditoriumViewModel()
                 {
@@ -180,11 +210,12 @@ namespace CinemaSolution.Application.Screening
                     {
                         Id = cinema.Id,
                         Name = cinema.Name,
+                        LogoUrl = cinema.LogoUrl,
                     }
                 },
                 StartTime = screening.StartTime,
                 StartDate = screening.StartDate,
-                EndTime = screening.StartTime + TimeSpan.FromMinutes(movie.Duration),
+                EndTime = screening.StartTime + TimeSpan.FromMinutes(movieResult.Movie.Duration),
                 SeatsAvailable = seats.Count(s => s.SeatStatus.IsAvailable),
                 SeatsTotal = seats.Count(),
                 Seats = seats.Select(s => new SeatViewModel()
