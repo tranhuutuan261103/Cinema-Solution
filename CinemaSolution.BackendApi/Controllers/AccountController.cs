@@ -125,6 +125,65 @@ namespace CinemaSolution.BackendApi.Controllers
             }
         }
 
+        [HttpPut("background")]
+        [Authorize(Roles = "Customer")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateBackground([FromForm] BackgroundRequest request)
+        {
+            try
+            {
+                if (request.Background == null)
+                {
+                    return BadRequest("Avatar is required.");
+                }
+                var userId = HttpContext.Items["UserId"] as string;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return BadRequest("User ID not found.");
+                }
+                var backgroundUrl = await _storageService.UploadFileAsync(
+                    request.Background.OpenReadStream(),
+                    "user_background",
+                    request.Background.FileName);
+                var user = await _accountService.UpdateBackground(int.Parse(userId), backgroundUrl);
+                if (user == null)
+                {
+                    return BadRequest("User not found.");
+                }
+                return Json(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("profile")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request)
+        {
+            try
+            {
+                var userId = HttpContext.Items["UserId"] as string;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return BadRequest("User ID not found.");
+                }
+                var user = await _accountService.UpdateProfile(int.Parse(userId), request);
+                if (user == null)
+                {
+                    return BadRequest("User not found.");
+                }
+                return Json(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
         private static string GenerateToken(AccountViewModel user)
         {
             var handler = new JwtSecurityTokenHandler();

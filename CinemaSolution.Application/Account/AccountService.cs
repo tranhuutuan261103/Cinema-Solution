@@ -152,10 +152,68 @@ namespace CinemaSolution.Application.Account
             return new AccountViewModel
             {
                 Id = user.Id,
+                Email = user.Email,
                 Username = user.Username,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                Address = user.Address,
                 AvatarUrl = user.AvatarUrl,
+                PhoneNumber = user.PhoneNumber,
+                BackgroundUrl = user.BackgroundUrl,
+                Role = "Customer",
+            };
+        }
+
+        public async Task<AccountViewModel> UpdateBackground(int userId, string avatarUrl)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+            user.BackgroundUrl = avatarUrl;
+            await _context.SaveChangesAsync();
+            return new AccountViewModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Address = user.Address,
+                AvatarUrl = user.AvatarUrl,
+                PhoneNumber = user.PhoneNumber,
+                BackgroundUrl = user.BackgroundUrl,
+                Role = "Customer",
+            };
+        }
+
+        public async Task<AccountViewModel> UpdateProfile(int userId, UpdateProfileRequest request)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            user.Email = request.Email;
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.Address = request.Address;
+            user.PhoneNumber = request.PhoneNumber;
+            await _context.SaveChangesAsync();
+            return new AccountViewModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Address = user.Address,
+                AvatarUrl = user.AvatarUrl,
+                PhoneNumber = user.PhoneNumber,
+                BackgroundUrl = user.BackgroundUrl,
+                Role = "Customer",
             };
         }
     }
