@@ -13,5 +13,7 @@ namespace CinemaSolution.Application.Account
         Task<AccountViewModel> Register(RegisterRequest request);
         Task<AccountViewModel> GetProfile(int userId);
         Task<AccountViewModel> UpdateAvatar(int v, string avatarUrl);
+        Task<AccountViewModel> UpdateBackground(int userId, string avatarUrl);
+        Task<AccountViewModel> UpdateProfile(int userId, UpdateProfileRequest request);
     }
 }
