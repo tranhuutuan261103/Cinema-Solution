@@ -135,6 +135,9 @@ namespace CinemaSolution.Application.Account
                     LastName = user.LastName,
                     Address = user.Address,
                     AvatarUrl = user.AvatarUrl,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    BackgroundUrl = user.BackgroundUrl,
                 };
             }
             throw new Exception("User has no role.");
