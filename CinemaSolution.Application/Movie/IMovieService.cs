@@ -11,6 +11,7 @@ namespace CinemaSolution.Application.Movie
     public interface IMovieService
     {
         Task<List<MovieViewModel>> GetMovieOnGoing();
+        Task<List<MovieViewModel>> GetMovieOnFuture();
         Task<PagedResult<MovieViewModel>> GetPagedResult(GetMoviePagingRequest request);
         Task<MovieViewModel> GetById(int id);
         Task<MovieViewModel> Create(MovieCreateRequest request);

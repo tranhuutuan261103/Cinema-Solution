@@ -21,5 +21,12 @@ namespace CinemaSolution.BackendApi.Controllers
             var movies = await _movieService.GetMovieOnGoing();
             return Json(movies);
         }
+
+        [HttpGet("future")]
+        public async Task<IActionResult> MovieFuture()
+        {
+            var movies = await _movieService.GetMovieOnFuture();
+            return Json(movies);
+        }
     }
 }
