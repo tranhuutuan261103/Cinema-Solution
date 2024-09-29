@@ -66,6 +66,53 @@ namespace CinemaSolution.Application.Movie
             return movies;
         }
 
+        public async Task<List<MovieViewModel>> GetMovieOnFuture()
+        {
+            var moviesQuery = from m in cinemaDBContext.Movies
+                              where m.ReleaseDate > DateTime.Now
+                              select new
+                              {
+                                  Movie = m,
+                                  Categories = (from mc in cinemaDBContext.MovieInCategories
+                                                join c in cinemaDBContext.Categories on mc.CategoryId equals c.Id
+                                                where mc.MovieId == m.Id
+                                                select c).ToList(),
+                                  Images = (from mi in cinemaDBContext.MovieImages
+                                            join mit in cinemaDBContext.MovieImageTypes on mi.MovieImageTypeId equals mit.Id
+                                            where mi.MovieId == m.Id
+                                            select new { mi, mit.Name }).ToList()
+                              };
+
+            var result = await moviesQuery.ToListAsync();
+            var movies = result.Select(x => new MovieViewModel
+            {
+                Id = x.Movie.Id,
+                Title = x.Movie.Title,
+                Description = x.Movie.Description,
+                Duration = x.Movie.Duration,
+                Language = x.Movie.Language,
+                ReleaseDate = x.Movie.ReleaseDate,
+                EndDate = x.Movie.EndDate,
+                Director = x.Movie.Director,
+                Rating = x.Movie.Rating,
+                Actors = x.Movie.Actors,
+                IsDeleted = x.Movie.IsDeleted,
+                TrailerUrl = x.Movie.TrailerUrl,
+                Categories = x.Categories.Select(c => new CategoryViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                }).ToList(),
+                MovieImages = x.Images.Select(i => new MovieImageViewModel
+                {
+                    Id = i.mi.Id,
+                    ImageUrl = i.mi.ImageUrl,
+                    ImageType = i.Name
+                }).ToList()
+            }).ToList();
+            return movies;
+        }
+
         public async Task<PagedResult<MovieViewModel>> GetPagedResult(GetMoviePagingRequest request)
         {
             var query = from m in cinemaDBContext.Movies
