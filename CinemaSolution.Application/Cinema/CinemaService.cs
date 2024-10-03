@@ -192,7 +192,7 @@ namespace CinemaSolution.Application.Cinema
 
             // Group by Movie and Screening
             var groupedMovies = cinemaData
-                .GroupBy(x => new { x.Movie, x.Screening })
+                .GroupBy(x => new { x.Movie })
                 .Select(g => new MovieScreeningViewModel
                 {
                     Id = g.Key.Movie.Id,

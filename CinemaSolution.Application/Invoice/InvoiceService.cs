@@ -3,6 +3,7 @@ using CinemaSolution.Data.EF;
 using CinemaSolution.Data.Entities;
 using CinemaSolution.ViewModels.Common.Paging;
 using CinemaSolution.ViewModels.Invoice;
+using CinemaSolution.ViewModels.Movie;
 using CinemaSolution.ViewModels.Screening;
 using CinemaSolution.ViewModels.Seat;
 using CinemaSolution.ViewModels.User;
@@ -120,6 +121,11 @@ namespace CinemaSolution.Application.Invoice
                         from ticket in tickets.DefaultIfEmpty() // Ensures left join
                         join s in cinemaDBContext.Screenings on ticket.ScreeningId equals s.Id into screenings // Left join Screenings
                         from screening in screenings.DefaultIfEmpty() // Ensures left join
+                        join m in cinemaDBContext.Movies on screening.MovieId equals m.Id // Inner join with Movies
+                        join mi in cinemaDBContext.MovieImages on m.Id equals mi.MovieId into movieImages // Left join MovieImages
+                        from movieImage in movieImages.DefaultIfEmpty() // Ensures left join
+                        join mit in cinemaDBContext.MovieImageTypes on movieImage.Id equals mit.Id
+
                         join u in cinemaDBContext.Users on i.UserId equals u.Id // Inner join with Users
                         join seat in cinemaDBContext.Seats on ticket.Id equals seat.TicketId into seats // Left join Seats
                         from seat in seats.DefaultIfEmpty() // Ensures left join
@@ -138,6 +144,9 @@ namespace CinemaSolution.Application.Invoice
                             Ticket = ticket,
                             Order = order,
                             Screening = screening,
+                            Movie = m,
+                            MovieImage = movieImage,
+                            MovieImageType = mit,
                             Seat = seat,
                             ProductComboInOrder = pcio,
                             ProductCombo = productCombo
@@ -155,6 +164,7 @@ namespace CinemaSolution.Application.Invoice
                     x.Ticket,
                     x.Order,
                     x.Screening,
+                    x.Movie,
                 })
                 .Select(g => new InvoiceViewModel()
                 {
@@ -178,6 +188,28 @@ namespace CinemaSolution.Application.Invoice
                             Id = g.Key.Screening.Id,
                             StartDate = g.Key.Screening.StartDate,
                             StartTime = g.Key.Screening.StartTime,
+                            Movie = new MovieViewModel()
+                            {
+                                Id = g.Key.Movie.Id,
+                                Title = g.Key.Movie.Title,
+                                Rating = g.Key.Movie.Rating,
+                                Duration = g.Key.Movie.Duration,
+                                Actors = g.Key.Movie.Actors,
+                                Director = g.Key.Movie.Director,
+                                EndDate = g.Key.Movie.EndDate,
+                                ReleaseDate = g.Key.Movie.ReleaseDate,
+                                Language = g.Key.Movie.Language,
+                                TrailerUrl = g.Key.Movie.TrailerUrl,
+                                MovieImages = g.Where(x => x.Movie != null)
+                                    .GroupBy(x => x.MovieImage.Id)
+                                    .Select(y => y.First())
+                                    .Select(y => new MovieImageViewModel()
+                                    {
+                                        Id = y.MovieImage.Id,
+                                        ImageUrl = y.MovieImage.ImageUrl,
+                                        ImageType = y.MovieImageType.Name
+                                    }).ToList()
+                            }
                         },
                         Seats = g.Where(x => x.Seat != null).Select(y => new SeatViewModel()
                         {

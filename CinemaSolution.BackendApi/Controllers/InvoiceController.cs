@@ -19,12 +19,12 @@ namespace CinemaSolution.BackendApi.Controllers
         }
 
         [HttpGet("")]
-        // [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Index()
         {
             try
             {
-                var userId = "2" as string;
+                var userId = HttpContext.Items["UserId"] as string;
                 if (string.IsNullOrEmpty(userId))
                 {
                     return BadRequest("User ID not found.");
@@ -34,7 +34,7 @@ namespace CinemaSolution.BackendApi.Controllers
             } catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while getting invoices.");
-                return BadRequest(ex);
+                return BadRequest(ex.ToString());
             }
         }
 
