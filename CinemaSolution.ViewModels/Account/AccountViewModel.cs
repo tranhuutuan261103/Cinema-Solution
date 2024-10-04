@@ -18,5 +18,8 @@ namespace CinemaSolution.ViewModels.Account
         public string? AvatarUrl { get; set; }
         public string? BackgroundUrl { get; set; }
         public string Role { get; set; } = string.Empty;
+        public int InvoiceCount { get; set; }
+        public int CommentCount { get; set; }
+        public int MovieRatedCount { get; set; }
     }
 }

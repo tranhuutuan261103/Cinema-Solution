@@ -38,6 +38,20 @@ namespace CinemaSolution.BackendApi.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetInvoiceById(int id)
+        {
+            try
+            {
+                var invoice = await _invoiceService.GetInvoiceById(id);
+                return Json(invoice);
+            } catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while getting invoice by ID.");
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> Create(InvoiceCreateRequest request)
         {

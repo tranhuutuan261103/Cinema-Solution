@@ -244,7 +244,7 @@ namespace CinemaSolution.Application.Invoice
             return groupedData;
         }
 
-        public async Task<InvoiceViewModel?> GetInvoiceById(int id)
+        public async Task<InvoiceViewModel> GetInvoiceById(int id)
         {
             var query = from i in cinemaDBContext.Invoices
                         join t in cinemaDBContext.Tickets on i.TicketId equals t.Id into tickets // Left join Tickets
@@ -272,6 +272,7 @@ namespace CinemaSolution.Application.Invoice
                             ProductComboInOrder = pcio,
                             ProductCombo = productCombo
                         };
+
             // Execute the query and bring the result set into memory
             var raw = await query.ToListAsync();
             // Group data in memory to avoid EF Core translation issues
@@ -335,7 +336,15 @@ namespace CinemaSolution.Application.Invoice
                         TotalPrice = g.Key.Order.TotalPrice,
                     }
                 });
-            return groupedData.FirstOrDefault();
+
+            InvoiceViewModel? result = groupedData.FirstOrDefault();
+
+            if (result == null)
+            {
+                throw new Exception("Invoice not found");
+            }
+
+            return result;
         }
 
         public async Task<InvoiceViewModel> Create(InvoiceCreateRequest request)
