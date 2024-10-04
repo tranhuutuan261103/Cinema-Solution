@@ -38,6 +38,10 @@ namespace CinemaSolution.Application.Account
                 {
                     if (role.r.Name == request.RoleRequest)
                     {
+                        int invoiceCount = await GetInvoiceCount(user.Id);
+                        int commentCount = await GetCommentCount(user.Id);
+                        int ratingCount = await GetMovieRatedCount(user.Id);
+
                         return new AccountViewModel
                         {
                             Id = user.Id,
@@ -48,6 +52,11 @@ namespace CinemaSolution.Application.Account
                             Address = user.Address,
                             AvatarUrl = user.AvatarUrl,
                             BackgroundUrl = user.BackgroundUrl,
+                            Email = user.Email,
+                            PhoneNumber = user.PhoneNumber,
+                            InvoiceCount = invoiceCount,
+                            CommentCount = commentCount,
+                            MovieRatedCount = ratingCount,
                         };
                     }
                 }
@@ -97,6 +106,7 @@ namespace CinemaSolution.Application.Account
                     RoleId = role.Id,
                 });
                 await _context.SaveChangesAsync();
+
                 return new AccountViewModel
                 {
                     Id = newUser.Id,
@@ -124,6 +134,11 @@ namespace CinemaSolution.Application.Account
                 .Where(x => x.u.UserId == user.Id)
                 .Select(x => new { x.r })
                 .ToListAsync();
+
+            int invoiceCount = await GetInvoiceCount(userId);
+            int commentCount = await GetCommentCount(userId);
+            int ratingCount = await GetMovieRatedCount(userId);
+
             foreach (var role in roles)
             {
                 return new AccountViewModel
@@ -138,6 +153,9 @@ namespace CinemaSolution.Application.Account
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
                     BackgroundUrl = user.BackgroundUrl,
+                    InvoiceCount = invoiceCount,
+                    CommentCount = commentCount,
+                    MovieRatedCount = ratingCount
                 };
             }
             throw new Exception("User has no role.");
@@ -218,6 +236,21 @@ namespace CinemaSolution.Application.Account
                 BackgroundUrl = user.BackgroundUrl,
                 Role = "Customer",
             };
+        }
+
+        private async Task<int> GetInvoiceCount(int userId)
+        {
+            return await _context.Invoices.CountAsync(x => x.UserId == userId);
+        }
+
+        private async Task<int> GetCommentCount(int userId)
+        {
+            return await _context.Comments.CountAsync(x => x.UserId == userId);
+        }
+
+        private async Task<int> GetMovieRatedCount(int userId)
+        {
+            return await _context.Ratings.CountAsync(x => x.UserId == userId);
         }
     }
 }
