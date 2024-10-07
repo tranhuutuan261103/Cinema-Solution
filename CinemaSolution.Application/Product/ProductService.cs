@@ -89,7 +89,7 @@ namespace CinemaSolution.Application.Product
             return pagedResult;
         }
 
-        public async Task<ProductComboViewModel> GetById(int id)
+        public async Task<ProductComboViewModel?> GetById(int id)
         {
             var productComboQuery = from pc in cinemaDBContext.ProductCombos
                                     join pic in cinemaDBContext.ProductInProductCombos on pc.Id equals pic.ProductComboId

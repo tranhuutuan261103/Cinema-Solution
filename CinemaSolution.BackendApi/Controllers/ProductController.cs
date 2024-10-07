@@ -22,5 +22,16 @@ namespace CinemaSolution.BackendApi.Controllers
             var products = await _productService.GetProductCombos();
             return Ok(products);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var product = await _productService.GetById(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return Ok(product);
+        }
     }
 }
