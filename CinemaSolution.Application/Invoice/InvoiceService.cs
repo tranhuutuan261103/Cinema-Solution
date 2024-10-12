@@ -1,6 +1,7 @@
 ﻿using CinemaSolution.Application.Screening;
 using CinemaSolution.Data.EF;
 using CinemaSolution.Data.Entities;
+using CinemaSolution.ViewModels.Cinema;
 using CinemaSolution.ViewModels.Common.Paging;
 using CinemaSolution.ViewModels.Invoice;
 using CinemaSolution.ViewModels.Movie;
@@ -71,48 +72,6 @@ namespace CinemaSolution.Application.Invoice
 
             return pagedResult;
         }
-
-        //public async Task<List<InvoiceViewModel>> GetInvoicesByUserId(int userId)
-        //{
-        //    var query = from i in cinemaDBContext.Invoices
-        //                join u in cinemaDBContext.Users on i.UserId equals u.Id
-        //                join t in cinemaDBContext.Tickets on i.TicketId equals t.Id into tickets // Left join using `into`
-        //                from ticket in tickets.DefaultIfEmpty() // DefaultIfEmpty ensures the left join
-        //                join s in cinemaDBContext.Screenings on ticket.ScreeningId equals s.Id into screenings // Left join using `into`
-        //                from screening in screenings.DefaultIfEmpty() // DefaultIfEmpty ensures the left join
-        //                join ss in cinemaDBContext.Seats on ticket.Id equals ss.Id into seats
-        //                from seat in seats.DefaultIfEmpty()
-        //                where i.UserId == userId
-        //                select new { Invoice = i, User = u, Ticket = ticket, Screening = screening, Seat = seat };
-
-        //    var invoices = query.Select(x => new InvoiceViewModel()
-        //    {
-        //        Id = x.Invoice.Id,
-        //        User = new UserViewModel()
-        //        {
-        //            Username = x.User.Username,
-        //            Email = x.User.Email,
-        //            Id = x.User.Id
-        //        },
-        //        Price = x.Invoice.Price,
-        //        Discount = x.Invoice.Discount,
-        //        SumPrice = x.Invoice.SumPrice,
-        //        DateOfPurchase = x.Invoice.DateOfPurchase,
-        //        Ticket = x.Ticket == null ? null : new TicketViewModel() // Check if the ticket is null
-        //        {
-        //            Id = x.Ticket.Id,
-        //            Price = x.Ticket.Price,
-        //            Screening = new ScreeningViewModel()
-        //            {
-        //                Id = x.Screening.Id,
-        //                StartDate = x.Screening.StartDate,
-        //                StartTime = x.Screening.StartTime,
-        //            }
-        //        }
-        //    });
-
-        //    return await invoices.ToListAsync();
-        //}
 
         public async Task<List<InvoiceViewModel>> GetInvoicesByUserId(int userId)
         {
@@ -188,6 +147,7 @@ namespace CinemaSolution.Application.Invoice
                             Id = g.Key.Screening.Id,
                             StartDate = g.Key.Screening.StartDate,
                             StartTime = g.Key.Screening.StartTime,
+                            EndTime = g.Key.Screening.StartTime + TimeSpan.FromMinutes(g.Key.Movie.Duration),
                             Movie = new MovieViewModel()
                             {
                                 Id = g.Key.Movie.Id,
@@ -251,6 +211,14 @@ namespace CinemaSolution.Application.Invoice
                         from ticket in tickets.DefaultIfEmpty() // Ensures left join
                         join s in cinemaDBContext.Screenings on ticket.ScreeningId equals s.Id into screenings // Left join Screenings
                         from screening in screenings.DefaultIfEmpty() // Ensures left join
+                        join m in cinemaDBContext.Movies on screening.MovieId equals m.Id // Inner join with Movies
+                        join mi in cinemaDBContext.MovieImages on m.Id equals mi.MovieId into movieImages // Left join MovieImages
+                        from movieImage in movieImages.DefaultIfEmpty() // Ensures left join
+                        join mit in cinemaDBContext.MovieImageTypes on movieImage.Id equals mit.Id
+
+                        join a in cinemaDBContext.Auditoriums on screening.AuditoriumId equals a.Id // Inner join with Auditoriums
+                        join c in cinemaDBContext.Cinemas on a.CinemaId equals c.Id // Inner join with Cinemas
+
                         join u in cinemaDBContext.Users on i.UserId equals u.Id // Inner join with Users
                         join seat in cinemaDBContext.Seats on ticket.Id equals seat.TicketId into seats // Left join Seats
                         from seat in seats.DefaultIfEmpty() // Ensures left join
@@ -268,9 +236,14 @@ namespace CinemaSolution.Application.Invoice
                             Ticket = ticket,
                             Order = order,
                             Screening = screening,
+                            Auditorium = a,
+                            Cinema = c,
+                            Movie = m,
+                            MovieImage = movieImage,
+                            MovieImageType = mit,
                             Seat = seat,
                             ProductComboInOrder = pcio,
-                            ProductCombo = productCombo
+                            ProductCombo = productCombo,
                         };
 
             // Execute the query and bring the result set into memory
@@ -284,6 +257,9 @@ namespace CinemaSolution.Application.Invoice
                     x.Ticket,
                     x.Order,
                     x.Screening,
+                    x.Movie,
+                    x.Auditorium,
+                    x.Cinema,
                 })
                 .Select(g => new InvoiceViewModel()
                 {
@@ -292,7 +268,10 @@ namespace CinemaSolution.Application.Invoice
                     {
                         Username = g.Key.User.Username,
                         Email = g.Key.User.Email,
-                        Id = g.Key.User.Id
+                        Id = g.Key.User.Id,
+                        FirstName = g.Key.User.FirstName,
+                        LastName = g.Key.User.LastName,
+                        PhoneNumber = g.Key.User.PhoneNumber,
                     },
                     Price = g.Key.Invoice.Price,
                     Discount = g.Key.Invoice.Discount,
@@ -307,6 +286,43 @@ namespace CinemaSolution.Application.Invoice
                             Id = g.Key.Screening.Id,
                             StartDate = g.Key.Screening.StartDate,
                             StartTime = g.Key.Screening.StartTime,
+                            EndTime = g.Key.Screening.StartTime + TimeSpan.FromMinutes(g.Key.Movie.Duration),
+                            Movie = new MovieViewModel()
+                            {
+                                Id = g.Key.Movie.Id,
+                                Title = g.Key.Movie.Title,
+                                Rating = g.Key.Movie.Rating,
+                                Duration = g.Key.Movie.Duration,
+                                Actors = g.Key.Movie.Actors,
+                                Director = g.Key.Movie.Director,
+                                EndDate = g.Key.Movie.EndDate,
+                                ReleaseDate = g.Key.Movie.ReleaseDate,
+                                Language = g.Key.Movie.Language,
+                                TrailerUrl = g.Key.Movie.TrailerUrl,
+                                MovieImages = g.Where(x => x.Movie != null)
+                                    .GroupBy(x => x.MovieImage.Id)
+                                    .Select(y => y.First())
+                                    .Select(y => new MovieImageViewModel()
+                                    {
+                                        Id = y.MovieImage.Id,
+                                        ImageUrl = y.MovieImage.ImageUrl,
+                                        ImageType = y.MovieImageType.Name
+                                    }).ToList()
+                            },
+                            Auditorium = new ViewModels.Auditorium.AuditoriumViewModel()
+                            {
+                                Id = g.Key.Auditorium.Id,
+                                Name = g.Key.Auditorium.Name,
+                                Address = g.Key.Auditorium.Address,
+                                Latitude = g.Key.Auditorium.Latitude,
+                                Longitude = g.Key.Auditorium.Longitude,
+                                Cinema = new CinemaViewModel()
+                                {
+                                    Id = g.Key.Cinema.Id,
+                                    Name = g.Key.Cinema.Name,
+                                    LogoUrl = g.Key.Cinema.LogoUrl,
+                                }
+                            }
                         },
                         Seats = g.Where(x => x.Seat != null).Select(y => new SeatViewModel()
                         {
