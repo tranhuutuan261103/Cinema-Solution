@@ -436,36 +436,7 @@ namespace CinemaSolution.Application.Invoice
                 cinemaDBContext.Invoices.Add(invoice);
                 await cinemaDBContext.SaveChangesAsync();
 
-                return new InvoiceViewModel()
-                {
-                    Id = invoice.Id,
-                    Price = invoice.Price,
-                    Discount = invoice.Discount,
-                    SumPrice = invoice.SumPrice,
-                    DateOfPurchase = invoice.DateOfPurchase,
-                    Ticket = new TicketViewModel()
-                    {
-                        Id = ticket.Id,
-                        Price = ticket.Price,
-                        Screening = new ScreeningViewModel()
-                        {
-                            Id = screeningViewModel.Id,
-                            StartDate = screeningViewModel.StartDate,
-                            StartTime = screeningViewModel.StartTime,
-                        },
-                        Seats = ticket.Seats.Select(x => new SeatViewModel()
-                        {
-                            Id = x.Id,
-                            Row = x.Row,
-                            Number = x.Number,
-                        }).ToList()
-                    },
-                    User = new UserViewModel()
-                    {
-                        Id = request.UserId
-                    },
-                    Order = null,
-                };
+                return await GetInvoiceById(invoice.Id);
             }
 
             throw new Exception("No seats selected");

@@ -53,12 +53,19 @@ namespace CinemaSolution.BackendApi.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Create(InvoiceCreateRequest request)
         {
             try
             {
+                var userId = HttpContext.Items["UserId"] as string;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return BadRequest("User ID not found.");
+                }
+                request.UserId = int.Parse(userId);
                 var invoice = await _invoiceService.Create(request);
-                return Json(invoice);
+                return CreatedAtAction(nameof(GetInvoiceById), new { id = invoice.Id }, invoice);
             } catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while creating invoice.");
