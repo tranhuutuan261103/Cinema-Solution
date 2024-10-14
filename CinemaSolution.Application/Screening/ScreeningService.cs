@@ -220,20 +220,20 @@ namespace CinemaSolution.Application.Screening
                 SeatsTotal = seats.Count(),
                 Seats = seats.Select(s => new SeatViewModel()
                     {
-                    Id = s.Seat.ScreeningId,
-                    Row = s.Seat.Row,
-                    Number = s.Seat.Number,
-                    SeatStatus = new SeatStatusViewModel()
-                    {
-                        Id = s.SeatStatus.Id,
-                        StatusName = s.SeatStatus.StatusName,
-                        IsAvailable = s.SeatStatus.IsAvailable,
-                    },
-                    SeatType = new SeatTypeViewModel()
-                    {
-                        Id = s.SeatType.Id,
-                        Name = s.SeatType.Name,
-                    },
+                        Id = s.Seat.Id,
+                        Row = s.Seat.Row,
+                        Number = s.Seat.Number,
+                        SeatStatus = new SeatStatusViewModel()
+                        {
+                            Id = s.SeatStatus.Id,
+                            StatusName = s.SeatStatus.StatusName,
+                            IsAvailable = s.SeatStatus.IsAvailable,
+                        },
+                        SeatType = new SeatTypeViewModel()
+                        {
+                            Id = s.SeatType.Id,
+                            Name = s.SeatType.Name,
+                        },
                     }).ToList(),
             };
 
