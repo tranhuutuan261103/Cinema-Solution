@@ -324,11 +324,11 @@ namespace CinemaSolution.Application.Invoice
                                 }
                             }
                         },
-                        Seats = g.Where(x => x.Seat != null).Select(y => new SeatViewModel()
+                        Seats = g.GroupBy(sg => sg.Seat).Select(y => new SeatViewModel()
                         {
-                            Id = y.Seat.Id,
-                            Row = y.Seat.Row,
-                            Number = y.Seat.Number,
+                            Id = y.Key.Id,
+                            Row = y.Key.Row,
+                            Number = y.Key.Number,
                         }).ToList()
                     },
                     Order = g.Key.Order == null ? null : new OrderViewModel()
