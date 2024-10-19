@@ -31,7 +31,7 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Index()
         {
-            var movies = await _movieService.GetMovieOnGoing();
+            var movies = await _movieService.GetMovies(ViewModels.Movie.MovieStatus.ValidNow);
             ViewBag.Movies = movies;
             ViewBag.MovieCount = movies.Count();
 
