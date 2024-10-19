@@ -51,7 +51,7 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         [HttpGet("create")]
         public async Task<IActionResult> Create(int auditoriumId)
         {
-            var movies = await _movieService.GetMovieOnGoing();
+            var movies = await _movieService.GetMovies(ViewModels.Movie.MovieStatus.ValidNow);
             ViewBag.Movies = movies;
 
             var auditorium = await _auditoriumService.GetById(auditoriumId);
@@ -85,7 +85,7 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         {
             if (request.MovieId == 0 || request.Auditorium.Id == 0)
             {
-                var movies = await _movieService.GetMovieOnGoing();
+                var movies = await _movieService.GetMovies(ViewModels.Movie.MovieStatus.ValidNow);
                 ViewBag.Movies = movies;
                 return View(request);
             }
@@ -106,7 +106,7 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         public async Task<IActionResult> Update(int id)
         {
             var screening = await _screeningService.GetScreeningById(id);
-            var movies = await _movieService.GetMovieOnGoing();
+            var movies = await _movieService.GetMovies(ViewModels.Movie.MovieStatus.ValidNow);
             ViewBag.Movies = movies;
 
             if (screening.Auditorium == null || screening.Movie == null)
@@ -152,7 +152,7 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         {
             if (request.MovieId == 0 || request.Auditorium.Id == 0)
             {
-                var movies = await _movieService.GetMovieOnGoing();
+                var movies = await _movieService.GetMovies(ViewModels.Movie.MovieStatus.ValidNow);
                 ViewBag.Movies = movies;
                 return View(request);
             }
