@@ -11,6 +11,7 @@ namespace CinemaSolution.ViewModels.Invoice
     {
         public int UserId { get; set; }
         public List<InvoiceSeatCreateRequest>? Seats { get; set; }
+        public List<InvoiceProductComboCreateRequest>? ProductCombos { get; set; }
         public int ScreeningId { get; set; }
         public DateTime DateOfPurchase { get; set; }
     }

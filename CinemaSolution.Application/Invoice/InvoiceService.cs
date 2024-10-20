@@ -404,6 +404,39 @@ namespace CinemaSolution.Application.Invoice
                     totalPrice += seatPriceTables.FirstOrDefault(x => x.SeatTypeId == seat.SeatTypeId && x.PersonTypeId == seat.PersonTypeId).Price;
                 }
 
+                int orderTotalPrice = 0;
+                List<ProductComboInOrder> productComboInOrders = new List<ProductComboInOrder>();
+                if (request.ProductCombos != null)
+                {
+                    foreach (InvoiceProductComboCreateRequest productComboRequest in request.ProductCombos)
+                    {
+                        ProductCombo? productCombo = await cinemaDBContext.ProductCombos.FirstOrDefaultAsync(x => x.Id == productComboRequest.Id);
+                        if (productCombo == null)
+                        {
+                            throw new Exception("Product combo not found");
+                        }
+                        orderTotalPrice += productCombo.Price * productComboRequest.Quantity;
+                        productComboInOrders.Add(new ProductComboInOrder()
+                        {
+                            ProductComboId = productCombo.Id,
+                            Quantity = productComboRequest.Quantity,
+                            Price = productCombo.Price * productComboRequest.Quantity,
+                        });
+                    }
+                }
+                Order order = new Order()
+                {
+                    TotalPrice = orderTotalPrice,
+                };
+                cinemaDBContext.Orders.Add(order);
+                await cinemaDBContext.SaveChangesAsync();
+                for (int i = 0; i < productComboInOrders.Count; i++)
+                {
+                    productComboInOrders[i].OrderId = order.Id;
+                }
+                cinemaDBContext.ProductComboInOrders.AddRange(productComboInOrders);
+                await cinemaDBContext.SaveChangesAsync();
+
                 Ticket ticket = new Ticket()
                 {
                     Price = totalPrice,
@@ -424,13 +457,13 @@ namespace CinemaSolution.Application.Invoice
 
                 var invoice = new Data.Entities.Invoice()
                 {
-                    Price = ticket.Price,
+                    Price = ticket.Price + order.TotalPrice,
                     Discount = 0,
-                    SumPrice = ticket.Price,
+                    SumPrice = ticket.Price + order.TotalPrice,
                     DateOfPurchase = DateTime.Now,
                     TicketId = ticket.Id,
                     UserId = request.UserId,
-                    OrderId = null
+                    OrderId = order.Id,
                 };
 
                 cinemaDBContext.Invoices.Add(invoice);
