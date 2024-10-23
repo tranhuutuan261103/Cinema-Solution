@@ -19,22 +19,8 @@
     </ol>
 </nav>
 
-<div class="filter-block">
-    <div class="dropdown">
-        <div class="select">
-            <span class="selected" data-id="-1">Status of movie</span>
-            <i class="fa fa-chevron-left select-icon"></i>
-        </div>
-        <ul class="dropdown-content dropdown-content-show">
-            <li class="dropdown-item" data-id="0" data-value="Status of movie">All movie</li>
-            <li class="dropdown-item" data-id="1" data-value="Valid now">Valid now</li>
-            <li class="dropdown-item" data-id="2" data-value="Going">Going</li>
-            <li class="dropdown-item" data-id="3" data-value="Not Going">Not Going</li>
-        </ul>
-    </div>
-
+<div class="filter-block" style="justify-content: flex-end">
     <form asp-action="Index" class="form-search" method="get">
-        <input type="text" name="category" value="@ViewBag.Category" hidden>
         <input type="text" name="keyword" value="@ViewBag.Keyword" placeholder="Search" class="form-search-input">
         <button type="submit" class="form-search-btn">
             <i class="fa-solid fa-magnifying-glass"></i>
