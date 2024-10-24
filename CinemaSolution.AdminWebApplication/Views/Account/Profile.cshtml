@@ -1,0 +1,72 @@
+﻿@model CinemaSolution.ViewModels.Account.UpdateProfileRequest;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Profile";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/movie/create.css" />
+}
+
+<nav class="breadcrumb">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+            Profile
+        </li>
+    </ol>
+</nav>
+
+<div class="content-body">
+    <form asp-action="Update" method="post">
+        <div class="form-group">
+            <label for="profile-firstname" class="form-label">First name</label>
+            <input type="text"
+                   class="form-control"
+                   id="profile-firstname"
+                   asp-for="@Model.FirstName"
+                   placeholder="Enter first name">
+        </div>
+
+        <div class="form-group">
+            <label for="profile-lastname" class="form-label">Last name</label>
+            <input type="text"
+                   class="form-control"
+                   id="profile-lastname"
+                   asp-for="@Model.LastName"
+                   placeholder="Enter last name">
+        </div>
+
+        <div class="form-group">
+            <label for="profile-email" class="form-label">Email</label>
+            <input type="text"
+                   class="form-control"
+                   id="profile-email"
+                   asp-for="@Model.Email"
+                   placeholder="Enter email">
+        </div>
+
+        <div class="form-group">
+            <label for="profile-phone" class="form-label">Phone number</label>
+            <input type="text"
+                   class="form-control"
+                   id="profile-phone"
+                   asp-for="@Model.PhoneNumber"
+                   placeholder="Enter phone number">
+        </div>
+
+        <div class="form-group">
+            <label for="profile-address" class="form-label">Address</label>
+            <input type="text"
+                   class="form-control"
+                   id="profile-address"
+                   asp-for="@Model.Address"
+                   placeholder="Enter address">
+        </div>
+
+        <div class="row form-group-btn">
+            <button type="submit" class="btn success-btn">Save</button>
+            <button type="reset" class="btn reset-btn">Reset</button>
+        </div>
+    </form>
+</div>

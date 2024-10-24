@@ -2,6 +2,7 @@
 using CinemaSolution.Application.Account;
 using CinemaSolution.ViewModels.Account;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -93,6 +94,27 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                 ModelState.AddModelError("", ex.Message);
                 return View(request);
             }
+        }
+
+        [HttpGet("profile")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Profile()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("Login");
+            }
+            var profile = await _accountService.GetProfile(int.Parse(userId));
+            var request = new UpdateProfileRequest
+            {
+                FirstName = profile.FirstName,
+                LastName = profile.LastName,
+                Email = profile.Email,
+                PhoneNumber = profile.PhoneNumber ?? "",
+                Address = profile.Address ?? "",
+            };
+            return View(request);
         }
 
         [HttpPost("logout")]

@@ -160,7 +160,7 @@
             </div>
 
             <div class="user-menu" id="user-menu-content">
-                <a href="#!" class="user-infor">
+                <a class="user-infor" asp-controller="Account" asp-action="Profile">
                     <span class="user-name">@User.Identity?.Name</span>
                     <span class="user-role">Admin</span>
                 </a>
@@ -169,13 +169,7 @@
 
                 <ul class="user-nav">
                     <li class="user-nav-item">
-                        <a href="#!" class="user-nav-link">
-                            <i class="fa-solid fa-user user-nav-icon"></i>
-                            Profile
-                        </a>
-                    </li>
-                    <li class="user-nav-item">
-                        <a href="#!" class="user-nav-link">
+                        <a class="user-nav-link" asp-controller="Account" asp-action="Profile">
                             <i class="fa-solid fa-cog user-nav-icon"></i>
                             Edit profile
                         </a>
