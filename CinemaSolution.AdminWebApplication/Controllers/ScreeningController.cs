@@ -1,6 +1,7 @@
 ﻿using CinemaSolution.AdminWebApplication.Filters;
 using CinemaSolution.Application.Auditorium;
 using CinemaSolution.Application.Movie;
+using CinemaSolution.Application.Province;
 using CinemaSolution.Application.Screening;
 using CinemaSolution.Data.Entities;
 using CinemaSolution.ViewModels.Auditorium;
@@ -18,11 +19,13 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         private readonly IScreeningService _screeningService;
         private readonly IMovieService _movieService;
         private readonly IAuditoriumService _auditoriumService;
-        public ScreeningController(IScreeningService screeningService, IMovieService movieService, IAuditoriumService auditoriumService)
+        private readonly IProvinceService _provinceService;
+        public ScreeningController(IScreeningService screeningService, IMovieService movieService, IAuditoriumService auditoriumService, IProvinceService provinceService)
         {
             _screeningService = screeningService;
             _movieService = movieService;
             _auditoriumService = auditoriumService;
+            _provinceService = provinceService;
         }
 
         [HttpGet("")]
@@ -45,6 +48,8 @@ namespace CinemaSolution.AdminWebApplication.Controllers
             {
                 ViewBag.Status = status;
             }
+            var provinces = await _provinceService.GetAll();
+            ViewBag.Provinces = provinces;
             return View(screenings);
         }
 

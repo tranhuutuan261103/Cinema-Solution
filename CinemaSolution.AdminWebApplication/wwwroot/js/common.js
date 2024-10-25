@@ -1,38 +1,38 @@
-﻿var dropdownBtn = document.querySelectorAll(".dropdown");
+﻿var dropdownContainers = document.querySelectorAll(".dropdown");
 
-if (dropdownBtn) {
-    dropdownBtn.forEach(function (item) {
+if (dropdownContainers) {
+    dropdownContainers.forEach(function (dropdownContainer) {
         try {
-            item.addEventListener('click', function () {
-                if (item.classList.contains('dropdown-content-show')) {
-                    item.classList.remove('dropdown-content-show');
+            dropdownContainer.addEventListener('click', function () {
+                if (dropdownContainer.classList.contains('dropdown-content-show')) {
+                    dropdownContainer.classList.remove('dropdown-content-show');
                 }
                 else {
-                    item.classList.add('dropdown-content-show');
+                    dropdownContainer.classList.add('dropdown-content-show');
                 }
             }
             );
+
+            dropdownSelected = dropdownContainer.querySelector('.selected');
+
+            dropdownItems = dropdownContainer.querySelectorAll('.dropdown-content .dropdown-item');
+
+            dropdownItems.forEach(function (dropdownItem) {
+                dropdownItem.addEventListener('click', function () {
+                    // Lấy nội dung của mục đã chọn
+                    var selectedId = dropdownItem.getAttribute("data-id");
+                    var selectedValue = dropdownItem.getAttribute("data-value");
+
+                    // Cập nhật nội dung trong thẻ có class "selected"
+                    dropdownSelected.setAttribute("data-id", selectedId);
+                    dropdownSelected.textContent = selectedValue;
+                });
+            });
         } catch (error) {
             console.log(error);
         }
     });
 }
-
-$(document).ready(function () {
-    // Lấy tất cả các mục dropdown-item trong dropdown-content
-    var dropdownItems = $(".dropdown-content .dropdown-item");
-
-    // Đặt sự kiện click cho mỗi mục
-    dropdownItems.click(function () {
-        // Lấy nội dung của mục đã chọn
-        var selectedId = $(this).attr("data-id");
-        var selectedValue = $(this).attr("data-value");
-
-        // Cập nhật nội dung trong thẻ có class "selected"
-        $(".selected").attr("data-id", selectedId);
-        $(".selected").text(selectedValue);
-    });
-});
 
 // Dialog event
 var dialog = document.getElementsByClassName("modal-dialog");

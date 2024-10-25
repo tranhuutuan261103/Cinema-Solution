@@ -12,6 +12,7 @@ namespace CinemaSolution.Application.Auditorium
     {
         Task<PagedResult<AuditoriumViewModel>> GetPagedResult(GetAuditoriumPagingRequest request);
         Task<PagedResult<AuditoriumViewModel>> GetByCinemaId(int cinemaId);
+        Task<PagedResult<AuditoriumViewModel>> GetByProvinceId(int provinceId);
         Task<AuditoriumViewModel> GetById(int auditoriumId);
         Task<AuditoriumViewModel> Create(AuditoriumCreateRequest request);
         Task<AuditoriumViewModel> Update(AuditoriumUpdateRequest request);

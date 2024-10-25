@@ -61,7 +61,7 @@
         @if (ViewBag.AuditoriumId != null) {
             <a class="btn success-btn load-target" asp-action="Create" asp-route-auditoriumId="@ViewBag.AuditoriumId">Create new</a>
         } else {
-            <a class="btn detail-btn load-target" asp-controller="Cinema" asp-action="Index">Search by auditorium</a>
+            <button class="btn detail-btn load-target" onclick="showModalScreeningSearch()">Search by auditorium</button>
         }
     </div>
     <table class="styled-table">
@@ -95,7 +95,7 @@
                         <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
                             <i class="fa-solid fa-pen-to-square table-btn-icon"></i>
                         </a>
-                        <button class="btn-delete table-btn" onclick="showModelScreeningDelete(@item.Id)">
+                        <button class="btn-delete table-btn" onclick="showModalScreeningDelete(@item.Id)">
                             <i class="fa-solid fa-trash table-btn-icon"></i>
                         </button>
                     </td>
@@ -124,16 +124,50 @@
     </div>
 </div>
 
+<div id="modal-dialog-screening-search" class="modal-dialog">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <form action="#!" method="get">
+            <div class="modal-header">
+                <h2 class="modal-title">Search by auditorium</h2>
+            </div>
+            <div class="modal-body">
+                <div class="dropdown">
+                    <div class="select">
+                        <span class="selected" data-id="-1">Province</span>
+                        <i class="fa fa-chevron-left select-icon"></i>
+                    </div>
+                    <ul class="dropdown-content dropdown-content-show">
+                        @foreach (var item in ViewBag.Provinces)
+                        {
+                            <li class="dropdown-item" data-id="@item.Id" data-value="@item.Name">@item.Name</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn cancel-btn">Cancel</button>
+                <button type="submit" class="btn update-btn">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         // Show model for delete Screening
-        function showModelScreeningDelete(screeningId) {
+        function showModalScreeningDelete(screeningId) {
             var modalDialogScreeningId = document.getElementById('modal-dialog-screening--id');
             modalDialogScreeningId.innerHTML = "Comfirm delete " + screeningId + "?";
             var modalDialogScreeningFormAction = document.getElementById('modal-dialog-screening--form-action');
             modalDialogScreeningFormAction.action = `/screenings/${screeningId}/delete`;
             var modalDialogScreeningDelete = document.getElementById('modal-dialog-screening--delete');
             modalDialogScreeningDelete.classList.add('modal-dialog--active');
+        }
+
+        function showModalScreeningSearch() {
+            var modalDialogScreeningSearch = document.getElementById('modal-dialog-screening-search');
+            modalDialogScreeningSearch.classList.add('modal-dialog--active');
         }
     </script>
 }

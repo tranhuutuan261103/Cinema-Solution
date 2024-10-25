@@ -98,6 +98,43 @@ namespace CinemaSolution.Application.Auditorium
             return result;
         }
 
+        public async Task<PagedResult<AuditoriumViewModel>> GetByProvinceId(int provinceId)
+        {
+            var query = from a in cinemaDBContext.Auditoriums
+                        join c in cinemaDBContext.Cinemas on a.CinemaId equals c.Id
+                        join p in cinemaDBContext.Provinces on a.ProvinceId equals p.Id
+                        where a.ProvinceId == provinceId
+                        select new AuditoriumViewModel()
+                        {
+                            Id = a.Id,
+                            Name = a.Name,
+                            Cinema = new ViewModels.Cinema.CinemaViewModel()
+                            {
+                                Id = c.Id,
+                                Name = c.Name
+                            },
+                            Province = new ViewModels.Province.ProvinceViewModel()
+                            {
+                                Id = p.Id,
+                                Name = p.Name
+                            },
+                            SeatsPerRow = a.NumberOfColumnSeats,
+                            SeatsPerColumn = a.NumberOfRowSeats,
+                            Address = a.Address,
+                            Latitude = a.Latitude,
+                            Longitude = a.Longitude
+                        };
+            var data = await query.ToListAsync();
+            var result = new PagedResult<AuditoriumViewModel>()
+            {
+                Items = data,
+                TotalRecords = data.Count,
+                PageIndex = 1,
+                PageSize = data.Count
+            };
+            return result;
+        }
+
         public async Task<AuditoriumViewModel> GetById(int auditoriumId)
         {
             var auditoriumQuery = from a in cinemaDBContext.Auditoriums
