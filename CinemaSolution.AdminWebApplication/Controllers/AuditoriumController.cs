@@ -47,6 +47,13 @@ namespace CinemaSolution.AdminWebApplication.Controllers
             return View(auditoriums);
         }
 
+        [HttpGet("getAllAuditoriums")]
+        public async Task<IActionResult> GetAllAuditoriums(int provinceId)
+        {
+            var auditoriums = await _auditoriumService.GetByProvinceId(provinceId);
+            return Json(auditoriums);
+        }
+
         [HttpGet("create")]
         public async Task<IActionResult> Create(int cinemaId)
         {
