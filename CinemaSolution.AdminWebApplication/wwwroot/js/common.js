@@ -13,15 +13,15 @@ if (dropdownContainers) {
             }
             );
 
-            dropdownSelected = dropdownContainer.querySelector('.selected');
+            const dropdownSelected = dropdownContainer.querySelector('.selected');
 
-            dropdownItems = dropdownContainer.querySelectorAll('.dropdown-content .dropdown-item');
+            const dropdownItems = dropdownContainer.querySelectorAll('.dropdown-content .dropdown-item');
 
             dropdownItems.forEach(function (dropdownItem) {
                 dropdownItem.addEventListener('click', function () {
                     // Lấy nội dung của mục đã chọn
-                    var selectedId = dropdownItem.getAttribute("data-id");
-                    var selectedValue = dropdownItem.getAttribute("data-value");
+                    const selectedId = dropdownItem.getAttribute("data-id");
+                    const selectedValue = dropdownItem.getAttribute("data-value");
 
                     // Cập nhật nội dung trong thẻ có class "selected"
                     dropdownSelected.setAttribute("data-id", selectedId);
