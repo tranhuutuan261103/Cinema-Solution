@@ -146,6 +146,7 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn cancel-btn" onclick="fetchAllAuditoriums()">Fetch</button>
                 <button type="button" class="btn cancel-btn">Cancel</button>
                 <button type="submit" class="btn update-btn">Search</button>
             </div>
@@ -168,6 +169,16 @@
         function showModalScreeningSearch() {
             var modalDialogScreeningSearch = document.getElementById('modal-dialog-screening-search');
             modalDialogScreeningSearch.classList.add('modal-dialog--active');
+        }
+
+        function fetchAllAuditoriums() {
+            var provinceId = document.querySelector('.dropdown .selected').getAttribute('data-id');
+            var url = `/auditoriums/getAllAuditoriums?provinceId=${provinceId}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                });
         }
     </script>
 }
