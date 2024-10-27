@@ -84,12 +84,12 @@
             {
                 <tr style="background-color: @(item.Status == ScreeningStatus.Expried ? "#ffcccc" : (item.Status == ScreeningStatus.Going) ? "#ffcc99" : "#ccffcc")">
                     <td>@item.Id</td>
-                    <td>@item.Movie.Title</td>
-                    <td>@item.Auditorium.Cinema.Name</td>
-                    <td>@item.Auditorium.Name</td>
+                    <td>@(item.Movie != null ? item.Movie.Title : "")</td>
+                    <td>@(item.Auditorium != null ? (item.Auditorium.Cinema != null ? item.Auditorium.Cinema.Name : "") : "") </td>
+                    <td>@(item.Auditorium != null ? item.Auditorium.Name : "")</td>
                     <td>@item.StartDate.ToString("dd/MM/yyyy")</td>
                     <td>@item.StartTime</td>
-                    <td>@item.Movie.Duration</td>
+                    <td>@(item.Movie != null ? item.Movie.Duration : 0)</td>
                     <td>@item.SeatsAvailable / @item.SeatsTotal</td>
                     <td class="table-actions-flex">
                         <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
