@@ -15,7 +15,7 @@
             <a asp-controller="Home">Home</a>
         </li>
         <li class="breadcrumb-item">
-            Users
+            @(Convert.ToInt32(ViewData["RoleId"]) == 1 ? "Administrators" : "Customers")
         </li>
     </ol>
 </nav>
@@ -31,7 +31,7 @@
 
 <div class="table-block">
     <div class="table-header">
-        <h3 class="table-title">All users</h3>
+        <h3 class="table-title">All @(Convert.ToInt32(ViewData["RoleId"]) == 1 ? "administrators" : "customers")</h3>
         <a class="btn success-btn load-target" asp-action="Create">Create new</a>
     </div>
     <table class="styled-table">
