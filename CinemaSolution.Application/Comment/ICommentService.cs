@@ -9,7 +9,7 @@ namespace CinemaSolution.Application.Comment
 {
     public interface ICommentService
     {
-        Task<List<CommentViewModel>> GetAll(int movieId, int? userId = null);
+        Task<List<CommentViewModel>> GetAll(int movieId, int maxSize = 10, int? userId = null);
         Task<CommentViewModel> Create(int userId, CommentCreateRequest request);
         Task<CommentViewModel> Like(int userId, int commentId);
     }
