@@ -13,7 +13,7 @@
         }
         if (request.Query[key].Count > 1)
         {
-            foreach(var item in (string[])request.Query[key])
+            foreach(var item in request.Query[key])
             {
                 urlTemplate += "&" + key + "=" + item;
             }

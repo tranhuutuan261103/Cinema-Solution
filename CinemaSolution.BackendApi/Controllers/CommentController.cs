@@ -2,6 +2,7 @@
 using CinemaSolution.ViewModels.Comment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace CinemaSolution.BackendApi.Controllers
@@ -20,16 +21,16 @@ namespace CinemaSolution.BackendApi.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> GetAll([FromQuery] int movieId)
+        public async Task<IActionResult> GetAll([FromQuery] int movieId, int maxSize = 10)
         {
             try
             {
                 var user = User.FindFirst(ClaimTypes.NameIdentifier);
                 if (user != null)
                 {
-                    return Ok(await _commentService.GetAll(movieId, int.Parse(user.Value)));
+                    return Ok(await _commentService.GetAll(movieId, maxSize, int.Parse(user.Value)));
                 }
-                var comments = await _commentService.GetAll(movieId);
+                var comments = await _commentService.GetAll(movieId, maxSize);
                 return Ok(comments);
             }
             catch (Exception ex)
@@ -45,8 +46,12 @@ namespace CinemaSolution.BackendApi.Controllers
         {
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                var comment = await _commentService.Create(userId, request);
+                var userId = HttpContext.Items["UserId"] as string;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return BadRequest("User not found.");
+                }
+                var comment = await _commentService.Create(int.Parse(userId), request);
                 return Ok(comment);
             }
             catch (Exception ex)
@@ -62,8 +67,12 @@ namespace CinemaSolution.BackendApi.Controllers
         {
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                var comment = await _commentService.Like(userId, commentId);
+                var userId = HttpContext.Items["UserId"] as string;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return BadRequest("User not found.");
+                }
+                var comment = await _commentService.Like(int.Parse(userId), commentId);
                 return Ok(comment);
             }
             catch (Exception ex)
