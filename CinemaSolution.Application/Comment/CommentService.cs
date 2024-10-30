@@ -77,8 +77,8 @@ namespace CinemaSolution.Application.Comment
                                                   Value = replyRating.Value
                                               }
                                           }).ToList(),
-                                Likes = commentLikes.Count(),
-                                IsLiked = commentLikes.Any(cl => cl.UserId == userId)
+                               Likes = commentLikes.Count(),
+                               IsLiked = userId == null ? false : commentLikes.Any(cl => cl.UserId == userId)
                            };
 
             if (maxSize > 0)
@@ -169,6 +169,90 @@ namespace CinemaSolution.Application.Comment
             }
         }
 
+        public async Task<CommentViewModel> Reply(int userId, int commentId, CommentCreateRequest request)
+        {
+            if (request.RatingValue < 1 || request.RatingValue > 10)
+            {
+                throw new Exception("Rating value must be between 1 and 10");
+            }
+            if (string.IsNullOrEmpty(request.Content))
+            {
+                throw new Exception("Content must not be empty");
+            }
+            if (request.Content.Length > 256)
+            {
+                throw new Exception("Content must not exceed 256 characters");
+            }
+            try
+            {
+                var user = await cinemaDBContext.Users.FindAsync(userId);
+                if (user == null)
+                {
+                    throw new Exception("User not found");
+                }
+
+                var comment = new Data.Entities.Comment
+                {
+                    Content = request.Content,
+                    CreatedDate = DateTime.Now,
+                    IsDeleted = false,
+                    UserId = userId,
+                    MovieId = request.MovieId,
+                    ParentId = commentId,
+                };
+                cinemaDBContext.Comments.Add(comment);
+                await cinemaDBContext.SaveChangesAsync();
+
+                var ratingExists = await cinemaDBContext.Ratings.FirstOrDefaultAsync(r => r.MovieId == request.MovieId && r.UserId == userId);
+                if (ratingExists != null)
+                {
+                    ratingExists.Value = request.RatingValue;
+                    cinemaDBContext.Ratings.Update(ratingExists);
+                    await cinemaDBContext.SaveChangesAsync();
+                }
+                else
+                {
+                    var rating = new Data.Entities.Rating
+                    {
+                        MovieId = request.MovieId,
+                        UserId = userId,
+                        Value = request.RatingValue
+                    };
+                    cinemaDBContext.Ratings.Add(rating);
+                    await cinemaDBContext.SaveChangesAsync();
+                }
+
+                return new CommentViewModel
+                {
+                    Id = comment.Id,
+                    Content = comment.Content,
+                    CreatedDate = comment.CreatedDate,
+                    IsDeleted = comment.IsDeleted,
+                    User = new ViewModels.User.UserViewModel
+                    {
+                        Id = userId,
+                        Username = user.Username,
+                        Email = user.Email,
+                        AvatarUrl = user.AvatarUrl,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                    },
+                    MovieId = comment.MovieId,
+                    Rating = new ViewModels.Rating.RatingViewModel
+                    {
+                        MovieId = comment.MovieId,
+                        UserId = comment.UserId,
+                        Value = request.RatingValue
+                    },
+                    IsLiked = false
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error creating comment", ex);
+            }
+        }
+
         public async Task<CommentViewModel> Like(int userId, int commentId)
         {
             // Fetch the comment from the database
@@ -233,6 +317,7 @@ namespace CinemaSolution.Application.Comment
                                          Value = r.Value
                                      },
                                      Likes = commentLikes.Count(),
+                                     IsLiked = commentLikes.Any(cl => cl.UserId == userId)
                                  };
 
             // Return the updated comment or handle null if not found
