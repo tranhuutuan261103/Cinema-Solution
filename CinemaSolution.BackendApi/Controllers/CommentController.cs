@@ -61,6 +61,27 @@ namespace CinemaSolution.BackendApi.Controllers
             }
         }
 
+        [HttpPost("{commentId}/reply")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> Reply(int commentId, CommentCreateRequest request)
+        {
+            try
+            {
+                var userId = HttpContext.Items["UserId"] as string;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return BadRequest("User not found.");
+                }
+                var comment = await _commentService.Reply(int.Parse(userId), commentId, request);
+                return Ok(comment);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error replying to comment");
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("{commentId}/like")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Like(int commentId)
