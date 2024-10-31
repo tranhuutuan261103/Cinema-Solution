@@ -169,12 +169,8 @@ namespace CinemaSolution.Application.Comment
             }
         }
 
-        public async Task<CommentViewModel> Reply(int userId, int commentId, CommentCreateRequest request)
+        public async Task<CommentViewModel> Reply(int userId, CommentReplyRequest request)
         {
-            if (request.RatingValue < 1 || request.RatingValue > 10)
-            {
-                throw new Exception("Rating value must be between 1 and 10");
-            }
             if (string.IsNullOrEmpty(request.Content))
             {
                 throw new Exception("Content must not be empty");
@@ -198,29 +194,10 @@ namespace CinemaSolution.Application.Comment
                     IsDeleted = false,
                     UserId = userId,
                     MovieId = request.MovieId,
-                    ParentId = commentId,
+                    ParentId = request.ParentId,
                 };
                 cinemaDBContext.Comments.Add(comment);
                 await cinemaDBContext.SaveChangesAsync();
-
-                var ratingExists = await cinemaDBContext.Ratings.FirstOrDefaultAsync(r => r.MovieId == request.MovieId && r.UserId == userId);
-                if (ratingExists != null)
-                {
-                    ratingExists.Value = request.RatingValue;
-                    cinemaDBContext.Ratings.Update(ratingExists);
-                    await cinemaDBContext.SaveChangesAsync();
-                }
-                else
-                {
-                    var rating = new Data.Entities.Rating
-                    {
-                        MovieId = request.MovieId,
-                        UserId = userId,
-                        Value = request.RatingValue
-                    };
-                    cinemaDBContext.Ratings.Add(rating);
-                    await cinemaDBContext.SaveChangesAsync();
-                }
 
                 return new CommentViewModel
                 {
@@ -242,7 +219,7 @@ namespace CinemaSolution.Application.Comment
                     {
                         MovieId = comment.MovieId,
                         UserId = comment.UserId,
-                        Value = request.RatingValue
+                        Value = 0
                     },
                     IsLiked = false
                 };
