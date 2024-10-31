@@ -63,7 +63,7 @@ namespace CinemaSolution.BackendApi.Controllers
 
         [HttpPost("{commentId}/reply")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> Reply(int commentId, CommentCreateRequest request)
+        public async Task<IActionResult> Reply(int commentId, CommentReplyRequest request)
         {
             try
             {
@@ -72,7 +72,8 @@ namespace CinemaSolution.BackendApi.Controllers
                 {
                     return BadRequest("User not found.");
                 }
-                var comment = await _commentService.Reply(int.Parse(userId), commentId, request);
+                request.ParentId = commentId;
+                var comment = await _commentService.Reply(int.Parse(userId), request);
                 return Ok(comment);
             }
             catch (Exception ex)

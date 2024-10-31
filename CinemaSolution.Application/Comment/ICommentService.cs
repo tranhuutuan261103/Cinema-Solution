@@ -11,7 +11,7 @@ namespace CinemaSolution.Application.Comment
     {
         Task<List<CommentViewModel>> GetAll(int movieId, int maxSize = 10, int? userId = null);
         Task<CommentViewModel> Create(int userId, CommentCreateRequest request);
-        Task<CommentViewModel> Reply(int userId, int commentId, CommentCreateRequest request);
+        Task<CommentViewModel> Reply(int userId, CommentReplyRequest request);
         Task<CommentViewModel> Like(int userId, int commentId);
     }
 }
