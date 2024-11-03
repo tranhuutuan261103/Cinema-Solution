@@ -545,3 +545,40 @@ a {
     padding: 16px;
     border-top: 1px solid #ccc;
 }
+
+/* alert */
+
+.alert {
+    position: absolute;
+    left: calc(50% - 100px);
+    width: 200px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    background-color: green;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.alert-dialog {
+    top: -100px;
+    transition: all 0.3s ease;
+}
+
+.alert-dialog--active {
+    top: 20px;
+}
+
+.alert-danger {
+    background-color: var(--danger-color, red);
+}
+
+.alert-success {
+    background-color: var(--success-color, green);
+}
+
+.alert p {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: white;
+}

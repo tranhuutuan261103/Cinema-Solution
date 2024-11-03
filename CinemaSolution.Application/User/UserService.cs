@@ -60,7 +60,8 @@ namespace CinemaSolution.Application.User
                     {
                         Id = x.r.Id,
                         Name = x.r.Name
-                    }).ToList()
+                    }).ToList(),
+                    IsLocked = x.Key.IsDeleted,
                 });
 
             var totalRow = await groupedUser.CountAsync();
@@ -76,6 +77,17 @@ namespace CinemaSolution.Application.User
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize
             };
+        }
+
+        public async Task<int> Delete(int id)
+        {
+            var user = await cinemaDBContext.Users.FindAsync(id);
+            if (user == null)
+            {
+                return 0;
+            }
+            user.IsDeleted = true;
+            return await cinemaDBContext.SaveChangesAsync();
         }
     }
 }

@@ -187,6 +187,22 @@
         </section>
         <main class="main" id="main-content">
             @RenderBody()
+
+            @{
+                // Handle delete user fail from TempData
+                if (TempData["Error"] != null)
+                {
+                    <div id="errorAlert" class="alert alert-danger alert-dialog">
+                        <p>@TempData["Error"]</p>
+                    </div>
+                    <script>
+                        // Call the function to display the alert dialog when the page loads
+                        window.onload = function () {
+                            showAlertDialog(document.getElementById('errorAlert'));
+                        };
+                    </script>
+                }
+            }
         </main>
     </section>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

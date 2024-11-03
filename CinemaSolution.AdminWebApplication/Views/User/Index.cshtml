@@ -44,6 +44,7 @@
                 <th>Roles</th>
                 <th>Phone number</th>
                 <th>Address</th>
+                <th>Is Looked</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -68,11 +69,12 @@
                     </td>
                     <td>@item.PhoneNumber</td>
                     <td>@item.Address</td>
+                    <td>@(item.IsLocked ? "Yes" : "No")</td>
                     <td class="table-actions-flex">
                         <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
                             <i class="fa-solid fa-pen-to-square table-btn-icon"></i>
                         </a>
-                        <button class="btn-delete table-btn" onclick="showModelCategoryDelete(@item.Id)">
+                        <button class="btn-delete table-btn" onclick="showModelUserDelete(@item.Id)">
                             <i class="fa-solid fa-trash table-btn-icon"></i>
                         </button>
                     </td>
@@ -84,15 +86,15 @@
     @await Component.InvokeAsync("Pager", Model)
 </div>
 
-<div id="modal-dialog-category--delete" class="modal-dialog">
+<div id="modal-dialog-user--delete" class="modal-dialog">
     <div class="modal-background"></div>
     <div class="modal-content">
-        <form id="modal-dialog-category--form-action" action="#!" method="post">
+        <form id="modal-dialog-user--form-action" action="#!" method="post">
             <div class="modal-header">
                 <h2 class="modal-title">Comfirm delete</h2>
             </div>
-            <div id="modal-dialog-category--id" class="modal-body">
-                <p>Comfirm delete this category</p>
+            <div id="modal-dialog-user--id" class="modal-body">
+                <p>Comfirm delete this user</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn cancel-btn">Cancel</button>
@@ -103,5 +105,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/pages/category/index.js" asp-append-version="true"></script>
+    <script src="~/js/pages/user/index.js" asp-append-version="true"></script>
 }
