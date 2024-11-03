@@ -52,3 +52,14 @@ if (dialogCancelBtn) {
         }
     });
 }
+
+function showAlertDialog(element) {
+    if (element) {
+        element.classList.add('alert-dialog--active'); // Show alert by adding a CSS class
+
+        // Remove the alert dialog after 5 seconds
+        setTimeout(function () {
+            element.classList.remove('alert-dialog--active'); // Hide alert by removing the class
+        }, 5000);
+    }
+}

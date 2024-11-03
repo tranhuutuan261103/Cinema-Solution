@@ -295,6 +295,7 @@ a {
 /* Main */
 
 .main {
+    position: relative;
     padding: 24px;
     background-color: #f1f5f9;
 }

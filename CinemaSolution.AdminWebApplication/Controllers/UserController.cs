@@ -36,5 +36,29 @@ namespace CinemaSolution.AdminWebApplication.Controllers
             var users = await _userService.GetPagedResult(request);
             return View(users);
         }
+
+        [HttpPost("{id}/delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                int effected = await _userService.Delete(id);
+                if (effected == 0)
+                {
+                    TempData["Error"] = "Delete user failed";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    TempData["Success"] = "Delete user successful";
+                }
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return RedirectToAction("Index");
+            }
+        }
     }
 }

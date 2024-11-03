@@ -18,5 +18,6 @@ namespace CinemaSolution.ViewModels.User
         public string? AvatarUrl { get; set; }
         public string? BackgroundUrl { get; set; }
         public List<RoleViewModel> Roles { get; set; } = new List<RoleViewModel>();
+        public bool IsLocked { get; set; }
     }
 }
