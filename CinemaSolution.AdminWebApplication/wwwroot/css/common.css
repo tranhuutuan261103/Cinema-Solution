@@ -552,7 +552,9 @@ a {
     position: absolute;
     left: calc(50% - 100px);
     width: 200px;
-    padding: 10px 20px;
+    height: 40px;
+    padding: 10px;
+    padding-right: 40px;
     border-radius: 8px;
     background-color: green;
     display: flex;
@@ -581,4 +583,19 @@ a {
     font-size: 1.4rem;
     font-weight: 500;
     color: white;
+}
+
+.alert-dialog-close {
+    position: absolute;
+    right: 7.5px;
+    top: 7.5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 999px;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f1f5f9;
 }

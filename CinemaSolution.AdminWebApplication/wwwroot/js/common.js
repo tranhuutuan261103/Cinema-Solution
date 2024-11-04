@@ -63,3 +63,8 @@ function showAlertDialog(element) {
         }, 5000);
     }
 }
+
+// Close the alert dialog when the close button is clicked
+function closeAlertDialog(element) {
+    element.parentElement.classList.remove('alert-dialog--active');
+}
