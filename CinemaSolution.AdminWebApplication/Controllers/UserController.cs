@@ -42,7 +42,7 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         {
             try
             {
-                int effected = await _userService.Delete(id);
+                int effected = await _userService.UpdateUserStatus(id, true);
                 if (effected == 0)
                 {
                     TempData["Error"] = "Delete user failed";
@@ -51,6 +51,30 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                 else
                 {
                     TempData["Success"] = "Delete user successful";
+                }
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return RedirectToAction("Index");
+            }
+        }
+
+        [HttpPost("{id}/enable")]
+        public async Task<IActionResult> Enable(int id)
+        {
+            try
+            {
+                int effected = await _userService.UpdateUserStatus(id, false);
+                if (effected == 0)
+                {
+                    TempData["Error"] = "Enable user failed";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    TempData["Success"] = "Enable user successful";
                 }
                 return RedirectToAction("Index");
             }

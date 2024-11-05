@@ -79,14 +79,14 @@ namespace CinemaSolution.Application.User
             };
         }
 
-        public async Task<int> Delete(int id)
+        public async Task<int> UpdateUserStatus(int id, bool isBlocked)
         {
             var user = await cinemaDBContext.Users.FindAsync(id);
             if (user == null)
             {
                 return 0;
             }
-            user.IsDeleted = true;
+            user.IsDeleted = isBlocked;
             return await cinemaDBContext.SaveChangesAsync();
         }
     }

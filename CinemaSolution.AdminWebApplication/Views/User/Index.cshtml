@@ -74,9 +74,17 @@
                         <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
                             <i class="fa-solid fa-pen-to-square table-btn-icon"></i>
                         </a>
-                        <button class="btn-delete table-btn" onclick="showModelUserDelete(@item.Id)">
-                            <i class="fa-solid fa-trash table-btn-icon"></i>
-                        </button>
+                        @if (item.IsLocked == true)
+                        {
+                            <button class="btn-enable table-btn" onclick="showModelUserEnable(@item.Id)">
+                                <i class="fa-solid fa-user-check"></i>
+                            </button>
+                        } else
+                        {
+                            <button class="btn-delete table-btn" onclick="showModelUserDelete(@item.Id)">
+                                <i class="fa-solid fa-trash table-btn-icon"></i>
+                            </button>
+                        }
                     </td>
                 </tr>
             }
@@ -95,6 +103,24 @@
             </div>
             <div id="modal-dialog-user--id" class="modal-body">
                 <p>Comfirm delete this user</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn cancel-btn">Cancel</button>
+                <button type="submit" class="btn update-btn">Oke</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="modal-dialog-user--enable" class="modal-dialog">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <form id="modal-dialog-enable-user--form-action" action="#!" method="post">
+            <div class="modal-header">
+                <h2 class="modal-title">Comfirm enable</h2>
+            </div>
+            <div id="modal-dialog-enable-user--id" class="modal-body">
+                <p>Comfirm enable this user</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn cancel-btn">Cancel</button>
