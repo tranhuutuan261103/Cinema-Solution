@@ -12,6 +12,6 @@ namespace CinemaSolution.Application.User
     {
         Task<int> GetCount(int? roleId = null);
         Task<PagedResult<UserViewModel>> GetPagedResult(GetUserPagingRequest request);
-        Task<int> Delete(int id);
+        Task<int> UpdateUserStatus(int id, bool isBlocked);
     }
 }
