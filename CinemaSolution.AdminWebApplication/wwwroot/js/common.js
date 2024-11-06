@@ -66,5 +66,5 @@ function showAlertDialog(element) {
 
 // Close the alert dialog when the close button is clicked
 function closeAlertDialog(element) {
-    element.parentElement.classList.remove('alert-dialog--active');
+    element.parentElement.parentElement.classList.remove('alert-dialog--active');
 }
