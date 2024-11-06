@@ -548,10 +548,17 @@ a {
 
 /* alert */
 
-.alert {
+.alert-row {
     position: absolute;
-    left: calc(50% - 100px);
-    width: 200px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.alert {
+    position: relative;
     height: 40px;
     padding: 10px;
     padding-right: 40px;
