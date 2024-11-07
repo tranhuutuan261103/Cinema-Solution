@@ -419,17 +419,27 @@ a {
 
 /* Form group */
 
-.form-group {
+.form {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-top: 15px;
+}
+
+.form-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-group:has(.model-state) {
+    padding-bottom: 18px;
 }
 
 .form-label {
-    font-size: 1.5rem;
-    font-weight: 500;
-}
+        font-size: 1.5rem;
+        font-weight: 500;
+    }
 
 .form-control {
     max-width: 450px;
@@ -605,4 +615,17 @@ a {
     align-items: center;
     justify-content: center;
     background-color: #f1f5f9;
+}
+
+/* ModelState */
+
+.model-state {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.text-danger {
+    color: red;
+    font-size: 1.4rem;
 }
