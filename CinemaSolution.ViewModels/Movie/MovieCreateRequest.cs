@@ -3,6 +3,7 @@ using CinemaSolution.ViewModels.Common.ItemSelection;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,12 +12,18 @@ namespace CinemaSolution.ViewModels.Movie
 {
     public class MovieCreateRequest
     {
+        [Required(ErrorMessage = "Title is required")]
         public string Title { get; set; } = string.Empty;
         public List<ItemSelection<CategoryViewModel>> Categories { get; set; } = new List<ItemSelection<CategoryViewModel>>();
+        [Required(ErrorMessage = "Language is required")]
         public string Language { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Director is required")]
         public string Director { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Actors is required")]
         public string Actors { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Description is required")]
         public string Description { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Trailer URL is required")]
         public string TrailerUrl { get; set; } = string.Empty;
         public DateTime ReleaseDate { get; set; } = DateTime.Now;
         public DateTime EndDate { get; set; } = DateTime.Now;

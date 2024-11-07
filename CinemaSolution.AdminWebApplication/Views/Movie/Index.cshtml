@@ -81,6 +81,7 @@
                 <th>Release Date</th>
                 <th>End Date</th>
                 <th>Duration</th>
+                <th>Enable</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -101,6 +102,7 @@
                     <td>@item.ReleaseDate.ToLocalTime()</td>
                     <td>@item.EndDate.ToLocalTime()</td>
                     <td>@item.Duration minutes</td>
+                    <td>@(item.IsDeleted ? "No" : "Yes")</td>
                     <td class="table-actions-flex">
                         <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
                             <i class="fa-solid fa-pen-to-square table-btn-icon"></i>

@@ -73,6 +73,14 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm] MovieCreateRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = "Invalid input. Please check again.";
+                return View(request);
+            }
+            TempData["Error"] = "Error occurred while creating movie. Please try again later.";
+            return View(request);
+
             if (request.ThumbnailImage3x2 != null)
             {
                 var thumbnailImage3x2Url = await _storageService.UploadFileAsync(
@@ -154,7 +162,22 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         [HttpPost("{id}/delete")]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _movieService.Delete(id);
+            try
+            {
+                var effected = await _movieService.Delete(id);
+                if (effected == 0)
+                {
+                    TempData["Error"] = "Delete movie failed";
+                }
+                else
+                {
+                    TempData["Success"] = "Delete movie successfully";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
             return RedirectToAction("Index");
         }
     }
