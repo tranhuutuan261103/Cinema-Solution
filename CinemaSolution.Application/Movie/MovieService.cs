@@ -294,93 +294,88 @@ namespace CinemaSolution.Application.Movie
 
         public async Task<MovieViewModel> Create(MovieCreateRequest request)
         {
-            // Create new movie
-            var movie = new Data.Entities.Movie()
+            try
             {
-                Title = request.Title,
-                Language = request.Language,
-                Director = request.Director,
-                Actors = request.Actors,
-                Description = request.Description,
-                TrailerUrl = request.TrailerUrl,
-                ReleaseDate = request.ReleaseDate,
-                EndDate = request.EndDate,
-                Duration = request.Duration,
-            };
-            cinemaDBContext.Movies.Add(movie);
-            await cinemaDBContext.SaveChangesAsync();
-
-            // Create movie in categories
-            foreach (var category in request.Categories)
-            {
-                if (category.IsSelected == false)
+                // Initialize new movie entity
+                var movie = new Data.Entities.Movie()
                 {
-                    continue;
-                }
-                var movieInCategory = new Data.Entities.MovieInCategory()
-                {
-                    MovieId = movie.Id,
-                    CategoryId = category.Item.Id
+                    Title = request.Title,
+                    Language = request.Language,
+                    Director = request.Director,
+                    Actors = request.Actors,
+                    Description = request.Description,
+                    TrailerUrl = request.TrailerUrl,
+                    ReleaseDate = request.ReleaseDate,
+                    EndDate = request.EndDate,
+                    Duration = request.Duration,
                 };
-                cinemaDBContext.MovieInCategories.Add(movieInCategory);
-            }
-            await cinemaDBContext.SaveChangesAsync();
+                cinemaDBContext.Movies.Add(movie);
+                await cinemaDBContext.SaveChangesAsync();
 
-            // Create movie images
-            if (request.ThumbnailImage3x2Url != null)
-            {
-                cinemaDBContext.MovieImages.Add(new Data.Entities.MovieImage()
-                {
-                    MovieId = movie.Id,
-                    ImageUrl = request.ThumbnailImage3x2Url,
-                    MovieImageTypeId = (int)Data.Enums.MovieImageType.ThumbnailImage3x2
-                });
-            }
-            if (request.ThumbnailImage2x3Url != null)
-            {
-                cinemaDBContext.MovieImages.Add(new Data.Entities.MovieImage()
-                {
-                    MovieId = movie.Id,
-                    ImageUrl = request.ThumbnailImage2x3Url,
-                    MovieImageTypeId = (int)Data.Enums.MovieImageType.ThumbnailImage2x3
-                });
-            }
-            await cinemaDBContext.SaveChangesAsync();
+                // Associate movie with selected categories
+                var selectedCategories = request.Categories
+                    .Where(category => category.IsSelected)
+                    .Select(category => new Data.Entities.MovieInCategory
+                    {
+                        MovieId = movie.Id,
+                        CategoryId = category.Item.Id
+                    });
+                cinemaDBContext.MovieInCategories.AddRange(selectedCategories);
+                await cinemaDBContext.SaveChangesAsync();
 
-            // Return the created movie
-            return new MovieViewModel()
-            {
-                Id = movie.Id,
-                Title = movie.Title,
-                Duration = movie.Duration,
-                Language = movie.Language,
-                Director = movie.Director,
-                Actors = movie.Actors,
-                Description= movie.Description,
-                ReleaseDate= movie.ReleaseDate,
-                EndDate= movie.EndDate,
-                TrailerUrl= movie.TrailerUrl,
-                Categories = request.Categories.Select(x => new CategoryViewModel()
+                // Add movie images if URLs are available
+                if (!string.IsNullOrEmpty(request.ThumbnailImage3x2Url))
                 {
-                    Id = x.Item.Id,
-                    Name = x.Item.Name
-                }).ToList(),
-                MovieImages = new List<MovieImageViewModel>()
-                {
-                    new MovieImageViewModel()
+                    cinemaDBContext.MovieImages.Add(new Data.Entities.MovieImage
                     {
-                        Id = 1,
-                        ImageUrl = "https://via.placeholder.com/600x900",
-                        ImageType = "Poster"
-                    },
-                    new MovieImageViewModel()
-                    {
-                        Id = 2,
-                        ImageUrl = "https://via.placeholder.com/900x600",
-                        ImageType = "Backdrop"
-                    }
+                        MovieId = movie.Id,
+                        ImageUrl = request.ThumbnailImage3x2Url,
+                        MovieImageTypeId = (int)Data.Enums.MovieImageType.ThumbnailImage3x2
+                    });
                 }
-            };
+                if (!string.IsNullOrEmpty(request.ThumbnailImage2x3Url))
+                {
+                    cinemaDBContext.MovieImages.Add(new Data.Entities.MovieImage
+                    {
+                        MovieId = movie.Id,
+                        ImageUrl = request.ThumbnailImage2x3Url,
+                        MovieImageTypeId = (int)Data.Enums.MovieImageType.ThumbnailImage2x3
+                    });
+                }
+                await cinemaDBContext.SaveChangesAsync();
+
+                // Build and return the MovieViewModel
+                return new MovieViewModel
+                {
+                    Id = movie.Id,
+                    Title = movie.Title,
+                    Duration = movie.Duration,
+                    Language = movie.Language,
+                    Director = movie.Director,
+                    Actors = movie.Actors,
+                    Description = movie.Description,
+                    ReleaseDate = movie.ReleaseDate,
+                    EndDate = movie.EndDate,
+                    TrailerUrl = movie.TrailerUrl,
+                    Categories = request.Categories
+                        .Where(category => category.IsSelected)
+                        .Select(category => new CategoryViewModel
+                        {
+                            Id = category.Item.Id,
+                            Name = category.Item.Name
+                        }).ToList(),
+                    MovieImages = new List<MovieImageViewModel>
+                    {
+                        new MovieImageViewModel { Id = 1, ImageUrl = request.ThumbnailImage3x2Url ?? "https://via.placeholder.com/600x900", ImageType = "Poster" },
+                        new MovieImageViewModel { Id = 2, ImageUrl = request.ThumbnailImage2x3Url ?? "https://via.placeholder.com/900x600", ImageType = "Backdrop" }
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for debugging purposes
+                throw new ApplicationException("An error occurred while creating the movie", ex);
+            }
         }
 
         public async Task<MovieViewModel> Update(MovieUpdateRequest request)

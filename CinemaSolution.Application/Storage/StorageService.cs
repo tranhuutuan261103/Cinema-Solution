@@ -20,17 +20,24 @@ namespace CinemaSolution.Application.Storage
 
         public async Task<string> UploadFileAsync(Stream mediaBinaryStream, string folderPath, string fileName)
         {
-            var firebaseStorage = new FirebaseStorage(
-                    storageBucket,
-                    new FirebaseStorageOptions
-                    {
-                        ThrowOnCancel = true
-                    })
-                    .Child(folderPath)
-                    .Child(fileName);
-            await firebaseStorage.PutAsync(mediaBinaryStream);
-            string fileUrl = await firebaseStorage.GetDownloadUrlAsync();
-            return fileUrl;
+            try
+            {
+                var firebaseStorage = new FirebaseStorage(
+                        storageBucket,
+                        new FirebaseStorageOptions
+                        {
+                            ThrowOnCancel = true
+                        })
+                        .Child(folderPath)
+                        .Child(fileName);
+                await firebaseStorage.PutAsync(mediaBinaryStream);
+                string fileUrl = await firebaseStorage.GetDownloadUrlAsync();
+                return fileUrl;
+            }
+            catch (Exception ex)
+            {
+                throw new StorageException("Error while uploading file to Firebase Storage", ex);
+            }
         }
 
         public string GetFileUrl(string fileName)

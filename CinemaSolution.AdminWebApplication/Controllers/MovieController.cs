@@ -7,6 +7,7 @@ using CinemaSolution.ViewModels.Common.ItemSelection;
 using CinemaSolution.ViewModels.Movie;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CinemaSolution.AdminWebApplication.Controllers
 {
@@ -78,30 +79,49 @@ namespace CinemaSolution.AdminWebApplication.Controllers
                 TempData["Error"] = "Invalid input. Please check again.";
                 return View(request);
             }
-            TempData["Error"] = "Error occurred while creating movie. Please try again later.";
+
+            try
+            {
+                // Upload and assign thumbnail images if they exist
+                if (request.ThumbnailImage3x2 != null)
+                {
+                    request.ThumbnailImage3x2Url = await UploadImageAsync(request.ThumbnailImage3x2, "movie_thumbnail");
+                }
+
+                if (request.ThumbnailImage2x3 != null)
+                {
+                    request.ThumbnailImage2x3Url = await UploadImageAsync(request.ThumbnailImage2x3, "movie_thumbnail");
+                }
+
+                // Create movie and save to database
+                var result = await _movieService.Create(request);
+                return RedirectToAction("Index"); // Redirect only on success
+            }
+            catch (StorageException ex)
+            {
+                TempData["Error"] = "Image upload failed: " + ex.Message;
+            }
+            catch (DbUpdateException ex)
+            {
+                TempData["Error"] = "Database error: " + ex.Message;
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "An unexpected error occurred: " + ex.Message;
+            }
+
+            // In case of any exception, return the same view with the request model
             return View(request);
-
-            if (request.ThumbnailImage3x2 != null)
-            {
-                var thumbnailImage3x2Url = await _storageService.UploadFileAsync(
-                    request.ThumbnailImage3x2.OpenReadStream(), 
-                    "movie_thumbnail",
-                    request.ThumbnailImage3x2.FileName);
-                request.ThumbnailImage3x2Url = thumbnailImage3x2Url;
-            }
-
-            if (request.ThumbnailImage2x3 != null)
-            {
-                var thumbnailImage2x3Url = await _storageService.UploadFileAsync(
-                                       request.ThumbnailImage2x3.OpenReadStream(),
-                                       "movie_thumbnail",
-                                       request.ThumbnailImage2x3.FileName);
-                request.ThumbnailImage2x3Url = thumbnailImage2x3Url;
-            }
-
-            var result = await _movieService.Create(request);
-            return RedirectToAction("Index");
         }
+
+        private async Task<string> UploadImageAsync(IFormFile imageFile, string folderName)
+        {
+            return await _storageService.UploadFileAsync(
+                imageFile.OpenReadStream(),
+                folderName,
+                imageFile.FileName);
+        }
+
 
         [HttpGet("{id}/update")]
         public async Task<IActionResult> Update(int id)
