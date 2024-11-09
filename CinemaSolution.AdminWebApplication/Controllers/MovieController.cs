@@ -157,25 +157,47 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         [HttpPost("{id}/update")]
         public async Task<IActionResult> Update(MovieUpdateRequest request)
         {
-            if (request.ThumbnailImage3x2 != null)
+            if (!ModelState.IsValid)
             {
-                var thumbnailImage3x2Url = await _storageService.UploadFileAsync(
-                    request.ThumbnailImage3x2.OpenReadStream(),
-                    "movie_thumbnail",
-                    request.ThumbnailImage3x2.FileName);
-                request.ThumbnailImage3x2Url = thumbnailImage3x2Url;
+                TempData["Error"] = "Invalid input. Please check again.";
+                return View(request);
             }
 
-            if (request.ThumbnailImage2x3 != null)
+            try
             {
-                var thumbnailImage2x3Url = await _storageService.UploadFileAsync(
-                                       request.ThumbnailImage2x3.OpenReadStream(),
-                                       "movie_thumbnail",
-                                       request.ThumbnailImage2x3.FileName);
-                request.ThumbnailImage2x3Url = thumbnailImage2x3Url;
+                if (request.ThumbnailImage3x2 != null)
+                {
+                    var thumbnailImage3x2Url = await _storageService.UploadFileAsync(
+                        request.ThumbnailImage3x2.OpenReadStream(),
+                        "movie_thumbnail",
+                        request.ThumbnailImage3x2.FileName);
+                    request.ThumbnailImage3x2Url = thumbnailImage3x2Url;
+                }
+
+                if (request.ThumbnailImage2x3 != null)
+                {
+                    var thumbnailImage2x3Url = await _storageService.UploadFileAsync(
+                                           request.ThumbnailImage2x3.OpenReadStream(),
+                                           "movie_thumbnail",
+                                           request.ThumbnailImage2x3.FileName);
+                    request.ThumbnailImage2x3Url = thumbnailImage2x3Url;
+                }
+
+                await _movieService.Update(request);
+            }
+            catch (StorageException ex)
+            {
+                TempData["Error"] = "Image upload failed: " + ex.Message;
+            }
+            catch (DbUpdateException ex)
+            {
+                TempData["Error"] = "Database error: " + ex.Message;
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "An unexpected error occurred: " + ex.Message;
             }
 
-            await _movieService.Update(request);
             return RedirectToAction("Index");
         }
 

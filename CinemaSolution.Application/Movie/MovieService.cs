@@ -374,108 +374,114 @@ namespace CinemaSolution.Application.Movie
             catch (Exception ex)
             {
                 // Log the exception for debugging purposes
-                throw new ApplicationException("An error occurred while creating the movie", ex);
+                throw new Exception(ex.Message);
             }
         }
 
         public async Task<MovieViewModel> Update(MovieUpdateRequest request)
         {
-            var movie = await cinemaDBContext.Movies.FindAsync(request.Id);
-            if (movie == null)
+            try
             {
-                throw new Exception("Movie not found");
-            }
-            movie.Title = request.Title;
-            movie.Language = request.Language;
-            movie.Director = request.Director;
-            movie.Actors = request.Actors;
-            movie.Description = request.Description;
-            movie.TrailerUrl = request.TrailerUrl;
-            movie.ReleaseDate = request.ReleaseDate;
-            movie.EndDate = request.EndDate;
-            movie.Duration = request.Duration;
-
-            // Update movie in categories
-            var movieInCategories = await cinemaDBContext.MovieInCategories
-                .Where(x => x.MovieId == request.Id)
-                .ToListAsync();
-            foreach (var movieInCategory in movieInCategories)
-            {
-                cinemaDBContext.MovieInCategories.Remove(movieInCategory);
-            }
-            foreach (var category in request.Categories)
-            {
-                if (category.IsSelected == false)
+                var movie = await cinemaDBContext.Movies.FindAsync(request.Id);
+                if (movie == null)
                 {
-                    continue;
+                    throw new Exception("Movie not found");
                 }
-                var movieInCategory = new Data.Entities.MovieInCategory()
+                movie.Title = request.Title;
+                movie.Language = request.Language;
+                movie.Director = request.Director;
+                movie.Actors = request.Actors;
+                movie.Description = request.Description;
+                movie.TrailerUrl = request.TrailerUrl;
+                movie.ReleaseDate = request.ReleaseDate;
+                movie.EndDate = request.EndDate;
+                movie.Duration = request.Duration;
+
+                // Update movie in categories
+                var movieInCategories = await cinemaDBContext.MovieInCategories
+                    .Where(x => x.MovieId == request.Id)
+                    .ToListAsync();
+                foreach (var movieInCategory in movieInCategories)
                 {
-                    MovieId = movie.Id,
-                    CategoryId = category.Item.Id
+                    cinemaDBContext.MovieInCategories.Remove(movieInCategory);
+                }
+                foreach (var category in request.Categories)
+                {
+                    if (category.IsSelected == false)
+                    {
+                        continue;
+                    }
+                    var movieInCategory = new Data.Entities.MovieInCategory()
+                    {
+                        MovieId = movie.Id,
+                        CategoryId = category.Item.Id
+                    };
+                    cinemaDBContext.MovieInCategories.Add(movieInCategory);
+                }
+                await cinemaDBContext.SaveChangesAsync();
+
+                // Update movie images
+                var movieImages = await cinemaDBContext.MovieImages
+                    .Where(x => x.MovieId == request.Id)
+                    .ToListAsync();
+                if (request.ThumbnailImage3x2Url != null)
+                {
+                    var movieImage = movieImages.FirstOrDefault(x => x.MovieImageTypeId == (int)Data.Enums.MovieImageType.ThumbnailImage3x2);
+                    if (movieImage != null)
+                    {
+                        movieImage.ImageUrl = request.ThumbnailImage3x2Url;
+                    }
+                    else
+                    {
+                        cinemaDBContext.MovieImages.Add(new Data.Entities.MovieImage()
+                        {
+                            MovieId = movie.Id,
+                            ImageUrl = request.ThumbnailImage3x2Url,
+                            MovieImageTypeId = (int)Data.Enums.MovieImageType.ThumbnailImage3x2
+                        });
+                    }
+                }
+                if (request.ThumbnailImage2x3Url != null)
+                {
+                    var movieImage = movieImages.FirstOrDefault(x => x.MovieImageTypeId == (int)Data.Enums.MovieImageType.ThumbnailImage2x3);
+                    if (movieImage != null)
+                    {
+                        movieImage.ImageUrl = request.ThumbnailImage2x3Url;
+                    }
+                    else
+                    {
+                        cinemaDBContext.MovieImages.Add(new Data.Entities.MovieImage()
+                        {
+                            MovieId = movie.Id,
+                            ImageUrl = request.ThumbnailImage2x3Url,
+                            MovieImageTypeId = (int)Data.Enums.MovieImageType.ThumbnailImage2x3
+                        });
+                    }
+                }
+                await cinemaDBContext.SaveChangesAsync();
+
+                return new MovieViewModel()
+                {
+                    Id = movie.Id,
+                    Title = movie.Title,
+                    Duration = movie.Duration,
+                    Language = movie.Language,
+                    Director = movie.Director,
+                    Actors = movie.Actors,
+                    Description = movie.Description,
+                    ReleaseDate = movie.ReleaseDate,
+                    EndDate = movie.EndDate,
+                    TrailerUrl = movie.TrailerUrl,
+                    Categories = request.Categories.Select(x => new CategoryViewModel()
+                    {
+                        Id = x.Item.Id,
+                        Name = x.Item.Name
+                    }).ToList()
                 };
-                cinemaDBContext.MovieInCategories.Add(movieInCategory);
-            }
-            await cinemaDBContext.SaveChangesAsync();
-
-            // Update movie images
-            var movieImages = await cinemaDBContext.MovieImages
-                .Where(x => x.MovieId == request.Id)
-                .ToListAsync();
-            if (request.ThumbnailImage3x2Url != null)
+            } catch (Exception ex)
             {
-                var movieImage = movieImages.FirstOrDefault(x => x.MovieImageTypeId == (int)Data.Enums.MovieImageType.ThumbnailImage3x2);
-                if (movieImage != null)
-                {
-                    movieImage.ImageUrl = request.ThumbnailImage3x2Url;
-                }
-                else
-                {
-                    cinemaDBContext.MovieImages.Add(new Data.Entities.MovieImage()
-                    {
-                        MovieId = movie.Id,
-                        ImageUrl = request.ThumbnailImage3x2Url,
-                        MovieImageTypeId = (int)Data.Enums.MovieImageType.ThumbnailImage3x2
-                    });
-                }
+                throw new Exception(ex.Message);
             }
-            if (request.ThumbnailImage2x3Url != null)
-            {
-                var movieImage = movieImages.FirstOrDefault(x => x.MovieImageTypeId == (int)Data.Enums.MovieImageType.ThumbnailImage2x3);
-                if (movieImage != null)
-                {
-                    movieImage.ImageUrl = request.ThumbnailImage2x3Url;
-                }
-                else
-                {
-                    cinemaDBContext.MovieImages.Add(new Data.Entities.MovieImage()
-                    {
-                        MovieId = movie.Id,
-                        ImageUrl = request.ThumbnailImage2x3Url,
-                        MovieImageTypeId = (int)Data.Enums.MovieImageType.ThumbnailImage2x3
-                    });
-                }
-            }
-            await cinemaDBContext.SaveChangesAsync();
-
-            return new MovieViewModel()
-            {
-                Id = movie.Id,
-                Title = movie.Title,
-                Duration = movie.Duration,
-                Language = movie.Language,
-                Director = movie.Director,
-                Actors = movie.Actors,
-                Description = movie.Description,
-                ReleaseDate = movie.ReleaseDate,
-                EndDate = movie.EndDate,
-                TrailerUrl = movie.TrailerUrl,
-                Categories = request.Categories.Select(x => new CategoryViewModel()
-                {
-                    Id = x.Item.Id,
-                    Name = x.Item.Name
-                }).ToList()
-            };
         }
 
         public async Task<int> Delete(int id)
