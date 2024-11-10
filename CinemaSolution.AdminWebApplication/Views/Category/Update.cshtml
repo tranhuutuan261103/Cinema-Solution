@@ -19,10 +19,11 @@
 </nav>
 
 <div class="content-body">
-    <form asp-action="Update" method="post">
+    <form asp-action="Update" class="form" method="post">
         <div class="form-group">
             <label for="category-name" class="form-label">Name of category</label>
             <input type="text" class="form-control" id="category-name" asp-for="Name" placeholder="Enter name">
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "model-state text-danger" })
         </div>
 
         <div class="row form-group-btn">
