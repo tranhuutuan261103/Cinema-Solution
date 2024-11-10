@@ -103,22 +103,19 @@ namespace CinemaSolution.Application.Category
             };
         }
 
-        public async Task<int> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            try
+            var category = await cinemaDBContext.Categories.FindAsync(id);
+            if (category == null)
             {
-                var category = await cinemaDBContext.Categories.FindAsync(id);
-                if (category == null)
-                {
-                    throw new Exception("Category not found");
-                }
-                category.IsDeleted = true;
-                return await cinemaDBContext.SaveChangesAsync();
-            } catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw new Exception("Delete category failed");
+                throw new InvalidOperationException("Category not found");
             }
+
+            category.IsDeleted = true;
+
+            // Sử dụng SaveChangesAsync() để cập nhật và trả về true nếu thành công
+            return await cinemaDBContext.SaveChangesAsync() > 0;
         }
+
     }
 }

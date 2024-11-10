@@ -51,8 +51,21 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> Create(CategoryCreateRequest request)
         {
-            await _categoryService.Create(request);
-            return RedirectToAction("Index");
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = "Invalid input. Please check again.";
+                return View(request);
+            }
+            try
+            {
+                await _categoryService.Create(request);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            return View(request);
         }
 
         [HttpGet("{id}/update")]
@@ -65,8 +78,22 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         [HttpPost("{id}/update")]
         public async Task<IActionResult> Update(CategoryUpdateRequest request)
         {
-            await _categoryService.Update(request);
-            return RedirectToAction("Index");
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = "Invalid input. Please check again.";
+                return View(request);
+            }
+
+            try
+            {
+                await _categoryService.Update(request);
+                return RedirectToAction("Index");
+            } catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return View(request);
         }
 
         [HttpPost("{id}/delete")]
@@ -74,18 +101,18 @@ namespace CinemaSolution.AdminWebApplication.Controllers
         {
             try
             {
-                int effected = await _categoryService.Delete(id);
-                if (effected == 0)
+                if (!await _categoryService.Delete(id))
                 {
-                    return BadRequest("Delete failed");
+                    TempData["Error"] = "Delete category failed";
                 }
-                return RedirectToAction("Index");
-            } 
+            }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                return RedirectToAction("Index");
+                TempData["Error"] = ex.Message;
             }
+
+            return RedirectToAction("Index");
         }
+
     }
 }
