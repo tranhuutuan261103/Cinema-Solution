@@ -526,6 +526,13 @@ a {
     transform: scale(0.3);
 }
 
+.modal-content form {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+}
+
 .modal-dialog--active .modal-content {
     opacity: 1;
     transform: scale(1);

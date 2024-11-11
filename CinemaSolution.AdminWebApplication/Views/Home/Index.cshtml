@@ -14,7 +14,7 @@
             <a class="btn" asp-controller="Movie" asp-action="Create">Add new</a>
         </div>
         <div class="home-info-body">
-            <div class="cart">
+            <div class="cart" onclick="openUrl('movies')">
                 <div class="cart-top">
                     <h3 class="cart-title">Movies</h3>
                     <div class="cart-icon-container">
@@ -24,7 +24,7 @@
                 <div class="cart-value">@ViewBag.MovieCount</div>
                 <div class="cart-subvalue">@ViewBag.MovieCount are on going</div>
             </div>
-            <div class="cart">
+            <div class="cart" onclick="openUrl('screenings')">
                 <div class="cart-top">
                     <h3 class="cart-title">Screenings</h3>
                     <div class="cart-icon-container">
@@ -34,7 +34,7 @@
                 <div class="cart-value">@ViewBag.ScreeningCount</div>
                 <div class="cart-subvalue">@ViewBag.ScreeningFuture are available</div>
             </div>
-            <div class="cart">
+            <div class="cart" onclick="openUrl('invoices')">
                 <div class="cart-top">
                     <h3 class="cart-title">Invoices</h3>
                     <div class="cart-icon-container">
@@ -44,7 +44,7 @@
                 <div class="cart-value">@ViewBag.InvoiceCount</div>
                 <div class="cart-subvalue">@ViewBag.InvoiceTotalPrice đ earned</div>
             </div>
-            <div class="cart">
+            <div class="cart" onclick="openUrl('users?roleId=2')">
                 <div class="cart-top">
                     <h3 class="cart-title">Users</h3>
                     <div class="cart-icon-container">
@@ -57,3 +57,7 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/pages/home/index.js" asp-append-version="true"></script>
+}
