@@ -113,6 +113,5 @@ namespace CinemaSolution.AdminWebApplication.Controllers
 
             return RedirectToAction("Index");
         }
-
     }
 }
