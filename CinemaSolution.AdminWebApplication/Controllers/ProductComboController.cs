@@ -47,5 +47,23 @@ namespace CinemaSolution.AdminWebApplication.Controllers
 
             return View(productCombo);
         }
+
+        [HttpPost("{id}/delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                if (!await _productService.Delete(id))
+                {
+                    TempData["Error"] = "Delete category failed";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("Index");
+        }
     }
 }

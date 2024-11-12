@@ -64,7 +64,7 @@
                         <a class="btn-edit table-btn load-target" asp-route-id="@item.Id" asp-action="Update">
                             <i class="fa-solid fa-pen-to-square table-btn-icon"></i>
                         </a>
-                        <button class="btn-delete table-btn" onclick="showModelMovieDelete(@item.Id)">
+                        <button class="btn-delete table-btn" onclick="showModelProductComboDelete(@item.Id)">
                             <i class="fa-solid fa-trash table-btn-icon"></i>
                         </button>
                     </td>
@@ -75,15 +75,15 @@
     @await Component.InvokeAsync("Pager", Model)
 </div>
 
-<div id="modal-dialog-movie--delete" class="modal-dialog">
+<div id="modal-dialog-product--delete" class="modal-dialog">
     <div class="modal-background"></div>
     <div class="modal-content">
-        <form id="modal-dialog-movie--form-action" action="#!" method="post">
+        <form id="modal-dialog-product--form-action" action="#!" method="post">
             <div class="modal-header">
                 <h2 class="modal-title">Comfirm delete</h2>
             </div>
-            <div id="modal-dialog-movie--id" class="modal-body">
-                <p>Comfirm delete this movie</p>
+            <div id="modal-dialog-product--id" class="modal-body">
+                <p>Comfirm delete this product</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn cancel-btn">Cancel</button>
@@ -94,5 +94,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/pages/movie/index.js" asp-append-version="true"></script>
+    <script src="~/js/pages/productCombo/index.js" asp-append-version="true"></script>
 }

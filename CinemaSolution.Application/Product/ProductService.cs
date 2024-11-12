@@ -22,6 +22,7 @@ namespace CinemaSolution.Application.Product
             var productComboQuery = from pc in cinemaDBContext.ProductCombos
                                     join pic in cinemaDBContext.ProductInProductCombos on pc.Id equals pic.ProductComboId
                                     join p in cinemaDBContext.Products on pic.ProductId equals p.Id
+                                    where pc.IsDeleted == false
                                     select new { pc, pic, p };
 
             var groupedProductCombos = await productComboQuery.GroupBy(x => x.pc).Select(x => 
@@ -113,6 +114,20 @@ namespace CinemaSolution.Application.Product
                     }).ToList()
                 }).FirstOrDefaultAsync();
             return groupedProductCombos;
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+            var productCombo = await cinemaDBContext.ProductCombos.FindAsync(id);
+            if (productCombo == null)
+            {
+                throw new InvalidOperationException("Product not found");
+            }
+
+            productCombo.IsDeleted = true;
+
+            // Sử dụng SaveChangesAsync() để cập nhật và trả về true nếu thành công
+            return await cinemaDBContext.SaveChangesAsync() > 0;
         }
     }
 }
